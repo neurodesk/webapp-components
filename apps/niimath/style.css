@@ -93,3 +93,10 @@
 .control-section button { width: 100%; }
 .option-description { margin-top: 5px !important; }
 .hidden, [hidden] { display: none !important; }
+
+#images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}

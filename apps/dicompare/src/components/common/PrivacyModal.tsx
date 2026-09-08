@@ -12,7 +12,10 @@ const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={onClose}>
       <div
-        className="bg-surface-primary rounded-lg shadow-xl max-w-lg w-full overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Privacy"
+        className="bg-surface-primary rounded-lg shadow-xl max-w-lg w-full max-h-[calc(100dvh-2rem)] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -20,6 +23,7 @@ const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) => {
           <h3 className="text-lg font-semibold text-content-primary">Privacy</h3>
           <button
             onClick={onClose}
+            aria-label="Close privacy"
             className="p-1.5 text-content-tertiary hover:text-content-primary hover:bg-surface-secondary rounded-lg transition-colors"
           >
             <X className="h-5 w-5" />

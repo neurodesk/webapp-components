@@ -427,7 +427,7 @@ const UnifiedWorkspace: React.FC = () => {
           </div>
 
           {/* Right Detail Panel */}
-          <div className="col-span-12 md:col-span-9 h-[calc(100vh-130px)]">
+          <div className="col-span-12 md:col-span-9 min-w-0 min-h-[60svh] md:h-[calc(100dvh-130px)]">
             <WorkspaceDetailPanel
               selectedItem={selectedItem}
               isAddNew={selectedId === ADD_NEW_ID}

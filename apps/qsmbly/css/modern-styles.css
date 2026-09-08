@@ -1687,8 +1687,8 @@ select {
 @media (max-width: 1024px) {
   /* Grid: header, content area, tab bar */
   .app-container {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
     height: calc(100vh - var(--qsm-eco-h, 34px));
     height: calc(100dvh - var(--qsm-eco-h, 34px));
   }
@@ -1797,6 +1797,21 @@ select {
     flex-wrap: wrap;
     gap: var(--nd-space-xs);
     padding: var(--nd-space-xs) var(--nd-space-sm);
+    flex: 0 0 auto;
+    max-height: 40%;
+    overflow-y: auto;
+  }
+
+  .app-main {
+    min-height: 0;
+  }
+
+  .viewer-canvas-wrapper {
+    min-height: 120px;
+  }
+
+  .viewer-info {
+    flex-shrink: 0;
   }
 
   .viewer-actions {

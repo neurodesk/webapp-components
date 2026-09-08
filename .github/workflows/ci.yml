@@ -123,6 +123,8 @@ jobs:
         run: node --test test/runtime-assets.test.mjs
       - name: Smoke test every deployed subpath
         run: pnpm test:smoke
+      - name: Check phone and tablet layouts and touch navigation
+        run: pnpm test:mobile
 
   browser-e2e:
     needs: app-plan

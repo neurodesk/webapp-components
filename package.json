@@ -18,6 +18,7 @@
     "test:registry": "node --test test/registry.test.mjs",
     "app-plan": "node scripts/app-plan.mjs",
     "test:smoke": "node test/composite-site.smoke.mjs",
+    "test:mobile": "node test/mobile-layout.smoke.mjs",
     "test:deployed": "node test/deployed-site.smoke.mjs",
     "lint": "turbo run lint",
     "new-app": "node scripts/new-app.mjs",

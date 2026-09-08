@@ -143,10 +143,10 @@ const UseCaseCard: React.FC<UseCaseCardProps> = ({ icon, iconColor, iconBg, titl
 
   return (
     <div className="border border-border rounded-lg overflow-hidden">
-      <div className="flex items-center hover:bg-surface-secondary transition-colors group">
+      <div className="flex flex-wrap items-center hover:bg-surface-secondary transition-colors group">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex-1 flex items-center gap-3 p-4 text-left"
+          className="flex-1 min-w-0 basis-full sm:basis-0 flex items-center gap-3 p-4 text-left"
         >
           <div className={`p-2 rounded-lg ${iconBg} ${iconColor}`}>
             {icon}
@@ -159,7 +159,7 @@ const UseCaseCard: React.FC<UseCaseCardProps> = ({ icon, iconColor, iconBg, titl
         </button>
         <button
           onClick={handleStartTutorial}
-          className="flex items-center gap-1.5 px-4 py-2 mr-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition-colors"
+          className="flex items-center gap-1.5 px-4 py-2 mx-3 mb-3 sm:ml-0 sm:mb-0 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition-colors"
         >
           <Play className="h-4 w-4" />
           Start

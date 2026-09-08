@@ -217,6 +217,14 @@ table.footer th:last-child {
   color: #b9c4ff;
 }
 
+@media (max-width: 1024px) {
+  table.footer th {
+    height: auto;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

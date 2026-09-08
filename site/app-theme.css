@@ -663,6 +663,34 @@
 }
 
 @media (max-width: 620px) {
+  .nd-app-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 4px !important;
+    padding: 10px 12px 6px !important;
+    overflow: visible !important;
+  }
+
+  .nd-app-bar__identity {
+    justify-content: space-between !important;
+  }
+
+  .nd-app-bar__title {
+    flex-shrink: 1 !important;
+    white-space: normal !important;
+    font-size: 18px !important;
+  }
+
+  .nd-app-bar__navigation {
+    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+  }
+
+  .nd-app-bar__action {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
   .nd-app-bar__action span {
     position: absolute !important;
     width: 1px !important;
@@ -673,5 +701,139 @@
     clip: rect(0, 0, 0, 0) !important;
     white-space: nowrap !important;
     border: 0 !important;
+  }
+}
+
+/* Shared mobile layout for the hosted and standalone application shells. */
+@media (max-width: 1024px) {
+  :root[data-neurodesk-app]:not(:has(.mobile-tab-bar)),
+  :root[data-neurodesk-app]:not(:has(.mobile-tab-bar)) body {
+    height: auto;
+    min-height: 100%;
+    overflow: auto;
+  }
+
+  [data-neurodesk-app]:not(:has(.mobile-tab-bar)) :is(.app-container, .nd-app-container) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto;
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
+    overflow: visible;
+  }
+
+  [data-neurodesk-app] :is(.app-sidebar, .app-main, .nd-app-sidebar, .nd-app-main) {
+    min-width: 0;
+  }
+
+  [data-neurodesk-app]:not(:has(.mobile-tab-bar)) :is(.app-sidebar, .nd-app-sidebar) {
+    max-height: none;
+    overflow: visible;
+  }
+
+  [data-neurodesk-app]:not(:has(.mobile-tab-bar)) :is(.sidebar-scroll, .nd-sidebar-scroll) {
+    overflow: visible;
+  }
+
+  [data-neurodesk-app]:not(:has(.mobile-tab-bar)) :is(.viewer-canvas-wrapper, .nd-viewer-canvas-wrapper) {
+    min-height: 360px;
+    min-height: max(300px, 50svh);
+  }
+
+  [data-neurodesk-app] :is(.viewer-toolbar, .viewer-actions, .window-controls, .view-tabs,
+      .nd-viewer-toolbar, .nd-viewer-actions, .nd-window-controls, .nd-view-tabs, .app-footer) {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  [data-neurodesk-app] .start-page {
+    height: 100dvh;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  [data-neurodesk-app] :is(.start-header, .start-main, .start-footer) {
+    flex-shrink: 0;
+  }
+
+  [data-neurodesk-app] .start-main {
+    flex-basis: auto;
+    min-height: auto;
+    grid-template-rows: auto auto;
+  }
+
+  [data-neurodesk-app] .start-hero {
+    min-height: auto;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-neurodesk-app] :is(.modal, .nd-modal, .nd-app-dialog) {
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+  }
+
+  [data-neurodesk-app] .nd-app-utility-bar {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 780px) {
+  [data-neurodesk-app] .nd-imaging-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(360px, 60svh) auto;
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  [data-neurodesk-app] .nd-imaging-controls {
+    grid-column: 1;
+    grid-row: 2;
+    max-height: none;
+    overflow: visible;
+  }
+
+  [data-neurodesk-app] .nd-imaging-viewer {
+    grid-column: 1;
+    grid-row: 3;
+    min-height: 360px;
+  }
+
+  [data-neurodesk-app] .nd-imaging-status {
+    grid-column: 1;
+    grid-row: 4;
+    flex-wrap: wrap;
+    overflow-wrap: anywhere;
+  }
+
+  [data-neurodesk-app] :is(.control-section, .start-hero > *, .start-step > *) {
+    min-width: 0;
+  }
+
+  [data-neurodesk-app] :is(.start-steps, .start-hero) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+}
+
+@media (pointer: coarse) {
+  .nd-app-bar__action {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
+  [data-neurodesk-app] :is(button, select, .btn, .upload-button, .nd-header-link) {
+    min-height: 44px;
+  }
+
+  [data-neurodesk-app] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]), select, textarea) {
+    font-size: 16px !important;
+    max-width: 100%;
+  }
+
+  [data-neurodesk-app] :is(.modal-close, .nd-modal-close, .cite-close, .tool-button) {
+    min-width: 44px;
+    min-height: 44px;
   }
 }

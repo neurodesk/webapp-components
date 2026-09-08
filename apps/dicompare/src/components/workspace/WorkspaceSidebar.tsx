@@ -189,7 +189,7 @@ const WorkspaceSidebar: React.FC<WorkspaceSidebarProps> = ({
   return (
     <div
       ref={setNodeRef}
-      className={`bg-surface-primary rounded-lg border shadow-sm transition-colors flex flex-col h-[calc(100vh-130px)] max-h-[calc(100vh-130px)] ${
+      className={`bg-surface-primary rounded-lg border shadow-sm transition-colors flex flex-col max-h-[50svh] md:h-[calc(100dvh-130px)] md:max-h-[calc(100dvh-130px)] ${
         isOverDropZone ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-900/10' : 'border-border'
       }`}
     >
