@@ -34,6 +34,7 @@ test('full-volume WebGPU regression with default augmentation',async({page})=>{
   await page.goto('./');
   await page.locator('#imageInput').setInputFiles(process.env.SYNTHSR_FULL_INPUT);
   await expect(page.locator('#processButton')).toBeEnabled();
+  await page.locator('#processingSettings > summary').click();
   await page.locator('#backend').selectOption('webgpu');
   await page.locator('#processButton').click();
   await expect(page.locator('#saveBtn')).toBeEnabled({timeout:840000});
@@ -61,6 +62,7 @@ for(const backend of ['wasm','webgpu']) test(`real ${backend} inference matches 
   }
   await page.locator('#imageInput').setInputFiles(fixture('validation.nii.gz'));
   await expect(page.locator('#processButton')).toBeEnabled();
+  await page.locator('#processingSettings > summary').click();
   await page.locator('#backend').selectOption(backend);await page.locator('#processButton').click();
   await expect(page.locator('#saveBtn')).toBeEnabled({timeout:240000});
   const downloadPromise=page.waitForEvent('download');await page.locator('#saveBtn').click();const download=await downloadPromise;

@@ -5,8 +5,7 @@ import { runDcm2niix } from '@neurodesk/runtime-support/dcm2niix-client'
 import { Niivue, SLICE_TYPE, SHOW_RENDER, MULTIPLANAR_TYPE } from '@niivue/niivue'
 import { Niimath } from "@niivue/niimath"
 
-const ASSET_BASE_URL =
-  'https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/49b12b87f4e5def9672cf582b93ecd4a54273608/niimath/'
+import { NIFTI_EXAMPLES, NIIMATH_EXAMPLE_BASE_URL as ASSET_BASE_URL } from '@neurodesk/webapp-components/example-images'
 
 mountImagingWorkspace({
   controls: 'body > header',
@@ -286,38 +285,11 @@ async function main() {
     button.disabled = false;
     button.onclick = buttonProcessImage;
   }
-  const imgs = [
-    "fa8",
-    "dwi16",
-    "fmri32",
-    "T1w7T",
-    "T2w7T",
-    "bold7T",
-    "chris_PD",
-    "chris_t1",
-    "chris_t2",
-    "CT_Abdo",
-    "CT_Electrodes",
-    "CT_Philips",
-    "CT_pitch",
-    "fmri_pitch",
-    "Iguana",
-    "mni152",
-    "MR_Gd",
-    "spm152",
-    "spmMotor",
-  ];
   const imgEl = document.getElementById("images");
-  for (let i = 0; i < imgs.length; i++) {
-    let btn = document.createElement("button");
-    btn.innerHTML = imgs[i];
-    btn.onclick = async function () {
-      let root = "https://niivue.github.io/niivue-demo-images/";
-      if (i < 6)
-        root = ASSET_BASE_URL;
-      let img = root + imgs[i] + ".nii.gz";
-      await loadImage(img);
-    };
+  for (const example of NIFTI_EXAMPLES) {
+    const btn = document.createElement("button");
+    btn.textContent = example.id;
+    btn.onclick = () => loadImage(example.url);
     imgEl.appendChild(btn);
   }
   saveButton.onclick = function () {
