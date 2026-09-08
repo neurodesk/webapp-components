@@ -37,12 +37,13 @@ async function show(file,isOutput=false){
   try{const nv=await ensureViewer();await nv.loadVolumes([{url:file,name:file.name}]);$('viewerError').hidden=true;}
   catch(error){$('viewerError').hidden=false;$('viewerError').textContent=`Visualization unavailable: ${error.message}. Processing and NIfTI download remain available.`;}
 }
-async function load(file){
+async function load(file, modality){
   if(busy||!file)return;
   try{
     if(!/\.nii(\.gz)?$/i.test(file.name))throw new Error('Choose a .nii or .nii.gz image.');
     status('Reading image…');const volume=readVolume(await file.arrayBuffer());
     source=file;output=null;provenance=null;$('outputSection').open=false;
+    if(modality)$('modality').value=modality;
     $('inputTab').disabled=false;$('outputTab').disabled=true;$('saveBtn').disabled=true;$('reportBtn').disabled=true;
     $('progress').value=0;$('elapsed').textContent='';$('fileInfo').hidden=false;
     $('fileInfo').textContent=`${file.name} · ${volume.dims.join(' × ')} voxels`;
@@ -58,7 +59,7 @@ $('exampleBtn').onclick=async()=>{
   const example = examples.find(item => item.id === $('exampleSelect').value);
   setBusy(true);status(`Downloading ${example.id}…`);
   const controller=new AbortController();exampleAbort=controller;
-  try{const r=await fetch(example.url,{signal:controller.signal});if(!r.ok)throw new Error('Example download failed. You can load a local NIfTI image instead.');const bytes=await r.arrayBuffer();if(controller.signal.aborted)return;setBusy(false);const file = new File([bytes],`${example.id}.nii.gz`);await load(file);if(source===file)$('modality').value=example.modality;}
+  try{const r=await fetch(example.url,{signal:controller.signal});if(!r.ok)throw new Error('Example download failed. You can load a local NIfTI image instead.');const bytes=await r.arrayBuffer();if(controller.signal.aborted)return;setBusy(false);const file = new File([bytes],`${example.id}.nii.gz`);await load(file,example.modality);}
   catch(e){if(e.name!=='AbortError'){setBusy(false);status(e.message,true);}}
   finally{if(exampleAbort===controller)exampleAbort=null;}
 };
