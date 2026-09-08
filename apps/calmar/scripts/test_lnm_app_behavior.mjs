@@ -3014,6 +3014,7 @@ async function waitForMicrotaskCondition(predicate, message, attempts = 20) {
   const emptyResultEl = { classList: makeClassList(['hidden']) };
   const emptyTableEl = { innerHTML: '' };
   const directProfileTableEl = { innerHTML: '', children: [], appendChild(child) { this.children.push(child); } };
+  const resultsSection = { classList: makeClassList(['collapsed']) };
   const restoreDocument = useMockElements({
     atlasSelect: { value: 'yeo7', options: [], addEventListener: () => {} },
     networkOverlapTable: tableEl,
@@ -3025,7 +3026,8 @@ async function waitForMicrotaskCondition(predicate, message, attempts = 20) {
     mapFunctionProfileResults: emptyResultEl,
     mapFunctionProfileTable: emptyTableEl,
     directFunctionProfileResults: emptyResultEl,
-    directFunctionProfileTable: directProfileTableEl
+    directFunctionProfileTable: directProfileTableEl,
+    resultsSection
   });
   const originalCreateElement = globalThis.document.createElement;
   const renderedText = [];
@@ -3173,6 +3175,8 @@ async function waitForMicrotaskCondition(predicate, message, attempts = 20) {
 
     app.lesionFile = makeNiftiFile('lesion-schaefer-grid.nii', lesionAtlasBuffer);
     await app.runAtlasOverlap();
+    assert.equal(resultsSection.classList.contains('collapsed'), false,
+      'successful overlap must reveal the Results panel');
     assert.deepEqual(
       app.overlapResult.summary.networks.map(row => row.network),
       ['LH_Vis_1', 'RH_Default_2'],

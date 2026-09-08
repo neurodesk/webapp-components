@@ -153,7 +153,7 @@ assert.match(html, /Patient images, masks, voxel values, screenshots, and genera
   'start page must state that patient-derived data stays local');
 assert.match(html, /Imaging data is processed locally in your browser and is not uploaded\./,
   'footer must carry the canonical shared privacy sentence');
-assert.match(html, /<a href="\.\.\/"[^>]*>More Neurodesk webapps<\/a>/,
+assert.match(html, /<a\b[^>]*href="\.\.\/"[^>]*>More Neurodesk webapps<\/a>/,
   'footer must link back to the composite More Neurodesk webapps page');
 assert.match(html, /class="start-links"[\s\S]{0,400}title="About"[^>]*onclick="document\.getElementById\('aboutButton'\)\.click\(\)"/,
   'start header must open the same About modal as the workspace header');
