@@ -304,18 +304,18 @@ apps:
     title: SynthSR
     description: Synthesize a 1 mm T1-weighted brain image locally in your browser.
     category: data-preparation
-    keywords: [ SynthSR, MRI, CT, super-resolution, T1 ]
+    keywords: [SynthSR, MRI, CT, super-resolution, T1]
     legacy_domain: null
     runtime: vite-webgpu
     model_manifest: models/synthsr.manifest.json
     asset_manifest_schema: scientific-assets-v1
     source: neurodesk/webapps@local
     license: Apache-2.0
-    maintainers: [ neurodesk ]
+    maintainers: [neurodesk]
     support_status: experimental
     shell: imaging-workspace
     ci:
-      toolchains: [ node ]
+      toolchains: [node]
       shared_runtime: false
       browser_test: true
       release: true

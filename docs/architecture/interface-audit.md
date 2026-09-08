@@ -31,7 +31,7 @@ The shared shell hides registered duplicate information triggers while retaining
 
 ## Verification
 
-The catalog audit passes all 28 desktop and phone cases with zero legacy heading handlers. Repository and shared-component tests cover the registry, template, shell, native disclosures, and class-driven disclosure state. Mobile checks cover narrow phones, tablets, landscape layouts, navigation, dialogs, and imaging interaction.
+Release verification includes SynthSR, added to production during this work. The catalog audit passes all 30 desktop and phone cases across the resulting 15 apps with zero legacy heading handlers. Repository and shared-component tests cover the registry, template, shell, native disclosures, and class-driven disclosure state. Mobile checks cover narrow phones, tablets, landscape layouts, navigation, dialogs, and imaging interaction.
 
 Data workflows exercised for this change include:
 

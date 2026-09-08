@@ -78,6 +78,7 @@ try {
           if (app.id === 'dicompare') await page.getByRole('link', { name: 'Open Workspace', exact: true }).tap();
           const welcome = page.locator('#welcomeLater');
           if (await welcome.isVisible()) await welcome.tap();
+          if (app.id !== 'catalog') await expect(page.locator('.nd-app-bar:visible')).toHaveCount(1);
         }
         for (const viewport of viewports) {
           await page.setViewportSize(viewport);
