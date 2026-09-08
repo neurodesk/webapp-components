@@ -1,0 +1,25 @@
+{
+  "checkpoint_sha256": "a472f776e7b33b5ea6e10c801f55fee488f1477a208b3e6998dc1aec1d9c5f8b",
+  "onnx_sha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+  "onnx_bytes": 52980984,
+  "validation": [
+    {
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "max_abs_error": 5.066394805908203e-07,
+      "mean_abs_error": 4.944922693539411e-08
+    },
+    {
+      "shape": [
+        32,
+        32,
+        64
+      ],
+      "max_abs_error": 1.049041748046875e-05,
+      "mean_abs_error": 7.080609520926373e-08
+    }
+  ]
+}

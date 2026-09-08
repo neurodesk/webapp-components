@@ -1,0 +1,31 @@
+{
+  "input": "Public py_synthsr FLAIR.nii.gz",
+  "model_sha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+  "platform": "Linux x64, independently installed npm tarball",
+  "backend": "native ONNX Runtime CPU 1.29.0",
+  "offline": true,
+  "threads": 2,
+  "flip": true,
+  "sharpen": true,
+  "output_shape": [
+    177,
+    233,
+    160
+  ],
+  "compared_voxels": 6598560,
+  "max_uint8_error": 1,
+  "mismatched_voxels": 102,
+  "max_affine_error_mm": 3.5762786865234375e-06,
+  "seconds": 131.19496846099997,
+  "timings": {
+    "read": 0.435877254,
+    "preprocess": 3.6467162999999996,
+    "model": 0.8881364650000005,
+    "initialize": 1.2128606039999996,
+    "inference": 118.27769479300001,
+    "release": 0.6419439719999936,
+    "postprocess": 6.085039869999993
+  },
+  "reference": "Native ONNX Runtime CPU 1.23.2 with pinned Python preprocessing/postprocessing",
+  "scope": "Engineering parity on this example; not clinical validation or a performance guarantee"
+}

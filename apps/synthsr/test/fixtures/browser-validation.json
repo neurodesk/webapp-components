@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-08",
+  "backend": "onnxruntime-web 1.29.0 WebGPU, hardware adapter",
+  "onnx_sha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+  "input": "https://raw.githubusercontent.com/neurolabusc/py_synthsr/04ab5548f4609c2b44ca51b3f4bc319b585dafa7/FLAIR.nii.gz",
+  "padded_shape": [192, 256, 160],
+  "output_shape": [177, 233, 160],
+  "full_volume_default_settings": {
+    "reference": "ONNX Runtime CPU 1.23.2 with pinned Python preprocessing and postprocessing",
+    "flip": true,
+    "sharpen": true,
+    "seconds": 151,
+    "compared_voxels": 6598560,
+    "mismatched_voxels": 297,
+    "max_uint8_error": 1,
+    "mean_uint8_error": 0.00004500982032443442,
+    "max_affine_error_mm": 0.0000035762786865234375
+  },
+  "full_volume_single_prediction": {
+    "reference": "Original unsplit ONNX graph, native CPU, pinned Python preprocessing and postprocessing",
+    "flip": false,
+    "sharpen": true,
+    "seconds": 98,
+    "compared_sampled_voxels": 10000,
+    "max_uint8_error": 0
+  },
+  "scope": "Engineering parity on this public example and device; not clinical validation or a cross-device benchmark"
+}

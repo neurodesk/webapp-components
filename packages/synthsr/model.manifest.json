@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "app": "synthsr",
+  "license": "Apache-2.0",
+  "preprocessing_contract": {
+    "source": "packages/synthsr/src/volume.js",
+    "spacing_mm": [
+      1,
+      1,
+      1
+    ],
+    "layout": "NCDHW; RAS spatial axes, z fastest",
+    "padding_multiple": 32
+  },
+  "assets": [
+    {
+      "filename": "synthsr-v2.onnx",
+      "bytes": 52980984,
+      "sha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+      "source_url": "https://osf.io/download/jqdcm/"
+    }
+  ],
+  "source_commit": "04ab5548f4609c2b44ca51b3f4bc319b585dafa7",
+  "checkpoint_sha256": "a472f776e7b33b5ea6e10c801f55fee488f1477a208b3e6998dc1aec1d9c5f8b",
+  "graph_optimization": "Decoder concat-convolutions split into two convolutions plus addition; no tiling",
+  "repository": "sbollmann/neurodesk-webapps-assets",
+  "revision": "f6efb00454c5b3a687b0967cee96cf4c77af8ab9",
+  "base_url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/f6efb00454c5b3a687b0967cee96cf4c77af8ab9/synthsr/"
+}

@@ -8,6 +8,7 @@ allowBuilds:
   electron-winstaller: false
   esbuild: true
   onnxruntime-node: true
+  protobufjs: false
   sharp: false
   workerd: true
 patchedDependencies:

@@ -1,0 +1,19 @@
+SynthSR web application
+Copyright 2026 Neurodesk contributors
+
+Scientific inference and preprocessing derive from SynthSR:
+Iglesias JE, Billot B, Balbastre Y, et al. (2021).
+Joint super-resolution and synthesis of 1 mm isotropic MP-RAGE volumes from
+clinical MRI exams with scans of different orientation, resolution and contrast.
+NeuroImage 237:118206. https://doi.org/10.1016/j.neuroimage.2021.118206
+
+Reference: https://github.com/neurolabusc/py_synthsr
+Commit: 04ab5548f4609c2b44ca51b3f4bc319b585dafa7
+Original: https://github.com/BBillot/SynthSR
+The reference utilities include Neurite and Lab2Im contributions, retained here
+under the upstream Apache-2.0 license. Model checkpoint: synthsr_v20_230130.h5.
+
+Changes: browser image I/O, JavaScript spatial preprocessing/postprocessing,
+ONNX conversion, WebGPU/WASM inference, optional approximate tiled inference,
+and a Neurodesk/NiiVue interface. No model retraining.
+NiiVue and ONNX Runtime retain their respective upstream licenses.

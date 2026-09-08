@@ -1,0 +1,30 @@
+{
+  "name": "synthsr",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test test/*.test.js",
+    "test:e2e": "playwright test",
+    "lint": "node --check src/main.js && node --check src/inference-worker.js && node --check src/volume.js"
+  },
+  "dependencies": {
+    "@neurodesk/webapp-components": "workspace:*",
+    "@niivue/niivue": "1.0.0-rc.11",
+    "onnxruntime-web": "1.29.0",
+    "@neurodesk/synthsr": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "vite": "^6.3.2"
+  },
+  "license": "Apache-2.0",
+  "neurodeskWebapp": {
+    "static": {
+      "coiServiceWorker": true
+    }
+  }
+}

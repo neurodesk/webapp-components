@@ -1,0 +1,39 @@
+{
+  "name": "@neurodesk/synthsr",
+  "version": "0.1.0",
+  "description": "SynthSR brain image synthesis for Node.js, HPC and browsers",
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "synthsr": "./bin/synthsr.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./node": "./src/node.js",
+    "./manifest": "./model.manifest.json"
+  },
+  "files": [
+    "src",
+    "bin",
+    "model.manifest.json",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "lint": "node --check src/index.js && node --check src/node.js && node --check bin/synthsr.js"
+  },
+  "dependencies": {
+    "nifti-reader-js": "0.8.0",
+    "onnxruntime-node": "1.29.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neurodesk/webapps.git",
+    "directory": "packages/synthsr"
+  }
+}
