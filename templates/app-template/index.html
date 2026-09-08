@@ -15,7 +15,10 @@
     <footer id="status">
       <span id="statusText">Ready</span>
       <div aria-label="Progress"><div id="progressBar"></div></div>
-      <div id="consoleOutput" aria-live="polite"></div>
+      <details class="nd-sidebar-section">
+        <summary class="nd-section-title">Technical log</summary>
+        <div id="consoleOutput" class="nd-section-content"></div>
+      </details>
     </footer>
     <script type="module" src="/src/main.js"></script>
   </body>

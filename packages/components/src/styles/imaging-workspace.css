@@ -278,13 +278,17 @@ nd-imaging-brand {
 .nd-progress-bar { height: 4px; background: var(--nd-color-border); border-radius: 2px; overflow: hidden; }
 .nd-progress-fill { width: 0; height: 100%; background: linear-gradient(90deg, var(--nd-color-primary), var(--nd-color-accent)); transition: width 250ms ease; }
 
-.nd-sidebar-section { border-bottom: 1px solid var(--nd-color-border); }
+.nd-sidebar-section { width: 100%; min-width: 0; border-bottom: 1px solid var(--nd-color-border); }
 .nd-section-title { display: flex; align-items: center; gap: var(--nd-space-sm); margin: 0; padding: var(--nd-space-md); color: var(--nd-color-text-muted); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; user-select: none; }
 .nd-section-title:hover { color: var(--nd-color-text); background: var(--nd-color-surface-elevated); }
 .nd-section-title::after { content: ""; margin-left: auto; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid currentColor; transition: transform var(--nd-transition-fast); }
-.nd-sidebar-section.collapsed .nd-section-title::after { transform: rotate(-90deg); }
-.nd-section-content { padding: 0 var(--nd-space-md) var(--nd-space-md); overflow: hidden; max-height: 1200px; opacity: 1; transition: max-height 250ms ease, opacity 200ms ease, padding 250ms ease; }
-.nd-sidebar-section.collapsed .nd-section-content { max-height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; }
+.nd-section-title::-webkit-details-marker { display: none; }
+.nd-section-title:focus-visible { outline: 2px solid var(--nd-color-primary); outline-offset: -2px; }
+.nd-sidebar-section:not([open]) > .nd-section-title::after { transform: rotate(-90deg); }
+.nd-section-content { display: block; padding: 0 var(--nd-space-md) var(--nd-space-md); }
+@media (pointer: coarse) {
+  .nd-section-title { min-height: 44px; box-sizing: border-box; }
+}
 .nd-step-disabled .nd-section-content { pointer-events: none; opacity: 0.45; }
 .nd-step-badge { margin-left: auto; font-size: 0.6rem; border-radius: 8px; padding: 1px 6px; background: var(--nd-color-border); color: var(--nd-color-text-dim); }
 

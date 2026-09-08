@@ -128,7 +128,7 @@
   details.about[open]>summary::before{content:"▾";}
   .about-body{max-width:1080px;margin:0 auto;padding:0 22px 14px;color:var(--dim);font-size:13px}
   .about-body b{color:var(--ink)}
-  #drop{border:2px dashed var(--line);border-radius:var(--radius);padding:30px;text-align:center;color:var(--dim);
+  #drop{border:2px dashed var(--line);border-radius:var(--radius);padding:16px;text-align:center;color:var(--dim);
     cursor:pointer;transition:.15s;background:rgba(255,255,255,.01)}
   #drop.hover{border-color:var(--accent);background:rgba(90,162,255,.07);color:var(--ink)}
   #drop b{color:var(--ink)} code{background:var(--panel2);padding:1px 5px;border-radius:5px;font-size:12px}
@@ -166,6 +166,13 @@
   details.mini summary{cursor:pointer;color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
   .hidden{display:none}
   h3.sub{margin:6px 0;font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+
+  .card > summary { display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; min-height:44px; }
+  .card[open] > summary { margin-bottom:12px; }
+  .card > summary::after { content:'▸'; margin-left:auto; }
+  .card[open] > summary::after { content:'▾'; }
+  dialog.about { max-width:min(850px,calc(100vw - 24px)); max-height:calc(100dvh - 24px); overflow:auto; }
+  [hidden] { display:none !important; }
 </style>
 </head>
 <body>
@@ -178,10 +185,8 @@
     </div>
     <span class="badge" title="Your images and all processing stay in this browser tab and are never uploaded. Only anonymous usage stats (page views) are collected.">🔒 Your images never leave your browser</span>
     <a href="../" class="header-link" title="More Neurodesk web apps">More Apps</a>
-    <button class="tutbtn" id="tutorialBtn" title="Step-by-step walkthrough of how to use this tool.">📖 Tutorial</button>
-    <button class="secondary reset" id="resetAll" title="Reset everything: clears all loaded images, JSON sidecars, sequence parameters and results, and returns the app to its initial state. Nothing is uploaded or deleted from your disk, this only clears what is loaded in the page.">↺ Reset all</button>
   </div>
-</header>
+<button type="button" id="aboutButton" data-neurodesk-control="about">About</button></header>
 
 <div id="tour" style="display:none">
   <div id="tourBlock"></div>
@@ -198,9 +203,7 @@
   </div>
 </div>
 
-<details class="about">
-  <summary>About this tool &amp; how it works</summary>
-  <div class="about-body">
+<dialog class="about nd-app-dialog" id="aboutDialog"><div class="nd-app-dialog__panel"><h2>About Easy MP2RAGE</h2><div class="about-body">
     <p><b>What it does.</b> Computes a quantitative <b>T1 map</b> (in ms) from a Siemens <b>MP2RAGE</b>
     acquisition, corrected for transmit-field (<b>B1⁺</b>) inhomogeneity using either a <b>SA2RAGE</b>
     scan or a separately acquired <b>B1 map</b> (e.g. a Siemens tfl B1 map). It can also compute a
@@ -235,32 +238,46 @@
     <p class="note">Research software, provided as-is with no warranty. Sanity-check the maps and confirm the
     parameters against your protocol. Cite Marques 2010 (NeuroImage), Marques &amp; Gruetter 2013 (PLoS ONE),
     Eggenschwiler 2012 (MRM).</p>
-  </div>
-</details>
+    <p class="note" style="text-align:center;padding-bottom:10px">
+    Rust → WebAssembly · runs in your browser · <a href="https://github.com/neurodesk/webapps/tree/main/apps/easy-mp2rage">source</a> ·
+    Python port of <a href="https://github.com/JosePMarques/MP2RAGE-related-scripts">Marques' scripts</a>
+  </p>
+  <p class="note" style="text-align:center;padding-bottom:26px;line-height:1.7">
+    Developed by <a href="https://about.uq.edu.au/experts/30967">Thomas B Shaw</a><br>
+    Based on <a href="https://github.com/neurodesk/webapps/tree/main/apps/qsmbly">Ashley Stewart's QSMbly</a>
+  </p>
+  </div><form method="dialog"><button class="nd-app-dialog__close">Close</button></form></div></dialog>
 
 <main>
-  <div class="card example">
-    <h2>Example T1 map <span class="i" data-tip="A B1-corrected T1 map (ms) from a de-identified (defaced) 7T MP2RAGE dataset, shown with the pre/post, uncorrected vs B1-corrected, tissue T1 histogram.">i</span></h2>
-    <img src="./assets/example.png" alt="Example: UNI, B1-corrected T1 map, B1 map, and T1 histogram">
-  </div>
+
 
   <div class="card">
     <h2><span class="step">1</span>Load your data
       <span class="i" data-tip="Drag &amp; drop whole DICOM series folders (uncompressed Siemens), roles and sequence parameters are read from the headers, or .nii / .nii.gz files (with optional dcm2niix .json sidecars). Your images and files stay on your computer.">i</span>
     </h2>
+    <div class="row" style="margin-bottom:12px">
+      <button class="tutbtn" id="tutorialBtn" title="Step-by-step walkthrough of how to use this tool.">📖 Tutorial</button>
+      <button class="secondary reset" id="resetAll" title="Reset everything: clears all loaded images, JSON sidecars, sequence parameters and results, and returns the app to its initial state. Nothing is uploaded or deleted from your disk, this only clears what is loaded in the page.">↺ Reset all</button>
+    </div>
     <div class="modeToggle" role="tablist" aria-label="Input mode">
       <button id="modeSingle" class="modebtn active" type="button" role="tab" aria-selected="true" title="Load a single dataset by drag-and-drop or a DICOM folder.">Single dataset</button>
       <button id="modeBids" class="modebtn" type="button" role="tab" aria-selected="false" title="Load a whole BIDS directory and process its subjects one at a time.">BIDS directory</button>
     </div>
-    <div id="drop" tabindex="0" role="button" aria-label="Add files: activate to browse for NIfTI files, or drag and drop DICOM folders and NIfTI files here">
-      <b>Drag &amp; drop</b> your <b>DICOM folders</b>, <b>drop several at once</b>, or <b>.nii / .nii.gz</b> files here. (Click to browse for NIfTI files.)<br>
-      <span class="note">UNI, INV2, and either a SA2RAGE (2-vol) or a B1 map. DICOM headers auto-fill roles &amp; parameters; <code>.json</code> sidecars do the same for NIfTI. Drag &amp; drop is the best way to add several series at once, and it never shows a browser &ldquo;upload&rdquo; prompt. Your images are never uploaded, all processing runs in this tab.</span>
+    <div class="field"><label>Task
+        <span class="i" data-tip="T1 map: B1-corrected T1 from MP2RAGE (needs UNI + INV2 + a B1 source). SA2RAGE→B1 map: just the relative B1 map. Denoise: robust-combination UNI→UNI-DEN (needs UNI + INV1 + INV2).">i</span></label>
+        <select id="taskSel">
+          <option value="t1">Make T1 map from MP2RAGE</option>
+          <option value="b1only">SA2RAGE → B1 map</option>
+          <option value="denoise">Denoise UNI → UNI-DEN</option>
+        </select>
+      </div><div id="drop" tabindex="0" role="button" aria-label="Add files: activate to browse for NIfTI files, or drag and drop DICOM folders and NIfTI files here">
+      <b>Choose NIfTI files or drop images and DICOM folders here.</b><br><span class="note">JSON sidecars and DICOM headers fill in image roles and parameters.</span>
       <input id="file" type="file" multiple accept=".nii,.nii.gz,.json" class="hidden">
     </div>
     <div class="row" id="dicomRow" style="justify-content:center;margin-top:12px">
       <button class="secondary" id="pickFolder" type="button">📁 Choose a DICOM folder…</button>
       <input id="folder" type="file" webkitdirectory directory multiple class="hidden">
-      <span class="note">Fallback if drag &amp; drop won&rsquo;t work. Picks one folder at a time (or a parent folder containing several series). Chrome shows an &ldquo;upload&rdquo; permission prompt for folders, that is just its wording for letting the page <em>read</em> the folder; your folder&rsquo;s contents are never sent anywhere. Drag &amp; drop avoids the prompt.</span>
+      <span class="note">Files stay in your browser. See About for input requirements.</span>
     </div>
     <div class="row" id="bidsRow" style="justify-content:center;margin-top:12px;display:none">
       <button class="secondary" id="pickBids" type="button">📂 Process a BIDS directory…
@@ -298,10 +315,10 @@
     </div>
   </div>
 
-  <div class="card">
-    <h2><span class="step">2</span>Sequence parameters
+  <details class="card" id="parameterPanel">
+    <summary><span class="step">2</span>Sequence parameters
       <span class="i" data-tip="These describe your acquisition and drive the T1 lookup. Use the 7T/3T presets or type your own. TRFLASH (GRE readout TR) is not stored in DICOM, confirm it from your protocol. NZslices = slices-per-slab × [partialFourier − 0.5, 0.5].">i</span>
-    </h2>
+    </summary>
     <div class="row" style="margin-bottom:10px;gap:10px;align-items:flex-end">
       <div class="field"><label>Parameters from
         <span class="i" data-tip="JSON sidecars: read TI/flip/TR from dropped dcm2niix .json files. Image headers: from DICOM (auto-filled on import). Manual: type them / use a preset.">i</span></label>
@@ -317,8 +334,8 @@
       <button class="secondary presetbtn" data-preset="3T">3T</button>
       <span id="paramSrcNote" class="pill">defaults</span>
     </div>
-    <h3 class="sub">MP2RAGE</h3>
-    <div class="grid" id="mpGrid"></div>
+    <div id="mpBlock"><h3 class="sub">MP2RAGE</h3>
+    <div class="grid" id="mpGrid"></div></div>
     <div id="saBlock">
       <h3 class="sub" style="margin-top:14px">SA2RAGE
         <span class="i" data-tip="The SA2RAGE ratio (its two GRE volumes) is turned into a relative B1 map, then used to correct the MP2RAGE T1. TR / 2nd delay / 2nd flip angle are often not in the header, confirm them.">i</span>
@@ -335,21 +352,14 @@
         <span class="i" data-tip="Opt-in. If the B1 map covers a smaller field-of-view than the MP2RAGE (common for a low-res tfl B1 map), brain voxels outside it get no correction. B1⁺ transmit fields are spatially smooth, so this fits a low-order 3-D polynomial to the measured field and uses it to fill those voxels. Measured voxels are kept unchanged; filled regions are estimates, not measurements, check the B1 map output before trusting peripheral T1.">i</span>
       </label>
     </div>
-  </div>
+  </details>
 
   <div class="card">
     <h2><span class="step">3</span>Run
       <span class="i" data-tip="Pick a task, then Compute. Runs in a background Web Worker (WASM) so the page stays responsive. Your images and results never leave your machine.">i</span>
     </h2>
     <div class="row" style="align-items:flex-end;gap:10px">
-      <div class="field"><label>Task
-        <span class="i" data-tip="T1 map: B1-corrected T1 from MP2RAGE (needs UNI + INV2 + a B1 source). SA2RAGE→B1 map: just the relative B1 map. Denoise: robust-combination UNI→UNI-DEN (needs UNI + INV1 + INV2).">i</span></label>
-        <select id="taskSel">
-          <option value="t1">Make T1 map from MP2RAGE</option>
-          <option value="b1only">SA2RAGE → B1 map</option>
-          <option value="denoise">Denoise UNI → UNI-DEN</option>
-        </select>
-      </div>
+
       <div class="field" id="regField" style="display:none"><label>Denoise strength</label>
         <input id="reg" type="number" value="6" step="1" min="1" title="noise regularization β multiplier (larger = cleaner background)"></div>
       <button id="run" disabled>Compute</button>
@@ -369,8 +379,9 @@
       <span id="status" class="note">Add inputs to enable.</span>
     </div>
     <div id="progress" style="margin-top:12px"><div></div></div>
-    <div id="log"></div>
+    <details><summary>Technical log</summary><div id="log"></div></details>
   </div>
+<details class="card example"><summary>Example T1 map</summary><img src="./assets/example.png" alt="Example: UNI, B1-corrected T1 map, B1 map, and T1 histogram"></details>
 
   <div class="card" id="viewerWrap">
     <h2>Result <span class="i" data-tip="Orthogonal slices of the selected output. Scroll (mouse-wheel over a panel) or drag the A / C / S sliders to move through the axial, coronal and sagittal planes. Change output and colormap above. Download the maps below.">i</span></h2>
@@ -403,14 +414,6 @@
     <div class="downloads" id="downloads" style="margin-top:12px"></div>
   </div>
 
-  <p class="note" style="text-align:center;padding-bottom:10px">
-    Rust → WebAssembly · runs in your browser · <a href="https://github.com/neurodesk/webapps/tree/main/apps/easy-mp2rage">source</a> ·
-    Python port of <a href="https://github.com/JosePMarques/MP2RAGE-related-scripts">Marques' scripts</a>
-  </p>
-  <p class="note" style="text-align:center;padding-bottom:26px;line-height:1.7">
-    Developed by <a href="https://about.uq.edu.au/experts/30967">Thomas B Shaw</a><br>
-    Based on <a href="https://github.com/neurodesk/webapps/tree/main/apps/qsmbly">Ashley Stewart's QSMbly</a>
-  </p>
 </main>
 
 <script type="module" src="./js/app.js"></script>

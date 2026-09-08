@@ -4,7 +4,14 @@
 import { test, expect } from "@playwright/test";
 import { decodeCompactShareState } from "../src/compact_share_state.ts";
 
+async function openTools(page) {
+  if (!await page.locator("#toolsPanel").evaluate(panel => panel.open)) {
+    await page.locator("#toolsPanel > summary").click();
+  }
+}
+
 async function createShareUrl(page) {
+  await openTools(page);
   await page.getByRole("button", { name: "Create share link" }).click();
   await expect(page.locator("#shareLink")).toBeVisible();
   await expect(page.locator("#shareStatus")).toContainText("Share link ready");
@@ -48,6 +55,7 @@ function parseNiftiHeader(buffer) {
 }
 
 async function niftiEstimate(page) {
+  await openTools(page);
   return page.locator("#niftiEstimate").evaluate((output) => ({
     level: Number(output.dataset.level),
     shape: (output.dataset.shape ?? "").split(",").map(Number),
@@ -59,6 +67,7 @@ async function niftiEstimate(page) {
 async function downloadAndVerifyNifti(page, expectedFilename) {
   const estimate = await niftiEstimate(page);
   const downloadPromise = page.waitForEvent("download");
+  await openTools(page);
   await page.locator("#downloadNifti").click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe(expectedFilename);
@@ -122,7 +131,7 @@ test("app boots", async ({ page }) => {
   await page.getByRole("button", { name: "Remove OME-Zarr store 1" }).click();
   await expect(page.getByLabel("OME-Zarr store URL 1")).toHaveValue("");
   await expect(page).not.toHaveURL(/url=/);
-  await expect(page.getByRole("button", { name: "Apply" })).toBeDisabled();
+  await expect(page.locator("#applyZoom")).toBeDisabled();
   await expect(page.locator("#scrollZoomSpeed")).toHaveValue("5");
   await expect(page.locator("#scrollZoomSpeed")).toHaveAttribute("max", "10");
   await expect(page.locator("#detailBudget")).toHaveValue("8");
@@ -134,6 +143,8 @@ test("app boots", async ({ page }) => {
   await expect(page.locator("#panY")).toBeHidden();
   await expect(page.locator("#panZ")).toBeHidden();
   await expect(page.getByText("Pan Z", { exact: true })).toHaveCount(0);
+  await expect(page.locator("#axialSlice")).toBeHidden();
+  await page.locator("#navigationPanel > summary").click();
   await expect(page.locator("#axialSlice")).toBeVisible();
   const topBar = page.locator(".nd-app-bar:visible");
   await expect(topBar).toHaveCount(1);
@@ -286,10 +297,12 @@ test("large NIfTI export reports progress and can be cancelled", async ({ page }
   await expect(page.locator("#activeLevel")).toHaveText("L1", {
     timeout: 15_000,
   });
+  await openTools(page);
   await page.locator("#niftiLevel").selectOption("0");
   expect(Number(await page.locator("#niftiEstimate").getAttribute("data-bytes")))
     .toBeGreaterThan(256 * 1024 * 1024);
 
+  await openTools(page);
   await page.locator("#downloadNifti").click();
   await expect(page.locator("#niftiProgress")).toBeVisible();
   await expect(page.locator("#niftiProgressText")).toContainText(
@@ -646,6 +659,7 @@ test("translated OME-Zarr URLs load as one composite volume", async ({ page }) =
     "Download started: left-L0-fov.nii",
   );
 
+  await openTools(page);
   await page.locator("#niftiLevel").selectOption("2");
   await expect(page.locator("#activeLevel")).toHaveText("L0");
   await expect(page.locator("#niftiEstimate")).toContainText("NIfTI-1");
@@ -658,6 +672,7 @@ test("translated OME-Zarr URLs load as one composite volume", async ({ page }) =
     fullResolution.estimate.bytes,
   );
 
+  await openTools(page);
   await page.locator("#niftiLevel").selectOption("0");
   const uncroppedBytes = (await niftiEstimate(page)).bytes;
   for (let index = 0; index < 4; index++) {
@@ -682,6 +697,7 @@ test("translated OME-Zarr URLs load as one composite volume", async ({ page }) =
       deltaMode: 0,
     });
   }
+  await openTools(page);
   await page.locator("#niftiLevel").selectOption("current");
 
   const canvasBox = await page.locator("#nv-canvas").boundingBox();
@@ -776,6 +792,7 @@ test("translated OME-Zarr URLs load as one composite volume", async ({ page }) =
   await expect(page.locator("#windowMin")).toHaveValue("50");
   await expect(page.locator("#windowMax")).toHaveValue("70");
 
+  await openTools(page);
   const measureButton = page.getByRole("button", { name: "Measure distance" });
   await expect(measureButton).toHaveAttribute("aria-pressed", "false");
   await measureButton.click();
@@ -1274,6 +1291,7 @@ test("generic uint16 share contrast is replaced from streamed signal", async ({ 
     checkbox.dispatchEvent(new Event("change", { bubbles: true }));
   });
   await expect(page.locator(".nvslide-scale-bar").first()).toBeVisible();
+  await openTools(page);
   const nvSlideMeasureButton = page.getByRole("button", { name: "Measure distance" });
   await expect(nvSlideMeasureButton).toBeEnabled();
   await nvSlideMeasureButton.click();
@@ -1364,6 +1382,7 @@ test("generic uint16 share contrast is replaced from streamed signal", async ({ 
   expect(sagittalScaleAfter).toEqual(sagittalScaleBefore);
 
   const downloadPromise = page.waitForEvent("download");
+  await openTools(page);
   await page.locator("#downloadNifti").click();
   const download = await downloadPromise;
   const downloadedHeader = parseNiftiHeader(await readDownload(download));
@@ -1503,6 +1522,7 @@ test("generic uint16 share contrast is replaced from streamed signal", async ({ 
     "true",
   );
   const sharedExport = await niftiEstimate(page);
+  await openTools(page);
   await page.locator("#createShareLink").click();
   await expect.poll(() => new URL(page.url()).searchParams.get("state"))
     .toMatch(/^gz\./);

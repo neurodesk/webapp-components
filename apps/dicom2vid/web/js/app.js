@@ -792,3 +792,7 @@ function init() {
 }
 
 init();
+
+for (const kind of ['about', 'privacy']) {
+  document.getElementById(`${kind}Button`).addEventListener('click', () => document.getElementById(`${kind}Dialog`).showModal());
+}

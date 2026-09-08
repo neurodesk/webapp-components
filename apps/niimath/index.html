@@ -11,8 +11,9 @@
   <body>
 
     <header>
-      <section class="control-section" aria-labelledby="inputHeading">
-      <h2 id="inputHeading">1. Input image</h2>
+      <details class="control-section nd-sidebar-section" open>
+      <summary class="nd-section-title" id="inputHeading">1. Input image</summary>
+      <div class="nd-section-content">
       <p>Choose a NIfTI image or a folder containing a DICOM series. Files stay in this browser.</p>
       <div class="upload-actions">
         <label class="upload-button" for="niftiInput">Choose NIfTI</label>
@@ -21,31 +22,40 @@
         <input id="dicomInput" type="file" webkitdirectory multiple hidden />
       </div>
       <select id="dicomPick" class="hidden" aria-label="Pick a converted NIfTI series"></select>
-      </section>
-      <section class="control-section" aria-labelledby="processingHeading">
-      <h2 id="processingHeading">2. Processing</h2>
+      </div>
+      </details>
+      <details class="control-section nd-sidebar-section" open>
+      <summary class="nd-section-title" id="processingHeading">2. Processing</summary>
+      <div class="nd-section-content">
       <label for="moreCommands">Example operation</label>
       <select id="moreCommands"></select>
-      <p class="option-description">Choose an example or edit the command below. The result can replace the image or appear as an overlay.</p>
+      <p class="option-description">Choose an example or edit the command below.</p>
       <label for="command">NiiMath command</label>
       <input id="command" value="-dehaze 5 -dog 2 3.2"/>
       <button id="processButton" disabled>Process</button>
       <div id="loadingCircle" class="loading-circle hidden"></div>
-      <label for="overlayCheck">Show result as overlay</label>
-      <input type="checkbox" id="overlayCheck" checked />
+      <label class="checkbox-option"><input type="checkbox" id="overlayCheck" checked /> Show result as overlay</label>
+      <details class="nd-sidebar-section">
+      <summary class="nd-section-title">Overlay appearance</summary>
+      <div class="nd-section-content">
       <!-- overlay opacity slider -->
       <label id="overlayOpacityLabel" for="overlayOpacity">Overlay opacity</label>
       <input type="range" id="overlayOpacity" min="0" max="1" step="0.01" value="1" />
       <!-- overlay color select (empty but will be populated in main.js) -->
       <label id="overlayColorLabel" for="overlayColor">Overlay color</label>
       <select id="overlayColor"></select>
-      </section>
-      <section class="control-section" aria-labelledby="outputHeading">
-      <h2 id="outputHeading">3. Output</h2>
+      </div>
+      </details>
+      </div>
+      </details>
+      <details class="control-section nd-sidebar-section" id="outputSection">
+      <summary class="nd-section-title" id="outputHeading">3. Output</summary>
+      <div class="nd-section-content">
       <p>Download the processed image, or reset to start again with the example image.</p>
       <button id="saveButton">Save processed image</button>
       <button id="resetButton">Reset</button>
-      </section>
+      </div>
+      </details>
       <div class="sidebar-actions">
       <button id="aboutButton">About</button>
       <button id="helpButton">Command help</button>
@@ -55,7 +65,7 @@
       <canvas id="gl"></canvas>
     </main>
     <footer>
-        <label id="images"></label>
+        <details class="nd-sidebar-section"><summary class="nd-section-title">Example images</summary><div id="images"></div></details>
 </footer>
     <script type="module" src="./main.js"></script>
   </body>

@@ -1,3 +1,6 @@
+import { bindSectionDisclosures } from '@neurodesk/webapp-components/ui';
+bindSectionDisclosures(document);
+
 // Import extracted utility modules
 import { createThresholdMask } from '@neurodesk/webapp-components/volume';
 import {
@@ -383,15 +386,6 @@ class QSMApp {
     if (sidebarToggle && sidebar) {
       sidebarToggle.addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
-      });
-    }
-
-    // Console toggle
-    const consoleHeader = document.querySelector('.console-header');
-    const consoleEl = document.getElementById('console');
-    if (consoleHeader && consoleEl) {
-      consoleHeader.addEventListener('click', () => {
-        consoleEl.classList.toggle('collapsed');
       });
     }
 
@@ -790,6 +784,7 @@ class QSMApp {
       tab.addEventListener('click', () => {
         const tabName = tab.dataset.tab;
         container.setAttribute('data-mobile-tab', tabName);
+        if (tabName === 'console') document.getElementById('console').classList.remove('collapsed');
         tabs.forEach(t => t.classList.toggle('active', t === tab));
 
         // Trigger NiiVue resize when switching to viewer

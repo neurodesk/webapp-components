@@ -353,6 +353,8 @@ function restoreEdited() {
   const anchor = rois[at];
   const position = anchor ? state.rois.indexOf(anchor) : state.rois.length;
   state.rois.splice(position, 0, roi);
+  document.getElementById('roiPanel').open = true;
+  document.getElementById('exportPanel').open = true;
   state.editing = null;
   state.editIndex = -1;
   state.editColor = null;
@@ -418,6 +420,8 @@ function saveRoi() {
   const anchorArea = rois[at];
   const position = anchorArea ? state.rois.indexOf(anchorArea) : state.rois.length;
   state.rois.splice(position, 0, roi);
+  document.getElementById('roiPanel').open = true;
+  document.getElementById('exportPanel').open = true;
 
   // Deliberately NOT selected. Selecting it would point the export buttons at
   // this ROI while the name field goes on naming the next one, so the next
@@ -1006,8 +1010,13 @@ async function loadSurface(file) {
     };
 
     attachLabelLayer(mesh, entry.labelValues, currentLabelTable());
+    const firstSurface = state.surfaces.length === 0;
     state.surfaces.push(entry);
     activateSurface(entry.id);
+    if (firstSurface) {
+      document.getElementById('overlayPanel').open = true;
+      document.getElementById('annotationPanel').open = true;
+    }
 
     const note = openCount > 0
       ? ' This surface is cut, so you can close an ROI against its edge.'
@@ -2039,6 +2048,7 @@ function runFill(seed = -1) {
   const otherSide = session.regionOrder.length > 1
     ? ' If that is the wrong side of the border, take the other side.'
     : '';
+  document.getElementById('exportPanel').open = true;
   setStatus(`Filled ${result.count.toLocaleString()} vertices${pieces}.${otherSide}`);
   repaint();
 }

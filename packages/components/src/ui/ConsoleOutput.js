@@ -23,6 +23,11 @@ export class ConsoleOutput {
     const text = message == null ? '' : String(message);
     const lvl = level ?? (this.deriveLevel ? this.deriveLevel(text) : 'info');
     if (this.element) {
+      if (lvl === 'error') {
+        this.element.closest('[data-disclosure]')?.classList.remove('collapsed');
+        const details = this.element.closest('details');
+        if (details) details.open = true;
+      }
       const doc = this.element.ownerDocument;
       const line = doc.createElement('div');
       const levelCls = this.levelClass(lvl);

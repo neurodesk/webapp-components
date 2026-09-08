@@ -149,14 +149,14 @@
           </p>
         </section>
 
-        <section class="panel workflow-panel overlay-panel">
-          <div class="panel-heading">
+        <details class="nd-workflow-disclosure panel workflow-panel overlay-panel" id="overlayPanel">
+          <summary class="panel-heading">
             <span class="panel-step" aria-hidden="true">02</span>
             <div>
               <h2>Overlays</h2>
               <p>Add scalar or label data to the active surface.</p>
             </div>
-          </div>
+          </summary>
           <label class="file-field upload-field">
             <input type="file" id="overlayInput" multiple disabled />
             <span class="upload-visual">
@@ -228,16 +228,16 @@
             <input type="checkbox" id="showLegend" checked />
             <span>Show the colour scale on the view</span>
           </label>
-        </section>
+        </details>
 
-        <section class="panel workflow-panel tool-panel">
-          <div class="panel-heading">
+        <details class="nd-workflow-disclosure panel workflow-panel tool-panel" id="annotationPanel">
+          <summary class="panel-heading">
             <span class="panel-step" aria-hidden="true">03</span>
             <div>
               <h2>Annotate</h2>
               <p>Trace a closed region or mark individual vertices.</p>
             </div>
-          </div>
+          </summary>
           <div class="segmented" role="radiogroup" aria-label="Drawing tool">
             <button type="button" id="modeRoi" class="active" role="radio" aria-checked="true">Closed ROI</button>
             <button type="button" id="modePoints" role="radio" aria-checked="false">Points</button>
@@ -320,16 +320,16 @@
             </div>
             <ol id="pointList" class="point-list"></ol>
           </div>
-        </section>
+        </details>
 
-        <section class="panel workflow-panel roi-panel">
-          <div class="panel-heading">
+        <details class="nd-workflow-disclosure panel workflow-panel roi-panel" id="roiPanel">
+          <summary class="panel-heading">
             <span class="panel-step" aria-hidden="true">04</span>
             <div>
               <h2>Saved ROIs</h2>
               <p>Name, organise and revisit completed regions.</p>
             </div>
-          </div>
+          </summary>
           <label class="file-field">
             <span>ROI name</span>
             <input type="text" id="roiName" value="roi" maxlength="64"
@@ -348,16 +348,16 @@
               reopen a border, or select a name to export that ROI.
             </p>
           </details>
-        </section>
+        </details>
 
-        <section class="panel workflow-panel export-panel">
-          <div class="panel-heading">
+        <details class="nd-workflow-disclosure panel workflow-panel export-panel" id="exportPanel">
+          <summary class="panel-heading">
             <span class="panel-step" aria-hidden="true">05</span>
             <div>
               <h2>Export</h2>
               <p>Download the active region in your preferred format.</p>
             </div>
-          </div>
+          </summary>
           <p class="hint" id="exportNameHint">Used in the file name and inside the file.</p>
           <div class="button-row">
             <button type="button" id="exportLabel" disabled>FreeSurfer .label</button>
@@ -367,7 +367,7 @@
             <button type="button" id="exportPoints" disabled>Points JSON</button>
           </div>
           <p class="hint" id="exportHint">Coordinates are written in the loaded surface's space.</p>
-        </section>
+        </details>
       </div>
 
       <div id="viewer">

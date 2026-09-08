@@ -79,8 +79,16 @@ const SortableWorkspaceItem: React.FC<{
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-2">
             <FileText className="h-4 w-4 text-content-tertiary flex-shrink-0" />
-            <h3 className="text-sm font-medium text-content-primary truncate">
-              {item.acquisition.protocolName || 'Untitled'}
+            <h3 className="flex-1 min-w-0 text-sm font-medium text-content-primary">
+              <button
+                type="button"
+                className="min-h-11 w-full truncate text-left"
+                title={item.acquisition.protocolName || 'Untitled'}
+                aria-current={isSelected ? 'true' : undefined}
+                onClick={(event) => { event.stopPropagation(); onSelect(); }}
+              >
+                {item.acquisition.protocolName || 'Untitled'}
+              </button>
             </h3>
           </div>
 

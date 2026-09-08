@@ -26,16 +26,15 @@
     </section>
     <section class="control-section processing-summary" aria-labelledby="processingHeading">
       <h2 id="processingHeading">2. Automatic processing</h2>
-      <p><strong>Brain segmentation</strong> identifies gray matter, white matter, CSF, and subcortical regions.</p>
-      <p><strong>Quality metrics</strong> then measures noise, contrast, sharpness, and tissue composition. Processing starts after you choose an image.</p>
+      <p>Choose an image to start segmentation and quality measurements automatically.</p>
     </section>
-    <section class="control-section" aria-labelledby="resultsHeading">
-    <div class="qc-head">
+    <details class="nd-workflow-disclosure control-section" aria-labelledby="resultsHeading" id="resultsSection">
+    <summary class="qc-head">
       <h2 id="resultsHeading" class="qc-title">3. Image quality
         <span class="qc-titlesub">MRIQC-style</span>
       </h2>
-      <button id="aboutBtn" class="qc-about" type="button">About</button>
-    </div>
+
+    </summary>
     <div class="qc-opacity">
       <label for="ovlSlider">Opacity</label>
       <input type="range" min="0" max="255" value="128" id="ovlSlider" aria-label="Segmentation overlay opacity" />
@@ -43,7 +42,8 @@
     <div id="qcBody">
       <p class="qc-empty">Metrics appear here after processing finishes.</p>
     </div>
-    </section>
+    </details>
+    <button id="aboutBtn" class="qc-about" type="button">About</button>
   </aside>
 
   <main id="canvas-container">

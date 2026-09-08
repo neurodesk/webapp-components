@@ -145,6 +145,8 @@ const UseCaseCard: React.FC<UseCaseCardProps> = ({ icon, iconColor, iconBg, titl
     <div className="border border-border rounded-lg overflow-hidden">
       <div className="flex flex-wrap items-center hover:bg-surface-secondary transition-colors group">
         <button
+          aria-expanded={isExpanded}
+          aria-controls={`workflow-${tutorialId}`}
           onClick={() => setIsExpanded(!isExpanded)}
           className="flex-1 min-w-0 basis-full sm:basis-0 flex items-center gap-3 p-4 text-left"
         >
@@ -166,7 +168,7 @@ const UseCaseCard: React.FC<UseCaseCardProps> = ({ icon, iconColor, iconBg, titl
         </button>
       </div>
       {isExpanded && (
-        <div className="px-4 pb-4 pt-2 border-t border-border bg-surface-secondary">
+        <div id={`workflow-${tutorialId}`} className="px-4 pb-4 pt-2 border-t border-border bg-surface-secondary">
           <ol className="space-y-2 ml-1">
             {steps.map((step, index) => (
               <li key={index} className="flex items-start gap-3 text-sm text-content-secondary">

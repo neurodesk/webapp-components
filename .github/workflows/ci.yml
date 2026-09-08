@@ -123,6 +123,18 @@ jobs:
         run: node --test test/runtime-assets.test.mjs
       - name: Smoke test every deployed subpath
         run: pnpm test:smoke
+      - name: Audit interface consistency across the catalog
+        run: pnpm audit:interfaces
+        env:
+          INTERFACE_ARTIFACTS: interface-artifacts
+      - name: Check interface workflows with image data
+        run: pnpm test:interface-workflows
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: interface-audit
+          path: interface-artifacts/
+          if-no-files-found: ignore
       - name: Check phone and tablet layouts and touch navigation
         run: pnpm test:mobile
 

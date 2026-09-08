@@ -125,12 +125,12 @@
     <div class="sidebar-scroll">
 
       <!-- Input Section -->
-      <section class="sidebar-section">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section" data-disclosure id="vesselboost-section-1">
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           Input
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <div class="file-upload-group">
             <div class="upload-group">
               <div class="file-upload-zone file-drop" id="inputDropZone">
@@ -145,13 +145,13 @@
       </section>
 
       <!-- Optional: Downsample -->
-      <section class="sidebar-section step-section step-disabled" id="stepDownsampleSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section step-section step-disabled collapsed" id="stepDownsampleSection" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m6 6v-4.8m0 4.8h-4.8"/><path d="M3 3l6 6M3 3v4.8M3 3h4.8"/></svg>
           <span>Downsample (Optional)</span>
           <span class="step-badge" id="stepDownsampleBadge"></span>
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <p class="step-description" id="downsampleInfo">Loading volume info...</p>
           <div class="param-group">
             <label class="param-label" for="downsampleFactor">Downsample Factor <span class="info-icon">i<span class="info-tooltip">Reduce the volume resolution by this factor. 2x halves the resolution in each dimension (8x fewer voxels). Useful for large volumes to speed up processing.</span></span></label>
@@ -172,13 +172,13 @@
       </section>
 
       <!-- Step 1: Bias Field Correction -->
-      <section class="sidebar-section step-section step-disabled" id="stepN4Section">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section step-section step-disabled collapsed" id="stepN4Section" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <span>Step 1: Bias Field Correction (Optional)</span>
           <span class="step-badge" id="stepN4Badge"></span>
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <p class="step-description">N4ITK bias field correction. Recommended for raw MRI data.</p>
           <div class="step-buttons">
             <button class="btn btn-primary btn-sm" id="runN4Btn" disabled>
@@ -192,13 +192,13 @@
       </section>
 
       <!-- Step 2: Denoising -->
-      <section class="sidebar-section step-section step-disabled" id="stepDenoiseSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section step-section step-disabled collapsed" id="stepDenoiseSection" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446A9 9 0 1 1 12 3z"/></svg>
           <span>Step 2: Denoising (Optional)</span>
           <span class="step-badge" id="stepDenoiseBadge"></span>
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <p class="step-description">Denoise the volume to improve segmentation quality. <span class="info-icon">i<span class="info-tooltip">Bilateral is fast with good edge preservation. NLM variants are slower but may produce better results. Processing time depends on volume size.</span></span></p>
           <div class="param-group">
             <label class="param-label" for="denoiseMethodSelect">Method <span class="info-icon">i<span class="info-tooltip">Bilateral: fast edge-preserving filter (~10-20x faster than NLM). NLM Fast: non-local means with reduced search window. NLM: full non-local means (slowest, highest quality).</span></span></label>
@@ -220,13 +220,13 @@
       </section>
 
       <!-- Step 3: Vessel Segmentation -->
-      <section class="sidebar-section step-section step-disabled" id="stepInferenceSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section step-section step-disabled" id="stepInferenceSection" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           <span>Step 3: Vessel Segmentation</span>
           <span class="step-badge" id="stepInferenceBadge"></span>
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <div class="param-group">
             <label class="param-label" for="modelSelect">Model <span class="info-icon">i<span class="info-tooltip">Select the VesselBoost model variant. Default is recommended for TOF MRA. Boosted models have higher sensitivity. T2*/SWI is for T2*-weighted or susceptibility-weighted data.</span></span></label>
             <select id="modelSelect">
@@ -264,13 +264,13 @@
       </section>
 
       <!-- Step 4: Brain Extraction (post-segmentation masking) -->
-      <section class="sidebar-section step-section step-disabled" id="stepBETSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section step-section step-disabled collapsed" id="stepBETSection" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
           <span>Step 4: Brain Extraction</span>
           <span class="step-badge" id="stepBETBadge"></span>
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <p class="step-description">Mask segmentation to brain region. Removes false positives outside the brain.</p>
           <div class="param-group">
             <label class="param-label" for="betMethodSelect">Method <span class="info-icon">i<span class="info-tooltip">BET: traditional brain extraction (recommended, requires WASM). SynthStrip: deep learning skull-stripping (1mm). SynthStrip Fast: coarser resolution (2mm).</span></span></label>
@@ -301,12 +301,12 @@
       </section>
 
       <!-- Results Section -->
-      <section class="sidebar-section hidden" id="resultsSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section hidden" id="resultsSection" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           Results
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <div class="stage-buttons-grid" id="stageButtons"></div>
           <button class="btn btn-secondary btn-sm" id="clearResults" style="width: 100%; margin-top: var(--nd-space-sm);">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -421,13 +421,13 @@
     </div>
 
     <!-- Console -->
-    <div class="console-container">
+    <div data-disclosure class="collapsed console-container" id="vesselboost-log">
       <div class="console-header">
-        <span class="console-title">Console</span>
+        <button type="button" class="console-title" data-disclosure-toggle>Technical log</button>
         <button class="console-clear" id="copyConsole" title="Copy to clipboard">Copy</button>
         <button class="console-clear" id="clearConsole">Clear</button>
       </div>
-      <div class="console-output" id="consoleOutput"></div>
+      <div class="console-output" id="consoleOutput" data-disclosure-panel></div>
     </div>
   </main>
 
@@ -435,8 +435,8 @@
   <footer class="app-footer">
     <span>VesselBoost <span id="footerVersion"></span></span>
     <span>Imaging data is processed locally in your browser and is not uploaded.</span>
-    <a href="../" style="color: var(--nd-color-text-dim);">More Neurodesk webapps</a>
-    <a href="https://github.com/neurodesk/webapps/tree/main/apps/vesselboost" target="_blank" style="color: var(--nd-color-text-dim);">GitHub</a>
+    <a data-neurodesk-shell-link href="../" style="color: var(--nd-color-text-dim);">More Neurodesk webapps</a>
+    <a data-neurodesk-shell-link href="https://github.com/neurodesk/webapps/tree/main/apps/vesselboost" target="_blank" style="color: var(--nd-color-text-dim);">GitHub</a>
   </footer>
 
 </div>
@@ -584,9 +584,7 @@
 
 <!-- Section toggle function -->
 <script>
-function toggleSection(section) {
-  section.classList.toggle('collapsed');
-}
+
 </script>
 
 <!-- COOP/COEP service worker for cross-origin isolation (enables multi-threaded WASM) -->

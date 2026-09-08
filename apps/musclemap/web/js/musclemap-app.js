@@ -1,3 +1,6 @@
+import { bindSectionDisclosures } from '@neurodesk/webapp-components/ui';
+bindSectionDisclosures(document);
+
 /**
  * MuscleMap - Browser-based whole-body muscle segmentation
  *

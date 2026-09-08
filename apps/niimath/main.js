@@ -15,6 +15,7 @@ mountImagingWorkspace({
   title: 'NiiMath',
   subtitle: 'Interactive browser-native neuroimaging maths',
   mark: 'N',
+  controlsContract: { about: '#aboutButton' },
 })
 
 // create niivue instance but don't setup the scene just yet
@@ -73,6 +74,7 @@ async function processImage(isOverlay) {
       setOverlayColor();
     }
     loadingCircle.classList.add('hidden')
+    document.getElementById('outputSection').open = true;
   } catch (error) {
     loadingCircle.classList.add('hidden')
     console.error(error)

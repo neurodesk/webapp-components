@@ -237,6 +237,7 @@ function refreshRunState() {
   const uni = byRole('UNI'), inv1 = byRole('INV1'), inv2 = byRole('INV2'), sa = byRole('SA2RAGE'), b1 = byRole('B1 map');
   const task = $('#taskSel').value;
   $('#regField').style.display = task === 'denoise' ? '' : 'none';
+  $('#parameterPanel').hidden = task === 'denoise';
   let ok = false, status = '', mode = null, label = 'Compute';
   if (task === 'denoise') {
     ok = !!(uni && inv1 && inv2);
@@ -253,7 +254,7 @@ function refreshRunState() {
     mode = sa ? 'sa2rage' : (b1 ? 'b1map' : null);
     ok = !!(uni && mode);
     label = 'Compute T1 map';
-    $('#saBlock').classList.toggle('hidden', mode === 'b1map');
+    $('#saBlock').classList.toggle('hidden', mode !== 'sa2rage');
     $('#b1Block').classList.toggle('hidden', mode !== 'b1map');
     status = ok
       ? `Ready: ${mode === 'sa2rage' ? 'SA2RAGE' : 'B1-map'} correction${inv2 ? '' : ' (no INV2 → mask from UNI)'}.`
@@ -475,6 +476,9 @@ function showTourStep(i) {
   tourStep = Math.max(0, Math.min(TOUR.length - 1, i));
   const s = TOUR[tourStep];
   const el = document.querySelector(s.sel);
+  for (let parent = el?.parentElement; parent; parent = parent.parentElement) {
+    if (parent instanceof HTMLDetailsElement && !parent.hidden) parent.open = true;
+  }
   const visible = !!(el && el.offsetParent !== null && el.getClientRects().length);
   $('#tourStepNo').textContent = `Step ${tourStep + 1} of ${TOUR.length}`;
   $('#tourTitle').textContent = s.title;
@@ -516,7 +520,7 @@ function validateBeforeRun(sel) {
     return `SA2RAGE must be a 2-volume (S1,S2) image, this one is ${sa.dims.slice(0, 4).join('×')}. Load the original 2-volume SA2RAGE.`;
   const bad = [];
   const chk = (names, vals) => names.forEach((n, i) => { if (!Number.isFinite(vals[i])) bad.push(n); });
-  chk(['TR', 'TI1', 'TI2', 'FA1', 'FA2', 'NZ1', 'NZ2', 'TRFLASH', 'invEff'], mpParams());
+  if (task !== 'denoise') chk(['TR', 'TI1', 'TI2', 'FA1', 'FA2', 'NZ1', 'NZ2', 'TRFLASH', 'invEff'], mpParams());
   if (mode === 'sa2rage') chk(['SA-TR', 'SA-TD1', 'SA-TD2', 'SA-FA1', 'SA-FA2', 'SA-NZ1', 'SA-NZ2', 'SA-TRFLASH', 'avgT1'], saParams());
   if (mode === 'b1map' && !Number.isFinite(num('#b1_refangle'))) bad.push('ref flip');
   if (task === 'denoise' && !Number.isFinite(num('#reg'))) bad.push('denoise strength');
@@ -529,7 +533,13 @@ $('#run').onclick = async () => {
   const { uni, inv1, inv2, sa, b1, mode, task } = sel;
   if ($('#run').disabled || !uni || running) return;
   const err = validateBeforeRun(sel);
-  if (err) { log('✖ ' + err); return; }
+  if (err) {
+    $('#status').textContent = err;
+    $('#parameterPanel').open = true;
+    logEl.closest('details').open = true;
+    log('✖ ' + err);
+    return;
+  }
   running = true;
   $('#run').disabled = true;
   $('#stop').style.display = '';
@@ -1551,3 +1561,5 @@ function calculateNextBidsEntry() {
 
 refreshRunState();
 log('Ready. Drop files or DICOM folders, pick a task, and Compute. All image processing runs locally, your images never leave the tab.');
+
+document.getElementById('aboutButton').addEventListener('click', () => document.getElementById('aboutDialog').showModal());

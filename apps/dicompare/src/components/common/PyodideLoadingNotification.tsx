@@ -5,7 +5,7 @@ import { usePyodide } from '../../contexts/PyodideContext';
 const PyodideLoadingNotification: React.FC = () => {
   const { status } = usePyodide();
   const [dismissed, setDismissed] = useState(false);
-  const [minimized, setMinimized] = useState(false);
+  const [minimized, setMinimized] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
 
   // Show success message briefly when ready
@@ -46,22 +46,25 @@ const PyodideLoadingNotification: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 max-w-[calc(100vw-2rem)]">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-3" data-runtime-status>
       <div className={`
         bg-surface-primary border border-border rounded-lg shadow-lg
         transition-all duration-200 ease-in-out
-        ${minimized ? 'w-auto' : 'w-80 max-w-full'}
+        w-full
       `}>
         {/* Header */}
         <div className="flex items-center justify-between px-3 py-2 border-b border-border">
           <div className="flex items-center gap-2">
             {getIcon()}
-            <span className="text-sm font-medium text-content-primary">
-              {minimized ? (status.isLoading ? `${Math.round(status.progress)}%` : 'Ready') : 'Python Environment'}
+            <span role="status" className="text-sm font-medium text-content-primary">
+              {status.error ? 'Analysis engine unavailable' : status.isLoading ? `Preparing analysis engine · ${Math.round(status.progress)}%` : 'Analysis engine ready'}
             </span>
           </div>
           <div className="flex items-center gap-1">
             <button
+              aria-label={minimized ? "Show loading details" : "Hide loading details"}
+              aria-expanded={!minimized}
+              aria-controls="runtime-status-details"
               onClick={() => setMinimized(!minimized)}
               className="p-1 text-content-tertiary hover:text-content-secondary rounded"
             >
@@ -69,6 +72,7 @@ const PyodideLoadingNotification: React.FC = () => {
             </button>
             {(status.isReady || status.error) && (
               <button
+                aria-label="Dismiss engine status"
                 onClick={() => setDismissed(true)}
                 className="p-1 text-content-tertiary hover:text-content-secondary rounded"
               >
@@ -80,7 +84,7 @@ const PyodideLoadingNotification: React.FC = () => {
 
         {/* Content - only show when not minimized */}
         {!minimized && (
-          <div className="px-3 py-2">
+          <div id="runtime-status-details" className="px-3 py-2">
             <p className="text-xs text-content-secondary mb-2">
               {getMessage()}
             </p>

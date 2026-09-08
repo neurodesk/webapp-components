@@ -23,6 +23,7 @@ test.beforeEach(async ({ page }) => {
 async function loadSurface(page) {
   await page.setInputFiles('#surfaceInput', join(FIXTURES, 'lh.pial'));
   await expect(page.locator('#statusText')).toContainText('163,842 vertices', { timeout: 90_000 });
+  for (const id of ['roiPanel', 'exportPanel']) await page.locator(`#${id} > summary`).click();
 }
 
 test('the shell mounts with the shared workspace and a link back to the catalog', async ({ page }) => {

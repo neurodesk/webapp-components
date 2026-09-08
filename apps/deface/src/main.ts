@@ -270,6 +270,7 @@ async function loadFromFile(file: File, asSource = true): Promise<void> {
   if (asSource) sourceFile = file
   // A freshly loaded source is NOT yet defaced; a deface result (asSource=false) is.
   hasDefaced = !asSource
+  $<HTMLDetailsElement>('outputSection').open = hasDefaced
   updateButtons()
 }
 
@@ -548,7 +549,7 @@ dicomInput.addEventListener('change', () => {
 }, ac)
 
 const methodDescriptions: Record<string, string> = {
-  allineate: 'Fast affine registration that removes facial voxels. This is the recommended starting point.',
+  allineate: 'Fast affine registration to remove facial voxels.',
   allineate_robustfov: 'Crops neck and lower slices before fast affine registration. Use this when the standard fit includes too much neck.',
   allineate_hel: 'Uses a slower, exhaustive Hellinger registration for difficult scans where the fast fit is not accurate enough.',
   allineate_hel_robustfov: 'Combines the neck crop with exhaustive Hellinger registration. This is the slowest affine option.',

@@ -132,14 +132,14 @@
           <output id="activeLevel" hidden aria-hidden="true"></output>
         </section>
 
-        <section class="control-panel" aria-labelledby="view-heading">
-          <div class="panel-heading compact">
+        <details class="nd-workflow-disclosure control-panel" aria-labelledby="view-heading" id="navigationPanel">
+          <summary class="panel-heading compact">
             <span class="panel-number" aria-hidden="true">02</span>
             <div>
               <h2 id="view-heading">Navigate</h2>
               <p>Change the layout, scale, and center of the visible field.</p>
             </div>
-          </div>
+          </summary>
 
           <label class="field" for="layout">
             <span>Layout</span>
@@ -201,16 +201,16 @@
           <small class="zoom-level-help" id="axialSliceHelp">
             Use the slider or arrow keys to move through axial slices.
           </small>
-        </section>
+        </details>
 
-        <section class="control-panel" aria-labelledby="display-heading">
-          <div class="panel-heading compact">
+        <details class="nd-workflow-disclosure control-panel" aria-labelledby="display-heading" id="displayPanel">
+          <summary class="panel-heading compact">
             <span class="panel-number" aria-hidden="true">03</span>
             <div>
               <h2 id="display-heading">Display</h2>
               <p>Tune contrast and overlays for the active volume.</p>
             </div>
-          </div>
+          </summary>
 
           <label class="field" for="colormap">
             <span>Colour map</span>
@@ -290,16 +290,16 @@
             <label><input id="showCrosshair" type="checkbox" checked /> Crosshair</label>
             <label><input id="showScaleBar" type="checkbox" checked /> Scale bar</label>
           </div>
-        </section>
+        </details>
 
-        <section class="control-panel" aria-labelledby="tools-heading">
-          <div class="panel-heading compact">
+        <details class="nd-workflow-disclosure control-panel" aria-labelledby="tools-heading" id="toolsPanel">
+          <summary class="panel-heading compact">
             <span class="panel-number" aria-hidden="true">04</span>
             <div>
               <h2 id="tools-heading">Measure &amp; export</h2>
               <p>Measure in slice views or save the current volume crop.</p>
             </div>
-          </div>
+          </summary>
 
           <div class="field pointer-tool-field">
             <span>Pointer tool</span>
@@ -359,7 +359,7 @@
           />
           <output id="shareStatus" class="download-status" role="status" aria-live="polite" hidden></output>
           <output id="downloadStatus" class="download-status" role="status" aria-live="polite" hidden></output>
-        </section>
+        </details>
 
         <details class="control-panel advanced-panel">
           <summary>Advanced</summary>

@@ -1,3 +1,6 @@
+import { bindSectionDisclosures } from '@neurodesk/webapp-components/ui';
+bindSectionDisclosures(document);
+
 import { SimpleFileIOController } from '@neurodesk/webapp-components/file-io';
 import { ViewerController } from '@neurodesk/webapp-components';
 import { CalmarPipeline } from './controllers/CalmarPipeline.js';
@@ -1416,6 +1419,7 @@ export class LesionNetworkMappingApp {
     const summary = summarizeAtlasOverlap(parcelResult, atlas, atlasOption);
     const networkSizes = computeLabelSizes(atlas.data, labelMap);
     this.overlapResult = { parcelResult, summary, atlas, networkSizes, atlasOption };
+    document.getElementById('resultsSection').classList.remove('collapsed');
     this.showAtlasCoverageNote(parcelResult.voxelsOutsideAtlas, parcelResult.totalLesionVoxels);
 
     this.renderDirectOverlapTable();
@@ -3727,6 +3731,7 @@ export class LesionNetworkMappingApp {
   // (the user usually wants to re-run on the same input) unless `full`
   // is set.
   clearResults({ full = false } = {}) {
+    document.getElementById('resultsSection').classList.add('collapsed');
     this.overlapResult = null;
     this.affectedNetworkResult = null;
     this.brainmaskFile = null;

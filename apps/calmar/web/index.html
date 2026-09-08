@@ -155,12 +155,12 @@
     <div class="sidebar-scroll">
 
       <!-- 1. INPUT — choose a structural T1 or an atlas-aligned lesion mask. -->
-      <section class="sidebar-section" id="stepLoadSection">
-        <h2 class="section-title">
+      <section class="sidebar-section" id="stepLoadSection" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           1. Input
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <div class="param-group">
             <div class="param-label-row">
               <label class="param-label" for="structuralFileInput">Structural T1 (.nii / .nii.gz)</label>
@@ -185,17 +185,17 @@
 
       <!-- 2. RUN — primary one-click action. Per-stage controls hidden in
            Advanced disclosure to avoid overwhelming clinicians. -->
-      <section class="sidebar-section" id="stepLesionSection">
-        <h2 class="section-title">
+      <section class="sidebar-section" id="stepLesionSection" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           2. Run analysis
-          <button type="button" class="help-icon" aria-label="Run analysis help">i
+
+        </button><button type="button" class="help-icon" aria-label="Run analysis help">i
             <span class="help-popover" role="tooltip">
               Runs the selected chain: brain extraction, prealign when needed, lesion segmentation, registration, atlas overlap, FC map, and thresholding.
             </span>
-          </button>
-        </h2>
-        <div class="section-content">
+          </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <div class="param-group">
             <label class="param-label" for="atlasSelect">Atlas</label>
             <select id="atlasSelect" class="select-input">
@@ -263,12 +263,12 @@
 
       <!-- 3. RESULTS — overlap table, threshold panel, primary downloads.
            Intermediate masks (brain / lesion) hidden under Advanced. -->
-      <section class="sidebar-section" id="resultsSection">
-        <h2 class="section-title">
+      <section class="sidebar-section collapsed" id="resultsSection" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-7"/></svg>
           3. Results
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <div class="results-filter-controls">
             <div class="param-row">
               <label for="networkThresholdMinCluster">Min cluster size (voxels)</label>
@@ -586,8 +586,8 @@
   <footer class="app-footer">
     <span>CALMaR <span id="footerVersion"></span></span>
     <span>Imaging data is processed locally in your browser and is not uploaded.</span>
-    <a href="../" style="color: var(--nd-color-text-dim);">More Neurodesk webapps</a>
-    <a href="https://github.com/neurodesk/webapps/tree/main/apps/calmar" target="_blank" style="color: var(--nd-color-text-dim);">GitHub</a>
+    <a data-neurodesk-shell-link href="../" style="color: var(--nd-color-text-dim);">More Neurodesk webapps</a>
+    <a data-neurodesk-shell-link href="https://github.com/neurodesk/webapps/tree/main/apps/calmar" target="_blank" style="color: var(--nd-color-text-dim);">GitHub</a>
   </footer>
 
 </div>

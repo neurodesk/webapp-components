@@ -258,6 +258,7 @@ async function runSegment(file: File): Promise<void> {
   if (isCleanedUp) return // a job queued before cleanup() (HMR) must not touch a dead nv
   spin(true)
   busy = true
+  $<HTMLDetailsElement>('resultsSection').open = false
   renderQc(qcBody, null) // clear any prior QC while we recompute
   const t0 = performance.now()
   try {
@@ -322,12 +323,14 @@ async function runSegment(file: File): Promise<void> {
     try {
       setStatus('Computing image-quality metrics (niimath)…')
       await computeQc(bytes)
+      $<HTMLDetailsElement>('resultsSection').open = true
       if (isCleanedUp) return
       setStatus(`Segmentation + QC complete (${Math.round(performance.now() - t0)} ms)`)
     } catch (err) {
       console.warn('QC failed', err)
       resetNiimathWorker()
       renderQc(qcBody, null)
+      $<HTMLDetailsElement>('resultsSection').open = true
       setStatus(`Segmented — QC unavailable: ${err instanceof Error ? err.message : String(err)}`)
     }
   } finally {

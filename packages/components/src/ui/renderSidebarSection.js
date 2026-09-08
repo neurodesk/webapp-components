@@ -1,20 +1,21 @@
 import { createElement } from '../core/dom.js';
 
 export function renderSidebarSection(config = {}, doc = globalThis.document) {
-  const root = createElement('section', {
-    className: `nd-sidebar-section ${config.collapsed ? 'collapsed' : ''} ${config.disabled ? 'nd-step-disabled' : ''}`.trim(),
+  const root = createElement('details', {
+    className: `nd-sidebar-section ${config.disabled ? 'nd-step-disabled' : ''}`.trim(),
+    open: !config.collapsed,
     id: config.id,
     ownerDocument: doc
   });
-  const title = createElement('h2', { className: 'nd-section-title', text: config.title || '', ownerDocument: doc });
+  const title = createElement('summary', { className: 'nd-section-title', text: config.title || '', ownerDocument: doc });
   const content = createElement('div', { className: 'nd-section-content', ownerDocument: doc });
+  content.inert = Boolean(config.disabled);
   if (config.content?.nodeType) content.appendChild(config.content);
   else if (Array.isArray(config.content)) content.append(...config.content.filter(Boolean));
   else if (config.content) content.textContent = String(config.content);
   if (config.badge != null) {
     title.appendChild(createElement('span', { className: `nd-step-badge ${config.badgeClassName || ''}`.trim(), text: config.badge, ownerDocument: doc }));
   }
-  title.addEventListener('click', () => root.classList.toggle('collapsed'));
   root.append(title, content);
   return {
     root,
@@ -22,6 +23,7 @@ export function renderSidebarSection(config = {}, doc = globalThis.document) {
     content,
     setDisabled(disabled) {
       root.classList.toggle('nd-step-disabled', Boolean(disabled));
+      content.inert = Boolean(disabled);
     },
     setBadge(text, className = '') {
       let badge = title.querySelector('.nd-step-badge');

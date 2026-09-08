@@ -1,3 +1,6 @@
+import { bindSectionDisclosures } from '@neurodesk/webapp-components/ui';
+bindSectionDisclosures(document);
+
 /**
  * SeedSeg - Browser-based prostate gold seed segmentation
  *

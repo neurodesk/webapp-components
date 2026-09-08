@@ -150,12 +150,12 @@
     <div class="sidebar-scroll">
 
       <!-- Input Section -->
-      <section class="sidebar-section">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section" data-disclosure id="musclemap-section-1">
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           Input
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <div class="file-upload-group">
             <div class="upload-group">
               <div class="file-upload-zone file-drop" id="fileDropZone">
@@ -176,12 +176,12 @@
       </section>
 
       <!-- Inference Settings -->
-      <section class="sidebar-section">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section collapsed" data-disclosure id="musclemap-section-2">
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           Inference Settings
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <!-- Model -->
           <div class="param-group">
             <label class="param-label" for="modelSelect">Model</label>
@@ -244,12 +244,12 @@
       </section>
 
       <!-- Run Section -->
-      <section class="sidebar-section">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section" data-disclosure id="musclemap-section-3">
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           Run
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <button class="btn btn-primary" id="runSegmentation" disabled>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             Run Segmentation
@@ -258,12 +258,12 @@
       </section>
 
       <!-- Postprocessing Section -->
-      <section class="sidebar-section hidden" id="postprocessingSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section hidden" id="postprocessingSection" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
           Postprocessing
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <div class="param-group hidden" id="consolidateGroup">
             <button class="btn btn-secondary btn-sm" id="consolidateSegmentations" type="button" style="width: 100%;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7h12"/><path d="M8 12h12"/><path d="M8 17h12"/><path d="M3 7h.01"/><path d="M3 12h.01"/><path d="M3 17h.01"/></svg>
@@ -331,12 +331,12 @@
       </section>
 
       <!-- Results Section -->
-      <section class="sidebar-section hidden" id="resultsSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section hidden" id="resultsSection" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           Results
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <div class="stage-buttons-grid" id="stageButtons"></div>
           <button class="btn btn-secondary btn-sm" id="clearResults" style="width: 100%; margin-top: var(--nd-space-sm);">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -459,13 +459,13 @@
     </div>
 
     <!-- Console -->
-    <div class="console-container">
+    <div data-disclosure class="collapsed console-container" id="musclemap-log">
       <div class="console-header">
-        <span class="console-title">Console</span>
+        <button type="button" class="console-title" data-disclosure-toggle>Technical log</button>
         <button class="console-clear" id="copyConsole" title="Copy to clipboard">Copy</button>
         <button class="console-clear" id="clearConsole">Clear</button>
       </div>
-      <div class="console-output" id="consoleOutput"></div>
+      <div class="console-output" id="consoleOutput" data-disclosure-panel></div>
     </div>
   </main>
 
@@ -473,8 +473,8 @@
   <footer class="app-footer">
     <span>MuscleMap <span id="footerVersion"></span></span>
     <span>Imaging data is processed locally in your browser and is not uploaded.</span>
-    <a href="../" style="color: var(--nd-color-text-dim);">More Neurodesk webapps</a>
-    <a href="https://github.com/neurodesk/webapps/tree/main/apps/musclemap" target="_blank" style="color: var(--nd-color-text-dim);">GitHub</a>
+    <a data-neurodesk-shell-link href="../" style="color: var(--nd-color-text-dim);">More Neurodesk webapps</a>
+    <a data-neurodesk-shell-link href="https://github.com/neurodesk/webapps/tree/main/apps/musclemap" target="_blank" style="color: var(--nd-color-text-dim);">GitHub</a>
   </footer>
 
 </div>
@@ -618,9 +618,7 @@
 
 <!-- Section toggle function -->
 <script>
-function toggleSection(section) {
-  section.classList.toggle('collapsed');
-}
+
 </script>
 
 <!-- COOP/COEP service worker for cross-origin isolation (enables multi-threaded WASM) -->

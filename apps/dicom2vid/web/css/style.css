@@ -194,3 +194,6 @@ label.check.inline { margin: 0; }
 footer { max-width: 1080px; margin: 0 auto; padding: 14px 20px; color: var(--dim); font-size: 12px; }
 footer p { margin: 4px 0; }
 footer a { color: var(--accent); }
+
+#dropZone { padding:16px; }
+#aboutDialog, #privacyDialog { max-width:min(760px,calc(100vw - 24px)); max-height:calc(100dvh - 24px); overflow:auto; }

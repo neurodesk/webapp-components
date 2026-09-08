@@ -240,16 +240,16 @@
     <aside class="app-sidebar" id="sidebar">
       <div class="sidebar-scroll">
       <!-- File Upload Section -->
-      <section class="sidebar-section" id="inputSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section" id="inputSection" data-disclosure data-disclosure-group="workflow">
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="17 8 12 3 7 8"/>
             <line x1="12" y1="3" x2="12" y2="15"/>
           </svg>
           Input Files
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
 
         <!-- Single unified drop zone -->
         <div class="file-upload-group">
@@ -301,15 +301,15 @@
       </section>
 
       <!-- Input Parameters Section -->
-      <section class="sidebar-section collapsed" id="paramsSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section collapsed" id="paramsSection" data-disclosure data-disclosure-group="workflow">
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
           Input Parameters
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
         <!-- Field Map Units (shown for totalField and localField modes) -->
         <div class="param-group input-param-fieldmap" id="fieldMapUnitsGroup" style="display: none;">
           <label class="param-label" for="fieldMapUnits">Field Map Units <span class="info-icon">i<span class="info-tooltip">Units of the uploaded field map. Must match the data for correct susceptibility scaling.</span></span></label>
@@ -338,14 +338,14 @@
       </section>
 
       <!-- Masking Section -->
-      <section class="sidebar-section collapsed" id="maskSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section collapsed" id="maskSection" data-disclosure data-disclosure-group="workflow">
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
           </svg>
           Masking
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
 
         <!-- Masking input source selection -->
         <div class="param-group">
@@ -440,9 +440,9 @@
         </div>
 
         <!-- Morphological Operations (collapsible subsection) -->
-        <div class="mask-operations subsection collapsed" id="maskOperations" style="display: none;">
-          <div class="subsection-title" onclick="this.parentElement.classList.toggle('collapsed')">Refine Mask</div>
-          <div class="subsection-content">
+        <div class="mask-operations subsection collapsed" id="maskOperations" style="display: none;" data-disclosure>
+          <button type="button" class="subsection-title" data-disclosure-toggle>Refine Mask</button>
+          <div class="subsection-content" data-disclosure-panel>
             <div class="mask-op-buttons">
               <button class="btn btn-secondary btn-sm" id="fillHoles" title="Fill holes inside the mask">
                 Fill Holes
@@ -496,15 +496,15 @@
       </section>
 
       <!-- Supplementary Images Section -->
-      <section class="sidebar-section collapsed" id="swiSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section collapsed" id="swiSection" data-disclosure data-disclosure-group="workflow">
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
           Supplementary Images
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <h5 style="margin: 0 0 var(--nd-space-xs); font-size: 0.8rem; color: var(--nd-color-text-muted);">SWI</h5>
           <div style="display: flex; gap: 8px;">
             <button class="btn btn-secondary" id="openSwiSettings" style="flex: 1;">
@@ -533,15 +533,15 @@
       </section>
 
       <!-- Pipeline Section -->
-      <section class="sidebar-section collapsed" id="pipelineSection">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section collapsed" id="pipelineSection" data-disclosure data-disclosure-group="workflow">
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
           QSM Pipeline
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
           <div id="sidebarPipelineDropdowns">
             <div class="param-group" id="sidebarMethodGroup">
               <label class="param-label">Pipeline <span class="info-icon">i<span class="info-tooltip">Overall QSM reconstruction strategy. Each pipeline combines different processing steps to produce a susceptibility map.</span></span></label>
@@ -611,15 +611,15 @@
       </section>
 
       <!-- Results Section - dynamically populated -->
-      <section class="sidebar-section hidden collapsed" id="stage-buttons">
-        <h2 class="section-title" onclick="toggleSection(this.parentElement)">
+      <section class="sidebar-section hidden collapsed" id="stage-buttons" data-disclosure>
+        <h2 class="section-title"><button type="button" class="section-toggle" data-disclosure-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
           Results
-        </h2>
-        <div class="section-content">
+        </button></h2>
+        <div class="section-content" data-disclosure-panel>
         <!-- Stage buttons are dynamically added here -->
         <div class="stage-buttons-grid" id="dynamicStageButtons"></div>
         <button class="btn btn-secondary btn-sm" id="clearAllResults" style="width: 100%; margin-top: var(--nd-space-xs);">
@@ -768,15 +768,15 @@
       </div>
 
       <!-- Console -->
-      <div class="console-container" id="console">
+      <div data-disclosure class="collapsed console-container" id="console">
         <div class="console-header">
-          <span class="console-title">Console</span>
+          <button type="button" class="console-title" data-disclosure-toggle>Technical log</button>
           <div style="display: flex; gap: 8px; margin-left: auto;">
             <button class="console-clear" id="copyConsole">Copy</button>
             <button class="console-clear" id="clearConsole">Clear</button>
           </div>
         </div>
-        <div class="console-output" id="consoleOutput">
+        <div class="console-output" id="consoleOutput" data-disclosure-panel>
         </div>
       </div>
     </main>
@@ -2329,28 +2329,7 @@
 
   <!-- Additional UI Interactions -->
   <script>
-    // Accordion toggle for sidebar sections
-    function toggleSection(section) {
-      const wasCollapsed = section.classList.contains('collapsed');
-      const isResultsSection = section.id === 'stage-buttons';
 
-      // Close all other sections (accordion behavior), except Results which can stay open
-      document.querySelectorAll('.sidebar-section:not(.hidden)').forEach(s => {
-        const isResults = s.id === 'stage-buttons';
-        // Don't close Results section when opening other sections
-        // Don't close other sections when toggling Results
-        if (s !== section && !s.classList.contains('collapsed') && !isResults && !isResultsSection) {
-          s.classList.add('collapsed');
-        }
-      });
-
-      // Toggle the clicked section
-      if (wasCollapsed) {
-        section.classList.remove('collapsed');
-      } else {
-        section.classList.add('collapsed');
-      }
-    }
 
     // View tab switching
     document.querySelectorAll('.view-tab').forEach(tab => {

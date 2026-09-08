@@ -5268,6 +5268,7 @@ async function performReloadVolume(
   taskSignal: AbortSignal,
 ): Promise<void> {
   if (!nv) return
+  const firstVolume = !activeSource
   const targetLayerId = activeStainLayerId
   hideFallback()
   setDownloadStatus('')
@@ -5353,6 +5354,9 @@ async function performReloadVolume(
       syncActiveLodIndicator(chunkPlan)
     }
     restoreView(view)
+    if (firstVolume) {
+      for (const panel of document.querySelectorAll<HTMLDetailsElement>('#navigationPanel, #displayPanel')) panel.open = true
+    }
     if (
       targetLayerId &&
       chunkedVolume &&

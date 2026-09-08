@@ -37,14 +37,14 @@
         <option value="mindgrab8">mindgrab 8mm border (WebGPU)</option>
         <option value="mindgrab_robust8">mindgrab robustfov + 8mm (WebGPU)</option>
       </select>
-      <p id="methodDescription" class="option-description">Fast affine registration that removes facial voxels. This is the recommended starting point.</p>
+      <p id="methodDescription" class="option-description">Fast affine registration to remove facial voxels.</p>
       <button id="applyBtn">Apply</button>
     </section>
-    <section class="control-section" aria-labelledby="outputHeading">
-      <h2 id="outputHeading">3. Output</h2>
+    <details class="nd-workflow-disclosure control-section" aria-labelledby="outputHeading" id="outputSection">
+      <summary class="nd-section-title">3. Output</summary>
       <p>Review the result in the viewer before downloading the defaced NIfTI image.</p>
       <button disabled id="saveBtn">Save Image</button>
-    </section>
+    </details>
     <div class="sidebar-actions">
       <button id="aboutBtn">About</button>
     </div>

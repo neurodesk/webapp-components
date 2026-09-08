@@ -25,7 +25,8 @@ await runVitePreviewSmoke({
   run: async ({ page, fail, expectWebGpuFallback, allowConsoleError }) => {
     // 1. QC panel starts empty — no metrics until the first segmentation runs.
     const qcText = () => page.$eval('#qcBody', (el) => el.textContent || '')
-    if (!(await page.isVisible('#qcBody .qc-empty'))) await fail('QC panel not empty on load', page)
+    if (await page.locator('#resultsSection').evaluate(el => el.open)) await fail('Empty results should start collapsed', page)
+    if (!/Metrics appear/.test(await qcText())) await fail('QC panel not empty on load', page)
 
     // GitHub's Linux runners do not expose a usable WebGPU adapter. Verify that the
     // production app reaches its intended, actionable fallback instead of hanging or

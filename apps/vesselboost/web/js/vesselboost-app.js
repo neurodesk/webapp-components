@@ -1,3 +1,6 @@
+import { bindSectionDisclosures } from '@neurodesk/webapp-components/ui';
+bindSectionDisclosures(document);
+
 /**
  * VesselBoost - Browser-based blood vessel segmentation
  *

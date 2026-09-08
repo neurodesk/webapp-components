@@ -1,6 +1,6 @@
 import "@neurodesk/webapp-components/styles/imaging-workspace.css";
 import { mountImagingWorkspace } from "@neurodesk/webapp-components/core/mount-imaging-workspace";
-import { ConsoleOutput, ProgressManager } from "@neurodesk/webapp-components/ui";
+import { ConsoleOutput, ProgressManager, renderSidebarSection } from "@neurodesk/webapp-components/ui";
 import { APP } from "./config.js";
 
 const workspace = mountImagingWorkspace({
@@ -10,6 +10,11 @@ const workspace = mountImagingWorkspace({
   title: APP.id,
   subtitle: "Browser-native Neurodesk webapp",
 });
+const controls = document.getElementById("controls");
+controls.append(
+  renderSidebarSection({ title: "Run", content: document.getElementById("runButton") }).root,
+  renderSidebarSection({ title: "Advanced settings", collapsed: true, content: "Use the defaults to start." }).root,
+);
 const progress = new ProgressManager({
   barElement: document.getElementById("progressBar"),
   textElement: document.getElementById("statusText"),

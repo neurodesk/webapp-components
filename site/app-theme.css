@@ -434,6 +434,11 @@
   display: none !important;
 }
 
+[data-neurodesk-app]:has(.nd-app-bar) [data-neurodesk-control],
+[data-neurodesk-shell-link][hidden] {
+  display: none !important;
+}
+
 .nd-app-bar {
   box-sizing: border-box !important;
   display: flex !important;
@@ -679,6 +684,14 @@
     flex-shrink: 1 !important;
     white-space: normal !important;
     font-size: 18px !important;
+  }
+
+  .nd-app-bar__version {
+    flex-shrink: 1 !important;
+    min-width: 0 !important;
+    max-width: 60% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 
   .nd-app-bar__navigation {

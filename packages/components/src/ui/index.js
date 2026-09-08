@@ -8,5 +8,6 @@ export * from './MetricsSummary.js';
 export * from './CommandPreview.js';
 export * from './DicompareReportRenderer.js';
 export * from './renderSidebarSection.js';
+export * from './bindSectionDisclosures.js';
 export * from './renderViewerToolbar.js';
 export * from './WindowControls.js';

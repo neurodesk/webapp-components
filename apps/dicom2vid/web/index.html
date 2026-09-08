@@ -23,13 +23,9 @@
       <a href="../" class="header-link" title="More Neurodesk web apps">More Apps</a>
       <button class="tutbtn" id="tutorialBtn" type="button" title="Step-by-step walkthrough of the app.">Tutorial</button>
     </div>
-  </header>
+  <button type="button" id="aboutButton" data-neurodesk-control="about">About</button><button type="button" id="privacyButton" data-neurodesk-control="privacy">Privacy</button></header>
 
-  <div class="intro">
-    <p><strong>Runs in your browser.</strong> Your images and all processing stay on your computer and
-      are never uploaded; the video is made right here in this tab. On Neurodesk hosting, Google Analytics
-      records page views only unless Do Not Track or Global Privacy Control is enabled; it never sees your images.</p>
-  </div>
+
 
   <main>
     <div class="col">
@@ -37,9 +33,7 @@
         <h2>Input</h2>
         <div id="dropZone">
           <p><strong>Drop a DICOM folder here.</strong></p>
-          <p class="small">A full DICOMDIR export (a CD/DVD folder with a DICOMDIR index and
-            extensionless files) works too, as does an entire BIDS subject-session directory, or a
-            single .nii / .nii.gz / .mgz file.</p>
+          <p class="small">DICOM folders, DICOMDIR exports, BIDS sessions, NIfTI and MGZ files.</p>
           <div class="pick-row">
             <label class="btn secondary">Choose folder
               <input id="pickDir" type="file" webkitdirectory directory multiple hidden>
@@ -48,7 +42,7 @@
               <input id="pickFiles" type="file" multiple hidden>
             </label>
           </div>
-          <p class="small">Nothing is uploaded. Compressed DICOM (JPEG/JPEG2000) is not supported; convert it locally first.</p>
+          <p class="small">Files stay in your browser. Convert compressed DICOM locally before importing.</p>
         </div>
       </div>
 
@@ -175,18 +169,21 @@
     </div>
   </main>
 
-  <section class="credits">
+  <dialog class="nd-app-dialog" id="aboutDialog"><div class="nd-app-dialog__panel"><h2>About MRI2VID</h2>
     <div class="card">
       <h2>Credits</h2>
       <p>Developed by <a href="https://about.uq.edu.au/experts/30967" target="_blank" rel="noopener noreferrer">Thomas Shaw</a>, University of Queensland, in part with Claude.</p>
       <p>Based on <a href="https://github.com/neurodesk/webapps/tree/main/apps/qsmbly" target="_blank" rel="noopener noreferrer">QSMbly</a>, Ashley Stewart's in-browser quantitative susceptibility mapping tool.</p>
       <p>Open source under the BSD 3-Clause license in the <a href="https://github.com/neurodesk/webapps/tree/main/apps/dicom2vid" target="_blank" rel="noopener noreferrer">Neurodesk webapps monorepo</a>.</p>
     </div>
-  </section>
+  <p>Based on <code>MRI2vid.py</code>.</p><form method="dialog"><button class="nd-app-dialog__close">Close</button></form></div></dialog>
+<dialog class="nd-app-dialog" id="privacyDialog"><div class="nd-app-dialog__panel"><h2>Privacy</h2>
+    <p><strong>Runs in your browser.</strong> Your images and all processing stay on your computer and
+      are never uploaded; the video is made right here in this tab. On Neurodesk hosting, Google Analytics
+      records page views only unless Do Not Track or Global Privacy Control is enabled; it never sees your images.</p>
+  <form method="dialog"><button class="nd-app-dialog__close">Close</button></form></div></dialog>
 
-  <footer>
-    <p>Based on <code>MRI2vid.py</code>. Runs in your browser; your images never leave it. Neurodesk hosting uses page-view-only analytics and respects browser privacy signals.</p>
-  </footer>
+
 
   <!-- Preview modal: the actual video frames, reconstruction choice, and rotation. -->
   <div id="previewModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Video preview">

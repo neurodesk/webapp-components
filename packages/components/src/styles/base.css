@@ -39,3 +39,52 @@
 html, body { height: 100%; overflow: hidden; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 body { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--nd-color-bg); color: var(--nd-color-text); line-height: 1.5; }
+
+/* Class-driven workflow sections retain their app-owned state and controls. */
+[data-disclosure] > .section-title:has(> [data-disclosure-toggle]) { padding: 0; }
+[data-disclosure] > .section-title::after { display: none; }
+[data-disclosure-toggle] {
+  display: flex;
+  align-items: center;
+  gap: var(--nd-space-sm);
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: var(--nd-space-md);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+[data-disclosure-toggle]::after { content: '▾'; margin-left: auto; }
+[data-disclosure-toggle][aria-expanded='false']::after { transform: rotate(-90deg); }
+[data-disclosure-toggle]:focus-visible { outline: 2px solid var(--nd-color-primary); outline-offset: -2px; }
+[data-disclosure-panel][hidden] { display: none !important; }
+[data-disclosure] > [data-disclosure-panel] { max-height: none; }
+@media (pointer: coarse) {
+  [data-disclosure-toggle] { min-height: 44px; }
+}
+
+.nd-workflow-disclosure { width: 100%; min-width: 0; box-sizing: border-box; }
+.nd-workflow-disclosure > summary.panel-heading { grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; }
+.nd-imaging-controls > .control-panel { width: 100%; box-sizing: border-box; }
+.nd-workflow-disclosure > summary { cursor: pointer; list-style: none; }
+.nd-workflow-disclosure > summary::-webkit-details-marker { display: none; }
+.nd-workflow-disclosure > summary::after { content: '▾'; margin-left: auto; }
+.nd-workflow-disclosure:not([open]) > summary::after { content: '▸'; }
+.nd-workflow-disclosure > summary:focus-visible { outline: 2px solid var(--nd-color-primary); outline-offset: 2px; }
+.nd-workflow-disclosure:not([open]) > summary { margin-bottom: 0; }
+.nd-workflow-disclosure:not([open]) > summary p { display: none; }
+@media (pointer: coarse) {
+  .nd-workflow-disclosure > summary { min-height: 44px; align-content: center; }
+}
+
+[data-disclosure].console-container.collapsed { height:auto; flex:0 0 auto; }
+.console-header > [data-disclosure-toggle] { width:auto; padding:0; min-height:28px; }
+@media (pointer:coarse) { .console-header > [data-disclosure-toggle] { min-height:44px; } }

@@ -72,13 +72,14 @@ const UnifiedWorkspacePage: React.FC = () => {
           <CitationModal isOpen={showCitation} onClose={() => setShowCitation(false)} />
           <PrivacyModal isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />
 
+          <PyodideLoadingNotification />
+
           {/* Content */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <UnifiedWorkspace />
           </div>
 
-          {/* Pyodide Loading Notification */}
-          <PyodideLoadingNotification />
+
         </div>
       </WorkspaceProviders>
     </PyodideProvider>

@@ -60,6 +60,7 @@ export async function verifyMobileMeasurement(page, origin) {
   });
   await page.goto(`${origin}/zarro/?source=custom&url=${encodeURIComponent(origin + '/mobile-fixture/')}&layout=34`);
   await expect(page.locator('#interactionTool')).toBeEnabled({ timeout: 20000 });
+  await page.locator('#toolsPanel > summary').tap();
   await page.locator('#interactionTool').tap();
   const canvas = page.locator('.nvslide-pane-main canvas');
   await canvas.scrollIntoViewIfNeeded();

@@ -31,7 +31,7 @@ export function vitePreviewPlaywrightConfig({
     webServer: {
       command: `pnpm build && pnpm preview --port ${port} --strictPort --host ${host}`,
       url: baseURL,
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: false,
       timeout: 180_000
     },
     use: {
