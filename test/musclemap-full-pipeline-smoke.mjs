@@ -72,6 +72,10 @@ export async function verifyMuscleMapFullPipeline(page, appUrl, { timeout = 180_
     if (await page.locator('#enterAppButton').isVisible()) {
       await page.locator('#enterAppButton').click();
     }
+    const settings = page.locator('[data-disclosure]').filter({ has: page.locator('#modelSelect') });
+    if (await settings.locator('[data-disclosure-toggle]').getAttribute('aria-expanded') === 'false') {
+      await settings.locator('[data-disclosure-toggle]').click();
+    }
     await page.locator('#modelSelect').selectOption('musclemap-wholebody-v1.4');
     await page.locator('#overlapSelect').selectOption('0');
     await page.locator('#chunkSizeSelect').selectOption('1');
