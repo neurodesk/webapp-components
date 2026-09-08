@@ -1,7 +1,7 @@
 import { bindSectionDisclosures } from '@neurodesk/webapp-components/ui';
 bindSectionDisclosures(document);
 
-import { SimpleFileIOController } from '@neurodesk/webapp-components/file-io';
+import { SimpleFileIOController, readSingleImage } from '@neurodesk/webapp-components/file-io';
 import { ViewerController } from '@neurodesk/webapp-components';
 import { CalmarPipeline } from './controllers/CalmarPipeline.js';
 import { MaskDrawingController } from './controllers/MaskDrawingController.js';
@@ -379,6 +379,13 @@ export class LesionNetworkMappingApp {
     this.nv.drawScene();
   }
 
+  readScanInput(files) {
+    return readSingleImage(files, {
+      moduleUrl: new URL('../dcm2niix/index.js', import.meta.url).href,
+      updateOutput: message => this.updateOutput(message)
+    });
+  }
+
   bindEvents() {
     const structuralInput = document.getElementById('structuralFileInput');
     if (structuralInput) {
@@ -390,16 +397,14 @@ export class LesionNetworkMappingApp {
     const deepIslesDwiInput = document.getElementById('deepIslesDwiFileInput');
     if (deepIslesDwiInput) {
       deepIslesDwiInput.addEventListener('change', (event) => {
-        const file = event.target.files?.[0] || null;
-        this.setDeepIslesInput('dwi', file)
+        this.readScanInput(event.target.files).then(file => file && this.setDeepIslesInput('dwi', file))
           .catch(err => this.updateOutput(`DeepISLES DWI/TRACE input failed: ${err.message}`));
       });
     }
     const deepIslesAdcInput = document.getElementById('deepIslesAdcFileInput');
     if (deepIslesAdcInput) {
       deepIslesAdcInput.addEventListener('change', (event) => {
-        const file = event.target.files?.[0] || null;
-        this.setDeepIslesInput('adc', file)
+        this.readScanInput(event.target.files).then(file => file && this.setDeepIslesInput('adc', file))
           .catch(err => this.updateOutput(`DeepISLES ADC input failed: ${err.message}`));
       });
     }
@@ -482,12 +487,10 @@ export class LesionNetworkMappingApp {
     }
     if (manualMaskInput) {
       manualMaskInput.addEventListener('change', (event) => {
-        const file = event.target.files?.[0] || null;
-        if (!file) return;
-        this.startUploadedLesionMaskReview(file)
+        const name = event.target.files?.[0]?.name || 'selected files';
+        this.readScanInput(event.target.files).then(file => file && this.startUploadedLesionMaskReview(file))
           .catch(err => this.updateOutput(
-            `Manual mask input failed for ${file.name || 'selected file'}: ` +
-            `${err.message}. Choose a NIfTI mask file (.nii or .nii.gz).`
+            `Manual mask input failed for ${name}: ${err.message}. Choose a NIfTI mask file (.nii or .nii.gz) or a DICOM mask series.`
           ))
           .finally(() => { event.target.value = ''; });
       });

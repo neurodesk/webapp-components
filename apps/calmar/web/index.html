@@ -163,22 +163,22 @@
         <div class="section-content" data-disclosure-panel>
           <div class="param-group">
             <div class="param-label-row">
-              <label class="param-label" for="structuralFileInput">Structural T1 (.nii / .nii.gz)</label>
+              <label class="param-label" for="structuralFileInput">Structural T1 (NIfTI / DICOM)</label>
               <button type="button" class="help-icon" aria-label="Structural T1 help">i
                 <span class="help-popover" role="tooltip">
                   Choose a structural T1. Loading the image only displays it; processing starts when you click Run analysis.
                 </span>
               </button>
             </div>
-            <input type="file" id="structuralFileInput" accept=".nii,.gz">
+            <input type="file" data-neurodesk-input="image" id="structuralFileInput" multiple>
           </div>
           <div class="param-group">
-            <label class="param-label" for="deepIslesDwiFileInput">DWI/TRACE (.nii / .nii.gz)</label>
-            <input type="file" id="deepIslesDwiFileInput" accept=".nii,.gz">
+            <label class="param-label" for="deepIslesDwiFileInput">DWI/TRACE (NIfTI / DICOM)</label>
+            <input type="file" data-neurodesk-input="image" id="deepIslesDwiFileInput" multiple>
           </div>
           <div class="param-group">
-            <label class="param-label" for="deepIslesAdcFileInput">ADC (.nii / .nii.gz)</label>
-            <input type="file" id="deepIslesAdcFileInput" accept=".nii,.gz">
+            <label class="param-label" for="deepIslesAdcFileInput">ADC (NIfTI / DICOM)</label>
+            <input type="file" data-neurodesk-input="image" id="deepIslesAdcFileInput" multiple>
           </div>
         </div>
       </section>
@@ -212,13 +212,13 @@
           <details id="advancedStageControls" class="compact-disclosure">
             <summary>Advanced controls</summary>
             <div class="disclosure-content">
-              <input type="file" id="lesionFileInput" class="hidden" accept=".nii,.gz" aria-hidden="true" tabindex="-1">
+              <input type="file" data-neurodesk-input="image" id="lesionFileInput" class="hidden" aria-hidden="true" tabindex="-1" multiple>
               <div class="advanced-workflow" aria-label="Advanced workflow order">
                 <button class="btn btn-secondary btn-sm" id="runBrainExtractionButton">1 Brain extraction</button>
                 <button class="btn btn-secondary btn-sm" id="prealignToMniButton" title="Pre-align T1 to the MNI160 1 mm grid">2 Pre-align T1</button>
                 <div class="workflow-choice" aria-label="Lesion mask source choice">
                   <span class="param-label">3 Lesion mask</span>
-                  <input type="file" id="manualMaskFileInput" class="hidden" accept=".nii,.nii.gz" aria-hidden="true" tabindex="-1">
+                  <input type="file" data-neurodesk-input="image" id="manualMaskFileInput" class="hidden" aria-hidden="true" tabindex="-1" multiple>
                   <button class="btn btn-secondary btn-sm" id="runLesionSegmentationButton" title="Run auto segmentation as an editable seed">Auto seed mask</button>
                   <button class="btn btn-secondary btn-sm" id="runDeepIslesSegmentationButton" title="Run DeepISLES on DWI/TRACE and ADC as an editable seed">DeepISLES DWI/ADC seed</button>
                   <button class="btn btn-secondary btn-sm" id="startManualMaskButton" title="Start a blank editable lesion mask">Manual mask</button>

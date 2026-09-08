@@ -10,6 +10,7 @@ export class SimpleFileIOController {
     this.dicomController = options.dicomController || new DicomController({
       moduleUrl: options.dcm2niixModuleUrl,
       throwOnError: false,
+      requireSingle: true,
       updateOutput: message => this.updateOutput(message),
       onConversionComplete: niftiFile => this._acceptFile(niftiFile)
     });
@@ -18,13 +19,19 @@ export class SimpleFileIOController {
   getActiveFile() { return this.file; }
   hasValidData() { return this.file !== null; }
 
-  handleFiles(files) {
+  async handleFiles(files) {
     if (!files?.length) return;
-    const inputFiles = Array.from(files);
-    const niftiFile = inputFiles.find(isNiftiFile);
-    if (niftiFile) return this._acceptFile(niftiFile, true);
-    this.updateOutput(`Detected DICOM input (${inputFiles.length} files)`);
-    this.dicomController.convertFiles(inputFiles);
+    const inputFiles = Array.from(files).filter(file => !/\.(json|bval|bvec)$/i.test(file.name));
+    if (!inputFiles.length) return;
+    try {
+      const niftiFile = inputFiles.find(isNiftiFile);
+      if (niftiFile) {
+        if (inputFiles.length > 1) throw new Error('Choose one NIfTI image or one DICOM series for this field.');
+        return await this._acceptFile(niftiFile, true);
+      }
+      this.updateOutput(`Detected DICOM input (${inputFiles.length} files)`);
+      return await this.dicomController.convertFiles(inputFiles);
+    } catch (error) { this.updateOutput(error.message); }
   }
 
   handleDropItems(items) {
@@ -47,11 +54,11 @@ export class SimpleFileIOController {
     this._resetNativeInput();
   }
 
-  _acceptFile(file, announce = false) {
+  async _acceptFile(file, announce = false) {
     this.file = file;
     this._updateUI(file.name);
     if (announce) this.updateOutput(`Loaded: ${file.name}`);
-    this.onFileLoaded(file);
+    await this.onFileLoaded(file);
     this._resetNativeInput();
   }
 

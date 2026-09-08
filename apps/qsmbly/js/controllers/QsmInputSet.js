@@ -5,6 +5,8 @@
  * Uses unified bucket storage with auto-detection and drag-between-bucket support.
  */
 
+import { readSingleImage } from '@neurodesk/webapp-components/file-io';
+
 export class QsmInputSet {
   constructor(options) {
     this.updateOutput = options.updateOutput || (() => {});
@@ -358,8 +360,16 @@ export class QsmInputSet {
    * Handle mask file input (kept separate from unified buckets).
    */
   async handleMaskInput(event) {
-    const files = Array.from(event.target.files);
-    this.maskFile = files.slice(0, 1).map(file => ({
+    let file;
+    try {
+      file = await readSingleImage(event.target.files, {
+        moduleUrl: new URL('../../dcm2niix/index.js', import.meta.url).href,
+        updateOutput: message => this.updateOutput(message)
+      });
+    } catch (error) { this.updateOutput(error.message); return; }
+    if (!file) return;
+    const files = [file];
+    this.maskFile = files.map(file => ({
       file: file,
       name: file.name
     }));

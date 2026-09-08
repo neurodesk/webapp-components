@@ -14,12 +14,12 @@
       <details class="control-section nd-sidebar-section" open>
       <summary class="nd-section-title" id="inputHeading">1. Input image</summary>
       <div class="nd-section-content">
-      <p>Choose a NIfTI image or a folder containing a DICOM series. Files stay in this browser.</p>
+      <p>Choose NIfTI or DICOM files, or a DICOM folder. Files stay in this browser.</p>
       <div class="upload-actions">
-        <label class="upload-button" for="niftiInput">Choose NIfTI</label>
-        <input id="niftiInput" type="file" accept=".nii,.nii.gz" hidden />
+        <label class="upload-button" for="niftiInput">Choose NIfTI / DICOM</label>
+        <input id="niftiInput" type="file" data-neurodesk-input="image" multiple hidden />
         <label class="upload-button" for="dicomInput">Choose DICOM folder</label>
-        <input id="dicomInput" type="file" webkitdirectory multiple hidden />
+        <input id="dicomInput" type="file" data-neurodesk-input="image" webkitdirectory multiple hidden />
       </div>
       <select id="dicomPick" class="hidden" aria-label="Pick a converted NIfTI series"></select>
       </div>

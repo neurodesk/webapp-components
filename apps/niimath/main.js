@@ -1,7 +1,7 @@
 import './style.css'
 import '@neurodesk/webapp-components/styles/imaging-workspace.css'
 import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-imaging-workspace'
-import { runDcm2niix } from '@neurodesk/runtime-support/dcm2niix-client'
+import { readImageFiles } from '@neurodesk/runtime-support/dcm2niix-client'
 import { Niivue, SLICE_TYPE, SHOW_RENDER, MULTIPLANAR_TYPE } from '@niivue/niivue'
 import { Niimath } from "@niivue/niimath"
 
@@ -234,7 +234,7 @@ async function loadFile(file) {
 async function loadDicomFiles(files) {
   loadingCircle.classList.remove('hidden')
   try {
-    const converted = await runDcm2niix(files)
+    const converted = await readImageFiles(files)
     if (converted.length === 0) throw new Error('No NIfTI image was found in this folder.')
     dicomPick.replaceChildren()
     for (const [index, file] of converted.entries()) {
@@ -299,8 +299,8 @@ async function main() {
       nv.saveImage({ filename: "niimath.nii.gz", isSaveDrawing: false, volumeByIndex: 1 });
   }
   niftiInput.onchange = async function () {
-    const file = niftiInput.files?.[0]
-    if (file) await loadFile(file)
+    const files = Array.from(niftiInput.files ?? [])
+    if (files.length) await loadDicomFiles(files)
     niftiInput.value = ''
   }
   dicomInput.onchange = async function () {

@@ -6,10 +6,11 @@
   <section class="control-section" id="inputSection">
     <h2>Input image</h2>
     <div id="dropZone">
-      <label class="file-picker" for="imageInput">Choose NIfTI image<input id="imageInput" type="file" accept=".nii,.nii.gz" aria-label="Choose NIfTI image"></label>
-      <p class="hint">or drop a .nii / .nii.gz file here</p>
+      <label class="file-picker" for="imageInput">Choose NIfTI / DICOM<input id="imageInput" type="file" data-neurodesk-input="image" multiple aria-label="Choose NIfTI or DICOM files"></label>
+      <p class="hint">or drop images or a DICOM folder here</p>
     </div>
     <div id="fileInfo" class="file-info" hidden></div>
+    <select id="seriesSelect" aria-label="Input image or DICOM series" hidden></select>
     <details id="exampleImages">
       <summary>Example images</summary>
       <label class="sr-only" for="exampleSelect">Example image</label>
@@ -30,7 +31,7 @@
     <p class="privacy"><span>●</span> Images stay on your device.</p>
   </section>
   <details class="control-section" id="outputSection"><summary>Output</summary><button id="saveBtn" disabled>Download synthetic T1</button><button id="reportBtn" class="text-button" disabled>Download processing details</button><p class="hint">Synthetic contrast may alter or fill lesions. Keep the original scan for interpretation.</p></details>
-  <details class="control-section"><summary>Model settings</summary><p class="hint">Weights download once and are cached. For offline use, select the validated model file.</p><label for="modelInput">Local synthsr-v2.onnx</label><input id="modelInput" type="file" accept=".onnx"><p id="modelInfo" class="hint">SynthSR v2 · original pretrained weights</p></details>
+  <details class="control-section"><summary>Model settings</summary><p class="hint">Weights download once and are cached. For offline use, select the validated model file.</p><label for="modelInput">Local synthsr-v2.onnx</label><input id="modelInput" type="file" data-neurodesk-input="model" accept=".onnx"><p id="modelInfo" class="hint">SynthSR v2 · original pretrained weights</p></details>
   <button id="standaloneBtn" class="text-button">Run standalone / HPC</button>
   <button id="aboutBtn" class="text-button">About &amp; citation</button>
 </header>

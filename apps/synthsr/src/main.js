@@ -1,6 +1,8 @@
 import NiiVue, { MULTIPLANAR_TYPE, SLICE_TYPE, SHOW_RENDER } from '@niivue/niivue';
 import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-imaging-workspace';
 import { NIFTI_EXAMPLES } from '@neurodesk/webapp-components/example-images';
+import { filesFromDataTransferItems } from '@neurodesk/webapp-components/file-io';
+import { readImageFiles } from '@neurodesk/runtime-support/dcm2niix-client';
 import { readVolume } from './volume.js';
 import manifest from '../../../models/synthsr.manifest.json';
 import './styles.css';
@@ -8,6 +10,7 @@ import './styles.css';
 mountImagingWorkspace({controls:'#controls',viewer:'#viewer',status:'#status',title:'SynthSR',subtitle:'Brain image synthesis, in your browser',mark:'S',controlsContract:{about:'#aboutBtn'}});
 const $ = (id) => document.getElementById(id);
 let source, output, provenance, worker, viewer, viewerReady, busy=false, timer, started, exampleAbort;
+let importAbort, importedImages = [];
 const assetBase=import.meta.env.VITE_SYNTHSR_ASSET_BASE || manifest.base_url || `${import.meta.env.BASE_URL}model-assets/`;
 const exampleURL=import.meta.env.VITE_SYNTHSR_EXAMPLE_URL || 'https://raw.githubusercontent.com/neurolabusc/py_synthsr/04ab5548f4609c2b44ca51b3f4bc319b585dafa7/FLAIR.nii.gz';
 const examples = [{ id: 'FLAIR', url: exampleURL, modality: 'mr' }, ...NIFTI_EXAMPLES];
@@ -15,7 +18,7 @@ for (const example of examples) $('exampleSelect').add(new Option(example.id, ex
 function status(message,error=false){$('statusText').textContent=message;$('statusText').classList.toggle('error',error);}
 function setBusy(value){
   busy=value;
-  for(const id of ['imageInput','exampleBtn','exampleSelect','modality','backend','mode','flip','sharpen','modelInput']) $(id).disabled=value;
+  for(const id of ['imageInput','seriesSelect','exampleBtn','exampleSelect','modality','backend','mode','flip','sharpen','modelInput']) $(id).disabled=value;
   $('processButton').disabled=value||!source;$('cancelBtn').hidden=!value;
   $('saveBtn').disabled=value||!output;$('reportBtn').disabled=value||!provenance;
   if(!value){clearInterval(timer);worker?.terminate();worker=null;}
@@ -49,17 +52,46 @@ async function load(file, modality){
     $('fileInfo').textContent=`${file.name} · ${volume.dims.join(' × ')} voxels`;
     $('processButton').disabled=false;
     await show(source);status('Image loaded · ready to synthesize');
-  }catch(error){status(error.message,true);}
+    return true;
+  }catch(error){status(error.message,true);return false;}
 }
-$('imageInput').onchange=()=>load($('imageInput').files[0]);
+async function importImages(filesPromise) {
+  if (busy) return;
+  const controller = new AbortController();
+  importAbort = controller;
+  setBusy(true);status('Reading images · converting DICOM if needed…');
+  try {
+    const files = await filesPromise;
+    const images = await readImageFiles(files, { signal: controller.signal });
+    controller.signal.throwIfAborted();
+    if (!images.length) throw new Error('Choose NIfTI files or a complete DICOM series.');
+    setBusy(false);
+    if (!await load(images[0])) return;
+    importedImages = images;
+    $('seriesSelect').replaceChildren(...images.map((file, index) => new Option(file.name, String(index))));
+    $('seriesSelect').hidden = images.length < 2;
+  } catch (error) {
+    if (!controller.signal.aborted) { setBusy(false);status(error.message, true); }
+  } finally {
+    if (importAbort === controller) importAbort = null;
+  }
+}
+$('imageInput').onchange=()=>{
+  const files = Array.from($('imageInput').files);
+  $('imageInput').value = '';
+  if (files.length) void importImages(Promise.resolve(files));
+};
+$('seriesSelect').onchange=async()=>{
+  if (!await load(importedImages[Number($('seriesSelect').value)])) $('seriesSelect').value = String(importedImages.indexOf(source));
+};
 $('dropZone').ondragover=(e)=>{e.preventDefault();$('dropZone').classList.add('dragging');};
 $('dropZone').ondragleave=()=>$('dropZone').classList.remove('dragging');
-$('dropZone').ondrop=(e)=>{e.preventDefault();$('dropZone').classList.remove('dragging');if(e.dataTransfer.files.length!==1){status('Choose one input image at a time.',true);return;}load(e.dataTransfer.files[0]);};
+$('dropZone').ondrop=(e)=>{e.preventDefault();$('dropZone').classList.remove('dragging');if(!busy)void importImages(e.dataTransfer.items?.length ? filesFromDataTransferItems(e.dataTransfer.items) : Promise.resolve(Array.from(e.dataTransfer.files)));};
 $('exampleBtn').onclick=async()=>{
   const example = examples.find(item => item.id === $('exampleSelect').value);
   setBusy(true);status(`Downloading ${example.id}…`);
   const controller=new AbortController();exampleAbort=controller;
-  try{const r=await fetch(example.url,{signal:controller.signal});if(!r.ok)throw new Error('Example download failed. You can load a local NIfTI image instead.');const bytes=await r.arrayBuffer();if(controller.signal.aborted)return;setBusy(false);const file = new File([bytes],`${example.id}.nii.gz`);await load(file,example.modality);}
+  try{const r=await fetch(example.url,{signal:controller.signal});if(!r.ok)throw new Error('Example download failed. You can load a local NIfTI image instead.');const bytes=await r.arrayBuffer();if(controller.signal.aborted)return;setBusy(false);const file = new File([bytes],`${example.id}.nii.gz`);if(await load(file,example.modality))$('seriesSelect').hidden=true;}
   catch(e){if(e.name!=='AbortError'){setBusy(false);status(e.message,true);}}
   finally{if(exampleAbort===controller)exampleAbort=null;}
 };
@@ -86,7 +118,7 @@ $('processButton').onclick=()=>{
   const asset=manifest.assets.find((a)=>a.filename==='synthsr-v2.onnx');
   worker.postMessage({file:source,options,model:{...asset,url:`${asset.url||`${assetBase}${asset.filename}`}?sha256=${asset.sha256}`,file:$('modelInput').files[0]}});
 };
-$('cancelBtn').onclick=()=>{exampleAbort?.abort();setBusy(false);$('progress').value=0;status('Processing cancelled. Your original image is unchanged.');};
+$('cancelBtn').onclick=()=>{exampleAbort?.abort();importAbort?.abort();setBusy(false);$('progress').value=0;status('Processing cancelled. Your original image is unchanged.');};
 $('inputTab').onclick=()=>source&&show(source);$('outputTab').onclick=()=>output&&show(output,true);
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 $('saveBtn').onclick=()=>output&&download(output,output.name);
@@ -95,4 +127,4 @@ $('aboutBtn').onclick=()=>$('aboutDialog').showModal();
 $('standaloneBtn').onclick=()=>$('standaloneDialog').showModal();
 $('standalonePackage').href=`${import.meta.env.BASE_URL}downloads/neurodesk-synthsr-0.1.0.tgz`;
 if(!navigator.gpu){$('backend').value='wasm';status('Ready · WebGPU unavailable; CPU processing selected');}
-window.addEventListener('pagehide',()=>{exampleAbort?.abort();worker?.terminate();clearInterval(timer);});
+window.addEventListener('pagehide',()=>{exampleAbort?.abort();importAbort?.abort();worker?.terminate();clearInterval(timer);});

@@ -72,7 +72,7 @@ const GradientDropZone: React.FC<GradientDropZoneProps> = ({
     >
       <input
         ref={inputRef}
-        type="file"
+        type="file" data-neurodesk-input="gradients"
         accept=".dvs,.bvec,.bval"
         multiple
         className="hidden"
