@@ -3,6 +3,7 @@
 Synthesize a 1 mm isotropic T1-weighted brain image from a single MRI or CT NIfTI,
 entirely in the browser. Images are not uploaded. NiiVue 1.0 RC displays the input
 and synthetic result; the app downloads NIfTI and JSON processing details.
+CPU / WebAssembly is selected by default; WebGPU remains available in Processing device.
 
 ## Run and build
 

@@ -10,7 +10,7 @@
   </section>
   <section class="control-section"><span class="eyebrow">02 / SYNTHESIS</span>
     <label for="modality">Input modality</label><select id="modality"><option value="mr">MRI</option><option value="ct">CT · Hounsfield units</option></select>
-    <label for="backend">Processing device</label><select id="backend"><option value="webgpu">GPU · WebGPU</option><option value="wasm">CPU · WebAssembly</option></select>
+    <label for="backend">Processing device</label><select id="backend"><option value="wasm" selected>CPU · WebAssembly</option><option value="webgpu">GPU · WebGPU</option></select>
     <label for="mode">Processing mode</label><select id="mode"><option value="full">Full volume · reference method</option><option value="tiled">Tiled · lower memory, approximate</option></select>
     <p id="modeHelp" class="hint">Full-volume synthesis can require several GB of memory.</p>
     <label class="check"><input id="flip" type="checkbox" checked> Average left–right predictions</label>
