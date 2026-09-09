@@ -7,74 +7,26 @@ same spatial processing, inference, augmentation and serialization code.
 
 ## Install the standalone npm package
 
-Download `neurodesk-synthsr-0.1.0.tgz` from **Run standalone / HPC** in the SynthSR
-webapp. This package has not been published to the npm registry; install the
-provided tarball. On a networked Linux machine, install for your own user:
+On an internet-connected Linux x64 machine, paste these commands. They download
+Node.js and SynthSR and install into the current folder without administrator access:
 
 ```sh
-ONNXRUNTIME_NODE_INSTALL=skip npm install --global --prefix "$HOME/.local" ./neurodesk-synthsr-0.1.0.tgz
-export PATH="$HOME/.local/bin:$PATH"
-synthsr --help
-synthsr input.nii.gz output_synthsr.nii.gz --threads 8
+curl -fLO https://nodejs.org/dist/v22.22.0/node-v22.22.0-linux-x64.tar.xz
+tar -xf node-v22.22.0-linux-x64.tar.xz
+export PATH="$PWD/node-v22.22.0-linux-x64/bin:$PATH"
+curl -fLO https://webapps.neurodesk.org/synthsr/downloads/neurodesk-synthsr-0.1.0.tgz
+ONNXRUNTIME_NODE_INSTALL=skip npm install --prefix ./synthsr-cli ./neurodesk-synthsr-0.1.0.tgz
+./synthsr-cli/node_modules/.bin/synthsr input.nii.gz output_synthsr.nii.gz --threads 8
 ```
 
-`ONNXRUNTIME_NODE_INSTALL=skip` skips optional provider downloads; the npm package
-already includes native CPU binaries. Node.js and the native dependency must
-support your operating system/architecture. Native CPU inference is tested on
-Linux x64. No Hugging Face authentication is needed.
+Replace `input.nii.gz` with your scan. If Node.js 22+ is already installed, skip
+the first three lines. The first run downloads the pinned 53 MB model and verifies
+its SHA-256. Add `--ct` for CT. Output includes a synthetic NIfTI image and JSON
+provenance. Existing outputs require `--force` to replace them.
 
-The first run downloads the 53 MB model from an immutable Hugging Face revision
-and verifies its SHA-256. The image is processed locally. Output is `.nii` or
-`.nii.gz` plus a JSON sidecar containing the model hash, settings, geometry,
-thread count, runtime version and separate stage timings. Output defaults to
-`INPUT_synthsr.nii.gz`. Existing files are rejected unless `--force` is supplied;
-overwriting the input is always rejected.
-
-## Offline and HPC execution
-
-Install Node.js and this package on a networked node with the **same operating
-system and architecture** as the compute nodes. Store the installation and model
-cache on a shared filesystem, or copy them to the compute node. Native dependencies
-must be installed before entering an offline job; `--offline` controls model access.
-
-```sh
-# Networked login node; choose your own shared cache directory.
-synthsr download-model --cache-dir /shared/synthsr-models
-
-# Compute node: no network request is made.
-synthsr input.nii.gz output_synthsr.nii.gz \
-  --cache-dir /shared/synthsr-models --offline --threads 8
-
-# Alternatively, provide the validated ONNX file directly.
-synthsr input.nii.gz output_synthsr.nii.gz \
-  --model /shared/synthsr-v2.onnx --offline --threads 8
-```
-
-The default cache is `$XDG_CACHE_HOME/neurodesk/synthsr`, or
-`~/.cache/neurodesk/synthsr`, with a model-hash subdirectory. Concurrent downloads
-use unique temporary files and atomic rename; incomplete downloads never become
-cached models. Corrupt or mismatched model files are rejected.
-
-Example `synthsr.sbatch` (adapt paths, modules, memory and time to your cluster):
-
-```bash
-#!/bin/bash
-#SBATCH --job-name=synthsr
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=32G
-#SBATCH --time=00:30:00
-set -euo pipefail
-# Load your site's Node.js 22+ module here if required.
-export PATH="$HOME/.local/bin:$PATH"
-synthsr /shared/input.nii.gz /shared/output_synthsr.nii.gz \
-  --cache-dir /shared/synthsr-models --offline \
-  --threads "$SLURM_CPUS_PER_TASK"
-```
-
-Submit with `sbatch synthsr.sbatch`. Without `--threads`, the CLI respects
-`SLURM_CPUS_PER_TASK`, otherwise uses up to four available CPUs. Use one job per
-image or a job array with a unique output path for each image. Memory depends on
-resampled dimensions; 32 GB is an example resource request, not a fixed requirement.
+The CPU binaries are included in the native dependency; `ONNXRUNTIME_NODE_INSTALL=skip`
+avoids downloading optional GPU providers. The standalone tarball is served by the
+webapp and is not published to the npm registry. Use `--help` for all options.
 
 ## Options and scientific behavior
 
@@ -106,7 +58,7 @@ Install the tarball as a project dependency with `npm install ./neurodesk-synths
 import { synthesize } from '@neurodesk/synthsr/node';
 const result = await synthesize({
   input: 'input.nii.gz', output: 'output_synthsr.nii.gz',
-  threads: 8, device: 'cpu', offline: true, modelPath: '/shared/synthsr-v2.onnx',
+  threads: 8, device: 'cpu',
   onProgress: (fraction, message) => console.error(message),
 });
 console.log(result.output, result.reportPath, result.provenance.timings);

@@ -3,7 +3,10 @@
 Synthesize a 1 mm isotropic T1-weighted brain image from a single MRI or CT NIfTI,
 entirely in the browser. Images are not uploaded. NiiVue 1.0 RC displays the input
 and synthetic result; the app downloads NIfTI and JSON processing details.
-CPU / WebAssembly is selected by default; WebGPU remains available in Processing device.
+WebGPU is selected by default, with CPU / WebAssembly available in Processing settings.
+Modality is detected from scaled voxel values: any negative value selects CT; otherwise MRI.
+The modality selector remains available as an override. Examples load on selection, and
+the synthetic-image tab appears only after successful synthesis.
 
 ## Run and build
 
@@ -115,9 +118,20 @@ spatial context, weights, skip connections and preprocessing remain the same.
 The previous ONNX Runtime WebGPU path used `Conv3DNaive`; its full-example
 measurements and the optimization evidence are recorded in
 [`docs/performance-investigation.md`](docs/performance-investigation.md).
-CPU/WASM remains the default and uses `onnxruntime-web@1.29.0` with the existing
-Asyncify SIMD/threaded module. GPU reports identify `gpuImplementation`; CPU
-reports identify `onnxRuntime`. GPU mode does not fall back to CPU on failure.
+CPU/WASM uses `onnxruntime-web@1.29.0` with the Asyncify SIMD/threaded module.
+For volumes above 8,388,608 padded voxels, `src/wasm-session.js` executes the same
+operators in depth slabs. Intermediate full-volume activations live in separate
+JavaScript buffers, outside WASM's 4 GiB heap. Convolutions include a one-slice halo;
+pooling and resize boundaries stay aligned. This preserves full-network context
+and does not set approximate tiled mode. The Philips CT example previously failed
+with `std::bad_alloc` at 192 × 224 × 256 padded voxels. It now completes on
+WASM in 236 seconds, with 217 one-step differences among 9,848,384 uint8 voxels
+against native CPU and identical geometry. The same example completes on GPU
+in 14 seconds. These sequential runs are correctness checks, not a controlled
+cold/warm benchmark. [Validation evidence](docs/ct-memory-2026-09-09.json).
+
+GPU reports identify `gpuImplementation`; CPU reports identify `onnxRuntime` and
+`wasmImplementation`. GPU mode does not fall back to CPU on failure.
 
 The executor supports only the checksum-pinned SynthSR graph. It verifies the
 ONNX SHA-256 before reading initializer offsets from `src/gpu-model.json`; weights
@@ -195,30 +209,16 @@ inference. Its output differed from the native reference by one uint8 step at
 [`docs/optimized-gpu-2026-09-08.json`](docs/optimized-gpu-2026-09-08.json) for
 production-build timings, hardware details and validation scope.
 
-## Standalone / HPC
+## Standalone
 
-Use **Run standalone / HPC** in the app for installation commands, offline model
-prefetching and a Slurm job example. Every production build includes the standalone
-npm tarball at `downloads/neurodesk-synthsr-0.1.0.tgz`; it installs independently
-of this repository. No npm registry publication is needed.
+**Run standalone / HPC** contains a short copy-and-paste setup for an internet-connected
+Linux x64 machine, including curl downloads of Node.js and the standalone package.
+The first run downloads the verified model automatically. No npm registry publication
+or administrator access is needed. See the [standalone README](../../../packages/synthsr/README.md).
 
-The package is [`@neurodesk/synthsr`](../../packages/synthsr/README.md). Its Node.js
-CLI uses native ONNX Runtime; the browser worker injects ONNX Runtime Web into the
-same shared processing pipeline. The root package export is browser-safe and the
-`/node` export provides filesystem processing and model caching. The scientific
-model and default processing settings are identical in both applications.
-
-```sh
-# From the downloaded tarball, with Node.js 22+ available:
-ONNXRUNTIME_NODE_INSTALL=skip npm install --global --prefix "$HOME/.local" ./neurodesk-synthsr-0.1.0.tgz
-export PATH="$HOME/.local/bin:$PATH"
-synthsr input.nii.gz output_synthsr.nii.gz --threads 8
-```
-
-Build the standalone tarball directly with `npm pack` in `packages/synthsr`, or
-build the webapp to generate the downloadable artifact automatically. CPU is the
-validated native backend; CUDA requires an appropriate provider installation and
-compatible libraries and has not been tested on this host.
+Every app build includes `downloads/neurodesk-synthsr-0.1.0.tgz`. It uses the shared
+processing pipeline with native CPU ONNX Runtime, independently of this repository.
+Build the tarball directly with `npm pack` in `packages/synthsr`.
 
 ## Attribution
 

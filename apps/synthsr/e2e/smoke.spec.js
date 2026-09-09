@@ -21,13 +21,14 @@ test('load, invalid input, and cancellation preserve the original',async({page})
   await page.getByRole('button',{name:'Close',exact:true}).click();
   await page.locator('#standaloneBtn').click();
   await expect(page.locator('#standaloneDialog')).toBeVisible();
-  await expect(page.locator('#standaloneDialog')).toContainText('SLURM_CPUS_PER_TASK');
+  await expect(page.locator('#standaloneDialog')).toContainText('curl -fLO');
+  await expect(page.locator('#standaloneDialog')).not.toContainText('Slurm');
   const packageDownload=page.waitForEvent('download');await page.locator('#standalonePackage').click();
   expect((await packageDownload).suggestedFilename()).toBe('neurodesk-synthsr-0.1.0.tgz');
   await page.locator('#standaloneDialog').getByRole('button',{name:'Close',exact:true}).click();
 });
 
-test('full-volume WebGPU regression with default augmentation',async({page})=>{
+for(const backend of ['webgpu','wasm']) test(`full-volume ${backend} regression with default augmentation`,async({page})=>{
   test.skip(!process.env.SYNTHSR_FULL_INPUT || !process.env.SYNTHSR_FULL_REFERENCE,
     'Set SYNTHSR_FULL_INPUT and SYNTHSR_FULL_REFERENCE to run on a capable hardware GPU.');
   test.setTimeout(900000);
@@ -35,7 +36,7 @@ test('full-volume WebGPU regression with default augmentation',async({page})=>{
   await page.locator('#imageInput').setInputFiles(process.env.SYNTHSR_FULL_INPUT);
   await expect(page.locator('#processButton')).toBeEnabled();
   await page.locator('#processingSettings > summary').click();
-  await page.locator('#backend').selectOption('webgpu');
+  await page.locator('#backend').selectOption(backend);
   await page.locator('#processButton').click();
   await expect(page.locator('#saveBtn')).toBeEnabled({timeout:840000});
   const pending=page.waitForEvent('download');await page.locator('#saveBtn').click();
@@ -76,5 +77,9 @@ for(const backend of ['wasm','webgpu']) test(`real ${backend} inference matches 
   expect(report.backend).toBe(backend);expect(report.synthetic).toBe(true);expect(report.flip).toBe(true);expect(report.modelSha256).toMatch(/^[a-f0-9]{64}$/);
   if(backend==='webgpu')expect(report.gpuImplementation).toBe('synthsr-blocked-fp32-v1');
   else expect(report.onnxRuntime).toBe('1.29.0');
+  await expect(page.locator('#outputTab')).toBeVisible();
   await page.locator('#inputTab').click();await expect(page.locator('#resultBadge')).toBeHidden();
+  await page.locator('#imageInput').setInputFiles(fixture('validation.nii.gz'));
+  await expect(page.locator('#outputTab')).toBeHidden();
+  await expect(page.locator('#inputTab')).toBeVisible();
 });

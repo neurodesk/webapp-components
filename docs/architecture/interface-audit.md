@@ -20,7 +20,7 @@ All 14 registered apps were reviewed on 8 September 2026, starting from `c514f87
 | BrowserQC | Empty Results start collapsed and open on completion or QC failure. Initial processing help is shorter. The shared bar owns About, with a standalone fallback outside the Results panel. |
 | SurfAnnotate | Surfaces stay open. Overlay, annotation, ROI, and export controls start collapsed. The first surface opens overlay and annotation controls; ROI creation or filling reveals export. Panels use shared spacing and full sidebar width. |
 | ZARRo | Source selection stays open. Navigate, Display, and Measure & Export start collapsed. The first loaded volume opens Navigate and Display. Advanced settings remain collapsed, and touch measurement and export remain available. |
-| SynthSR | The upload control is 44px tall, with a compact input heading. Example images use a collapsed selector containing FLAIR and the shared NiiMath catalog. Processing settings and unavailable outputs start collapsed; completed synthesis opens Output. Browser tests cap upload height at 48px and initial input-section height at 220px. |
+| SynthSR | The upload control is 44px tall, with a compact input heading. Example images load on selection, excluding CT_Abdo, CT_Electrodes, Iguana and spmMotor. Scaled negative voxels select CT; otherwise MRI, with a manual override. WebGPU is the default. Processing settings and unavailable outputs start collapsed; completed synthesis opens Output and reveals the Synthetic T1 tab. Loading a new image hides that tab. Terminal help is reduced to curl, local installation and one run command. Browser tests cap upload height at 48px and initial input-section height at 220px. |
 
 ## Rules and enforcement
 
