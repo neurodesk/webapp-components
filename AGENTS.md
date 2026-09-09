@@ -6,6 +6,7 @@ Before changing UI, adding controls, or scaffolding an app, read [the interface 
 
 - Keep one shared application bar. Register app-specific About, Cite and Privacy handlers through the shell's control contract.
 - Keep the current task visible. Put optional settings, technical logs and inactive output controls in accessible collapsible sections.
+- Place technical logs in a collapsed console below the viewer, following QSMbly's `console-container` disclosure pattern. Keep Copy and Clear actions in the console header.
 - Reuse shared layout, spacing and control components. Preserve input values when sections close.
 - Before completing UI work, run `pnpm audit:interfaces`, `pnpm test:mobile` and `pnpm test:interface-workflows` against a fresh production build. Review desktop and phone screenshots and exercise the changed workflow. The interface standard defines the review criteria and the audit's limits.
 

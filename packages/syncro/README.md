@@ -4,12 +4,12 @@ Normalize an anatomical NIfTI scan to the MNI152 1 mm brain template. The shared
 
 ## Standalone installation
 
-Download `neurodesk-syncro-0.1.1.tgz` from the SYNcro webapp's **Standalone** section. The artifact is built from `packages/syncro`; the website carries a tarball, not an npm registry publication. It includes the shared pipeline, ANTs WebAssembly kernel and MNI template. Neural-network models are downloaded separately, using pinned revisions and SHA-256 verification.
+Download `neurodesk-syncro-0.1.2.tgz` from the SYNcro webapp's **Standalone** section. The artifact is built from `packages/syncro`; the website carries a tarball, not an npm registry publication. It includes the shared pipeline, ANTs WebAssembly kernel and MNI template. Neural-network models are downloaded separately, using pinned revisions and SHA-256 verification.
 
 Node.js 22 or newer is required. No browser, display, Python or FreeSurfer installation is needed. ONNX Runtime's CPU binaries are installed through npm; `ONNXRUNTIME_NODE_INSTALL=skip` skips optional CUDA downloads, while retaining the package's CPU backend.
 
 ```bash
-ONNXRUNTIME_NODE_INSTALL=skip npm install -g --prefix "$HOME/.local" ./neurodesk-syncro-0.1.1.tgz
+ONNXRUNTIME_NODE_INSTALL=skip npm install -g --prefix "$HOME/.local" ./neurodesk-syncro-0.1.2.tgz
 export PATH="$HOME/.local/bin:$PATH"
 syncro input.nii.gz results --threads 4
 syncro input.nii.gz results-with-lesion --lesion lesion.nii.gz --labels labels.nii.gz
