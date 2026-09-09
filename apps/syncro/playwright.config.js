@@ -6,7 +6,8 @@ export default defineConfig({
   testDir: "./e2e",
   workers: 1,
   webServer: {
-    command: "pnpm preview --host 127.0.0.1 --port 4176 --strictPort",
+    timeout: 120000,
+    command: "pnpm build && pnpm preview --host 127.0.0.1 --port 4176 --strictPort",
     url: "http://127.0.0.1:4176/syncro/",
     reuseExistingServer: !process.env.CI,
   },
