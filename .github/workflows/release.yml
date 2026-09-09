@@ -91,7 +91,7 @@ jobs:
       - name: Install browser
         if: matrix.browser_test
         run: |
-          sudo rm -f /etc/apt/sources.list.d/google-chrome.list
+          sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources
           pnpm exec playwright install --with-deps chromium
       - name: Test app in a browser
         if: matrix.browser_test

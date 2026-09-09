@@ -68,7 +68,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Install browser
         run: |
-          sudo rm -f /etc/apt/sources.list.d/google-chrome.list
+          sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources
           pnpm exec playwright install --with-deps chromium
       - name: Verify deployed cross-origin isolation
         run: pnpm test:deployed

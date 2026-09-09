@@ -116,7 +116,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Install browser
         run: |
-          sudo rm -f /etc/apt/sources.list.d/google-chrome.list
+          sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources
           pnpm exec playwright install --with-deps chromium
       - name: Build the composite site
         run: pnpm build
@@ -167,7 +167,7 @@ jobs:
         run: pip install -r apps/${{ matrix.app }}/requirements.txt nibabel
       - name: Install browser
         run: |
-          sudo rm -f /etc/apt/sources.list.d/google-chrome.list
+          sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources
           pnpm exec playwright install --with-deps chromium
       - name: Test ${{ matrix.app }} in a browser
         run: pnpm --filter ${{ matrix.app }} test:e2e
