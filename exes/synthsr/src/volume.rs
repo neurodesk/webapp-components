@@ -195,11 +195,7 @@ pub fn prepare(v: &Volume<f32>, ct: bool) -> Result<Prepared, String> {
     let offsets: [usize; 3] = std::array::from_fn(|a| (padded[a] - aligned[a]) / 2);
     let mut input = vec![0f32; product(&padded)];
     let has_padding = input.len() > r.data.len();
-    let (mut min, mut max) = if has_padding {
-        (0.0f64, 0.0f64)
-    } else {
-        (f64::INFINITY, f64::NEG_INFINITY)
-    };
+    let (mut min, mut max) = (f64::INFINITY, f64::NEG_INFINITY);
     for x in 0..aligned[0] {
         for y in 0..aligned[1] {
             for z in 0..aligned[2] {
@@ -221,6 +217,10 @@ pub fn prepare(v: &Volume<f32>, ct: bool) -> Result<Prepared, String> {
     }
     if max <= min {
         return Err("The input has no intensity variation after preprocessing.".into());
+    }
+    if has_padding {
+        min = min.min(0.0);
+        max = max.max(0.0);
     }
     for v in input.iter_mut() {
         *v = ((*v as f64 - min) / (max - min)) as f32;
@@ -284,5 +284,31 @@ pub fn finish(prediction: &[f32], p: &Prepared, sharpen: bool) -> Volume<u8> {
         data,
         dims: p.dims,
         affine: p.affine,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn rejects_constant_images_before_padding() {
+        for size in [2, 32] {
+            for value in [-5.0, 0.0, 5.0] {
+                let v = Volume {
+                    data: vec![value; size * size * size],
+                    dims: [size; 3],
+                    affine: [[1., 0., 0., 0.], [0., 1., 0., 0.], [0., 0., 1., 0.]],
+                };
+                assert!(prepare(&v, false).err().unwrap().contains("variation"));
+            }
+        }
+        let v = Volume {
+            data: (0..8).map(|i| 100.0 + i as f32).collect(),
+            dims: [2; 3],
+            affine: [[1., 0., 0., 0.], [0., 1., 0., 0.], [0., 0., 1., 0.]],
+        };
+        assert!(prepare(&v, true).err().unwrap().contains("variation"));
+        assert!(prepare(&v, false).is_ok());
     }
 }

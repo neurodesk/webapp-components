@@ -12,7 +12,7 @@ MODEL = models/synthsr-v2.onnx
 BIN = target/release/synthsr
 MACOS_PKG = dist/synthsr-$(VERSION)-macos-arm64.pkg
 
-.PHONY: help check-model fmt lint test test-real build clean \
+.PHONY: help check-model fmt lint test test-release-scripts test-real build clean \
 	macos-pkg-adhoc macos-pkg macos-notary-profile check-notary-profile macos-notarize macos-release
 
 help:
@@ -45,8 +45,11 @@ fmt:
 lint: check-model
 	cargo clippy --release --all-targets -- -D warnings
 
-test: check-model
+test: check-model test-release-scripts
 	cargo test --release
+
+test-release-scripts:
+	python3 scripts/test_release_scripts.py
 
 test-real: check-model
 	@test -f "$(SYNTHSR_REFERENCE_DIR)/manifest.jsonl" || { \
@@ -76,7 +79,11 @@ macos-notary-profile:
 	scripts/store_notary_credentials.sh "$(NOTARY_PROFILE)" "$(APPLE_ID)" "$(TEAM_ID)"
 
 # Credentials are checked first so a missing profile fails before the build, not after it.
-macos-release: check-notary-profile test macos-pkg macos-notarize
+macos-release:
+	+$(MAKE) check-notary-profile
+	+$(MAKE) test
+	+$(MAKE) macos-pkg
+	+$(MAKE) macos-notarize
 
 check-notary-profile:
 	@xcrun notarytool history --keychain-profile "$(NOTARY_PROFILE)" >/dev/null 2>&1 || { \

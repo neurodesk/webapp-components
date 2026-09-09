@@ -31,5 +31,10 @@ for bin in "$dawn" "$exe"; do
 done
 chmod +x "$exe"
 # Runs from the expanded payload: @executable_path/../lib/synthsr resolves inside it.
-"$exe" --self-check | sed 's/^/  /'
+self_check=$("$exe" --self-check) || {
+	status=$?
+	printf '%s\n' "$self_check" >&2
+	exit "$status"
+}
+printf '%s\n' "$self_check" | sed 's/^/  /'
 echo "Verified $pkg"

@@ -1,0 +1,32 @@
+name: synthsr-native
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/synthsr-native.yml'
+      - 'exes/synthsr/**'
+      - 'packages/synthsr/**'
+      - 'apps/synthsr/test/fixtures/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/synthsr-native.yml'
+      - 'exes/synthsr/**'
+      - 'packages/synthsr/**'
+      - 'apps/synthsr/test/fixtures/**'
+
+permissions:
+  contents: read
+
+jobs:
+  native-cpu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y pkg-config libssl-dev
+      - name: Test native inference and release scripts
+        run: make -C exes/synthsr test lint fmt
