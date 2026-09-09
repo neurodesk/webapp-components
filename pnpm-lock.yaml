@@ -358,6 +358,9 @@ importers:
       '@neurodesk/registration':
         specifier: workspace:*
         version: link:../../packages/registration
+      '@neurodesk/runtime-support':
+        specifier: workspace:*
+        version: link:../../packages/runtime-support
       '@neurodesk/synthsr':
         specifier: workspace:*
         version: link:../../packages/synthsr

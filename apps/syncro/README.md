@@ -29,3 +29,8 @@ continue on WASM in separate workers. No approximate tiling is enabled.
 
 The earlier complete-pipeline container comparison used WASM; selecting GPU changes
 the SynthSR backend and is covered separately by the inference-stage regression.
+
+Scan pickers accept NIfTI and complete DICOM series through the shared local
+converter. Choose one anatomical series at a time; accompanying series become
+individual images whose propagation type can be selected. Local ONNX model
+fields retain their model-specific format checks.

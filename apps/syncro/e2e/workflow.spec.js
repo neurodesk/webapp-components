@@ -18,6 +18,7 @@ test('geometry error reveals retained accompanying controls before inference',as
  await page.goto('./');
  expect(await page.evaluate(()=>crossOriginIsolated)).toBe(true);
  await page.locator('#input').setInputFiles(scan('anatomical.nii'));
+ await expect(page.locator('#runButton')).toBeEnabled({timeout:30000});
  await page.locator('#additionalSection > summary').click();
  await page.locator('#additional').setInputFiles(scan('misaligned.nii',5));
  await page.locator('#type-0').selectOption('labels');
@@ -38,6 +39,7 @@ test('cancellation restores input controls and invalid input cannot reuse an old
  });
  await page.goto('./');
  await page.locator('#input').setInputFiles(scan('anatomical.nii'));
+ await expect(page.locator('#runButton')).toBeEnabled({timeout:30000});
  await page.getByText('Processing settings',{exact:true}).click();
  await expect(page.locator('#synthsrBackend')).toHaveValue('webgpu');
  await page.route('**/MNI152_T1_1mm_brain.nii.gz',()=>{});

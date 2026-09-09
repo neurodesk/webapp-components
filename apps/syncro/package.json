@@ -18,7 +18,8 @@
     "@neurodesk/synthsr": "workspace:*",
     "@neurodesk/synthstrip": "workspace:*",
     "@neurodesk/registration": "workspace:*",
-    "fflate": "^0.8.2"
+    "fflate": "^0.8.2",
+    "@neurodesk/runtime-support": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
