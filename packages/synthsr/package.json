@@ -13,7 +13,8 @@
   "exports": {
     ".": "./src/index.js",
     "./node": "./src/node.js",
-    "./manifest": "./model.manifest.json"
+    "./manifest": "./model.manifest.json",
+    "./browser": "./src/browser.js"
   },
   "files": [
     "src",

@@ -1,0 +1,295 @@
+{
+  "date": "2026-09-08",
+  "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+  "runtime": "onnxruntime-web 1.29.0 (unified Asyncify)",
+  "browser": "T3Code(Alpha)/0.0.40 Chrome/150.0.7871.224 on macOS",
+  "adapter": {
+    "vendor": "apple",
+    "architecture": "metal-3",
+    "isFallbackAdapter": false
+  },
+  "crossOriginIsolated": true,
+  "wasmThreads": 4,
+  "hardwareConcurrency": 10,
+  "method": "Sequential worker sessions; same production createSession function and model; deterministic float32 input[i]=(i%997)/997, shape [1,1,...dims]. Three session.run calls per session with CPU output; model fetch and preprocessing excluded. pass 0 is first use, passes 1 and 2 reuse session. Wall time includes output transfer inside session.run. Browser shared with user; no per-operator GPU timestamps collected.",
+  "results": [
+    {
+      "backend": "wasm",
+      "dims": [
+        32,
+        32,
+        32
+      ],
+      "seconds": 6.506715000033378,
+      "type": "initialized"
+    },
+    {
+      "backend": "wasm",
+      "dims": [
+        32,
+        32,
+        32
+      ],
+      "pass": 0,
+      "readSeconds": 0.0001400001049041748,
+      "runSeconds": 2.2974649999141694,
+      "samples": [
+        0.08291995525360107,
+        0.05303461104631424,
+        0.14626045525074005
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "wasm",
+      "dims": [
+        32,
+        32,
+        32
+      ],
+      "pass": 1,
+      "readSeconds": 0.0015799999237060547,
+      "runSeconds": 1.080085000038147,
+      "samples": [
+        0.08291995525360107,
+        0.05303461104631424,
+        0.14626045525074005
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "wasm",
+      "dims": [
+        32,
+        32,
+        32
+      ],
+      "pass": 2,
+      "readSeconds": 0.00001999998092651367,
+      "runSeconds": 1.352610000014305,
+      "samples": [
+        0.08291995525360107,
+        0.05303461104631424,
+        0.14626045525074005
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "webgpu",
+      "dims": [
+        32,
+        32,
+        32
+      ],
+      "seconds": 2.760514999985695,
+      "type": "initialized"
+    },
+    {
+      "backend": "webgpu",
+      "dims": [
+        32,
+        32,
+        32
+      ],
+      "pass": 0,
+      "readSeconds": 0.0000849999189376831,
+      "runSeconds": 0.26515499997138975,
+      "samples": [
+        0.08291981369256973,
+        0.053034551441669464,
+        0.14626039564609528
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "webgpu",
+      "dims": [
+        32,
+        32,
+        32
+      ],
+      "pass": 1,
+      "readSeconds": 0.0002949999570846558,
+      "runSeconds": 0.2519399999380112,
+      "samples": [
+        0.08291981369256973,
+        0.053034551441669464,
+        0.14626039564609528
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "webgpu",
+      "dims": [
+        32,
+        32,
+        32
+      ],
+      "pass": 2,
+      "readSeconds": 0.000014999985694885253,
+      "runSeconds": 0.20883500003814698,
+      "samples": [
+        0.08291981369256973,
+        0.053034551441669464,
+        0.14626039564609528
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "webgpu",
+      "dims": [
+        96,
+        96,
+        96
+      ],
+      "seconds": 4.235334999918938,
+      "type": "initialized"
+    },
+    {
+      "backend": "webgpu",
+      "dims": [
+        96,
+        96,
+        96
+      ],
+      "pass": 0,
+      "readSeconds": 0.00007499992847442627,
+      "runSeconds": 5.933519999980927,
+      "samples": [
+        0.2054019570350647,
+        0.018761059269309044,
+        0.03138410300016403
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "webgpu",
+      "dims": [
+        96,
+        96,
+        96
+      ],
+      "pass": 1,
+      "readSeconds": 0.0007999999523162842,
+      "runSeconds": 5.894620000004768,
+      "samples": [
+        0.2054019570350647,
+        0.018761059269309044,
+        0.03138410300016403
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "webgpu",
+      "dims": [
+        96,
+        96,
+        96
+      ],
+      "pass": 2,
+      "readSeconds": 0.00001999998092651367,
+      "runSeconds": 5.9063300000429155,
+      "samples": [
+        0.2054019570350647,
+        0.018761059269309044,
+        0.03138410300016403
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "wasm",
+      "dims": [
+        96,
+        96,
+        96
+      ],
+      "seconds": 3.396485000014305,
+      "type": "initialized"
+    },
+    {
+      "backend": "wasm",
+      "dims": [
+        96,
+        96,
+        96
+      ],
+      "pass": 0,
+      "readSeconds": 0.00007500004768371582,
+      "runSeconds": 37.201340000033376,
+      "samples": [
+        0.20540200173854828,
+        0.01876106671988964,
+        0.031383976340293884
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "wasm",
+      "dims": [
+        96,
+        96,
+        96
+      ],
+      "pass": 1,
+      "readSeconds": 0.00035500001907348634,
+      "runSeconds": 36.71065499997139,
+      "samples": [
+        0.20540200173854828,
+        0.01876106671988964,
+        0.031383976340293884
+      ],
+      "type": "run"
+    },
+    {
+      "backend": "wasm",
+      "dims": [
+        96,
+        96,
+        96
+      ],
+      "pass": 2,
+      "readSeconds": 0.00003999996185302734,
+      "runSeconds": 27.510134999990463,
+      "samples": [
+        0.20540200173854828,
+        0.01876106671988964,
+        0.031383976340293884
+      ],
+      "type": "run"
+    }
+  ],
+  "shaderCapture": {
+    "method": "Separate untimed 32^3 run wrapping GPUDevice.createShaderModule and forwarding descriptors unchanged.",
+    "counts": {
+      "Add": 1,
+      "BatchNormalization": 1,
+      "Conv3DNaive": 20,
+      "Elu": 1,
+      "Pool": 1,
+      "ResizeNearest2D": 1,
+      "Transpose": 2
+    },
+    "convProgram": "Conv3DNaive",
+    "activationLayout": "NDHWC in captured shader after runtime layout transformation",
+    "dtype": "float32",
+    "workgroupSize": 64,
+    "outputElementsPerInvocation": 1,
+    "sharedWorkgroupStorage": false,
+    "subgroupArithmetic": false,
+    "notes": "Generated shader declares subgroups and subgroup builtins, but convolution body does not use them. Counts are shader module creations, not operator dispatch counts."
+  },
+  "tiling": {
+    "shape": [
+      192,
+      256,
+      160
+    ],
+    "patchSize": 96,
+    "coreSize": 32,
+    "callsPerPrediction": 240,
+    "distinctPatches": 72,
+    "duplicateCalls": 168,
+    "processedVoxelRatio": 27,
+    "withFlipCalls": 480
+  }
+}

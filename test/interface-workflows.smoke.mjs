@@ -35,6 +35,31 @@ async function check(id, workflow) {
   finally { await page.close(); }
 }
 try {
+  await check('syncro', async page => {
+    await expect(page.locator('#runButton')).toBeDisabled();
+    await expect(page.locator('#results')).not.toHaveAttribute('open','');
+    const processing = page.getByText('Processing settings', {exact:true});
+    await processing.tap();
+    await expect(page.locator('#synthsrBackend')).toHaveValue('webgpu');
+    await page.locator('#synthsrBackend').selectOption('wasm');
+    await processing.tap();
+    await processing.tap();
+    await expect(page.locator('#synthsrBackend')).toHaveValue('wasm');
+    await processing.tap();
+    await page.locator('#input').setInputFiles(nifti('anatomical.nii'));
+    await expect(page.locator('#runButton')).toBeEnabled();
+    await page.locator('#additionalSection > summary').tap();
+    await page.locator('#additional').setInputFiles(nifti('lesion.nii',0));
+    await page.locator('#type-0').selectOption('binary');
+    await page.locator('#additionalSection > summary').tap();
+    await page.locator('#additionalSection > summary').tap();
+    await expect(page.locator('#type-0')).toHaveValue('binary');
+    expect(await page.locator('#additional').evaluate(e=>e.files[0].name)).toBe('lesion.nii');
+    await page.getByRole('button',{name:'About',exact:true}).tap();
+    await expect(page.locator('#info')).toContainText('SynthStrip');
+    await page.locator('#info').getByRole('button',{name:'Close',exact:true}).tap();
+    await expect(page.locator('#info')).toBeHidden();
+  });
   await check('easy-mp2rage', async page => {
     await expect(page.locator('#parameterPanel')).not.toHaveAttribute('open','');
     await page.locator('#tutorialBtn').tap();

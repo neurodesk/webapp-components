@@ -144,3 +144,18 @@ in `test/native-validation.json` in the source repository.
 
 Apache-2.0. See LICENSE and NOTICE. Model attribution: Iglesias et al., NeuroImage
 237 (2021), 118206. https://doi.org/10.1016/j.neuroimage.2021.118206.
+
+## Shared browser GPU runtime
+
+`@neurodesk/synthsr/browser` exports `createBrowserSession(ort, bytes, backend, paddedShape)`
+and `browserRuntime(backend)`. Both SynthSR and SYNcro use this adapter with the shared
+`runSynthsr` pipeline. SYNcro selects WebGPU by default; the adapter defaults to WASM when no backend is supplied. The `webgpu` backend runs the
+checksum-pinned `synthsr-blocked-fp32-v1` executor from upstream commit `eeb9863`,
+with blocked FP32 Conv3D, fused activations and graph-lifetime buffer reuse. It does
+not fall back to ONNX Runtime GPU or CPU when the GPU cannot run the volume.
+
+Pass the pipeline's session arguments through unchanged so GPU allocation uses the
+prepared/padded dimensions. Supply the app's own ONNX Runtime instance and WASM URLs;
+use `browserRuntime` in provenance to distinguish the custom GPU executor from ORT.
+The GPU graph index and kernels ship inside this npm package; no additional model
+weights are required. Native Node/HPC CPU and CUDA execution still uses `./node`.

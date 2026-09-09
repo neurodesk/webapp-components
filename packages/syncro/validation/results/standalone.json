@@ -1,0 +1,19 @@
+{
+  "brain_mask": {
+    "max_absolute_difference": 1.0,
+    "mean_absolute_difference": 3.814697265625e-07,
+    "dice_nonzero": 0.9999987154842592
+  },
+  "warped_brain": {
+    "max_absolute_difference": 61.68855285644531,
+    "mean_absolute_difference": 0.23435261801572502,
+    "dice_nonzero": 0.9986970081410727,
+    "correlation": 0.9995047402852045
+  },
+  "warped_original": {
+    "max_absolute_difference": 213.43714904785156,
+    "mean_absolute_difference": 1.0855541803973574,
+    "dice_nonzero": 0.9991347674795382,
+    "correlation": 0.9997482205487329
+  }
+}

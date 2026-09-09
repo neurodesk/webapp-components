@@ -1,0 +1,176 @@
+{
+  "dataset": {
+    "id": "ds000001",
+    "subject": "sub-01",
+    "file": "anat/sub-01_T1w.nii.gz",
+    "url": "https://s3.amazonaws.com/openneuro.org/ds000001/sub-01/anat/sub-01_T1w.nii.gz",
+    "sha256": "bdb7022ae229c5b8edd16425928c9243c562f84082b9b8e6f97cdba8b9354a98"
+  },
+  "container": "vnmd/syncro_0.1.1@sha256:51246ec424976d130bd4ed731b7e1f0d3401c22146c200664eb77fc77159e946",
+  "reference": {
+    "input_sha256": "bdb7022ae229c5b8edd16425928c9243c562f84082b9b8e6f97cdba8b9354a98",
+    "script_sha256": "f872d8d1c418bdc01fb8f576285b00c3993701f4462b3a4ee1dee958f671ad00",
+    "versions": {
+      "antspyx": "0.6.1",
+      "numpy": "1.26.4",
+      "scipy": "1.15.3",
+      "nibabel": "5.3.2"
+    },
+    "registration": {
+      "type_of_transform": "SyN",
+      "random_seed": 42,
+      "itk_threads": 1
+    },
+    "stages": {
+      "synthsr": {
+        "seconds": 281.74469099752605
+      },
+      "synthstrip": {
+        "seconds": 57.25081052817404
+      },
+      "registration": {
+        "seconds": 125.49153798446059
+      }
+    },
+    "synthsr_executable": "/usr/local/bin/py_synthsr",
+    "template_sha256": "32d5be33460f995a5d305507053c8862c823d9ca6bfb543381308df14590f212",
+    "transforms": {
+      "fwdtransforms": [
+        "/work/reference/transform-1Warp.nii.gz",
+        "/work/reference/transform-0GenericAffine.mat"
+      ],
+      "invtransforms": [
+        "/work/reference/transform-0GenericAffine.mat",
+        "/work/reference/transform-1InverseWarp.nii.gz"
+      ]
+    },
+    "files": {
+      "brain.nii.gz": "e49b4447e0541205eef780cf3248966b93df5842219f05ba9e93acd1d6a1be63",
+      "mask.nii.gz": "7ccf47f474701206422bb4b01822d9db653a89b048437a95dd28da5902f96858",
+      "sdt.nii.gz": "ce37558b56bfd4907d2865b1b34400425d4010155994b03215b2f52614793b95",
+      "synthsr.nii.gz": "84a45f4014be33a55ef6057bea5a4bc7febac4f92b700aa932090cbc05838368",
+      "template.nii.gz": "32d5be33460f995a5d305507053c8862c823d9ca6bfb543381308df14590f212",
+      "transform-0GenericAffine.mat": "bd510462ca04d41cce989a0859b201232e85fd8b9b11befe1635112e7373e1fd",
+      "transform-1InverseWarp.nii.gz": "c223a53bbad477f7f812e6414bf663dfcf28c8e318f46b93b53da2e65ac83c3d",
+      "transform-1Warp.nii.gz": "57acaf9ed2bcaecb038acd32c39b78b82a21c8e0ac2c53582fa93f0c11842f26",
+      "warped-brain.nii.gz": "3315bec120eb380576ad01d622ba50a167e80849c57440be0a7d9457f5467708",
+      "warped-original.nii.gz": "17062d8a56ac5db9396169d1c726e1fc9046c3acd462547a1e171a406d491ed2"
+    }
+  },
+  "comparisons": {
+    "synthsr": {
+      "shape": [
+        160,
+        256,
+        256
+      ],
+      "max_affine_difference_mm": 0.0,
+      "max_absolute_difference": 1.0,
+      "mean_absolute_difference": 3.0994415283203125e-05,
+      "different_voxels": 325,
+      "voxel_count": 10485760
+    },
+    "synthstrip_preprocessing": {
+      "identical": true
+    },
+    "synthstrip_mask": {
+      "shape": [
+        160,
+        256,
+        256
+      ],
+      "max_affine_difference_mm": 0.0,
+      "max_absolute_difference": 0.0,
+      "mean_absolute_difference": 0.0,
+      "different_voxels": 0,
+      "voxel_count": 10485760,
+      "dice": 1.0
+    },
+    "synthstrip_brain": {
+      "shape": [
+        160,
+        256,
+        256
+      ],
+      "max_affine_difference_mm": 0.0,
+      "max_absolute_difference": 0.0,
+      "mean_absolute_difference": 0.0,
+      "different_voxels": 0,
+      "voxel_count": 10485760
+    },
+    "synthstrip_distance": {
+      "shape": [
+        160,
+        256,
+        256
+      ],
+      "max_affine_difference_mm": 0.0,
+      "max_absolute_difference": 2.008676528930664e-05,
+      "mean_absolute_difference": 1.4815852392402809e-06,
+      "different_voxels": 9435776,
+      "voxel_count": 10485760
+    },
+    "registration_brain": {
+      "shape": [
+        182,
+        218,
+        182
+      ],
+      "max_affine_difference_mm": 0.0,
+      "max_absolute_difference": 0.0,
+      "mean_absolute_difference": 0.0,
+      "different_voxels": 0,
+      "voxel_count": 7221032
+    },
+    "resampling_original": {
+      "shape": [
+        182,
+        218,
+        182
+      ],
+      "max_affine_difference_mm": 0.0,
+      "max_absolute_difference": 0.0,
+      "mean_absolute_difference": 0.0,
+      "different_voxels": 0,
+      "voxel_count": 7221032
+    },
+    "forward_field": {
+      "shape": [
+        182,
+        218,
+        182,
+        1,
+        3
+      ],
+      "max_affine_difference_mm": 0.0,
+      "max_absolute_difference": 0.0,
+      "mean_absolute_difference": 0.0,
+      "different_voxels": 0,
+      "voxel_count": 21663096
+    },
+    "inverse_field": {
+      "shape": [
+        182,
+        218,
+        182,
+        1,
+        3
+      ],
+      "max_affine_difference_mm": 0.0,
+      "max_absolute_difference": 0.0,
+      "mean_absolute_difference": 0.0,
+      "different_voxels": 0,
+      "voxel_count": 21663096
+    },
+    "affine": {
+      "AffineTransform_float_3_3": 0.0,
+      "fixed": 0.0
+    }
+  },
+  "wasm_runtime": {
+    "registrationSeconds": 186.46888590499998,
+    "totalSeconds": 192.485969413,
+    "memoryBytes": 3164995584
+  },
+  "scope": "One real T1 scan. SynthStrip and registration isolated on identical inputs. Not clinical validation or evidence for all modalities/pathologies."
+}

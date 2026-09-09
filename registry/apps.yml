@@ -314,9 +314,31 @@ apps:
     maintainers: [neurodesk]
     support_status: experimental
     shell: imaging-workspace
+    app_scoped_runtime_families: [ort-web-asyncify]
     ci:
       toolchains: [node]
       shared_runtime: false
       browser_test: true
       release: true
     artifact_budget_bytes: 65000000
+  - id: syncro
+    path: syncro
+    title: SYNcro
+    description: Normalize brain scans and aligned lesion maps to MNI space locally.
+    category: data-preparation
+    keywords: [SYNcro, SynthSR, SynthStrip, ANTs, MNI, registration]
+    legacy_domain: null
+    runtime: vite-webgpu
+    model_manifest: models/syncro.manifest.json
+    asset_manifest_schema: scientific-assets-v1
+    source: neurodesk/webapps@local
+    license: Apache-2.0
+    maintainers: [neurodesk]
+    support_status: experimental
+    shell: imaging-workspace
+    app_scoped_runtime_families: [ort-web-asyncify]
+    ci:
+      toolchains: [node]
+      shared_runtime: false
+      browser_test: true
+      release: true

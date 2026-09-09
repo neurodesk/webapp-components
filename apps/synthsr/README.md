@@ -102,15 +102,36 @@ and JSON provenance. It has not been validated for scientific equivalence.
 SynthSR generates synthetic contrast and can fill lesions. Preserve the original
 image for interpretation. No skull stripping or spatial normalization is performed.
 
-## ONNX Runtime WebGPU support
+## GPU execution
 
-Pinned to `onnxruntime-web@1.29.0`. The unified backend uses the **Asyncify** WASM
-module, not the older JSEP module. Mismatching them fails at `webgpuInit`.
-Conv3D, 3D pooling, and upsampling are exercised by real browser inference tests.
-The older WebGPU operator-support Markdown table incorrectly says Conv3D is absent;
-the [1.29 unified Conv implementation](https://github.com/microsoft/onnxruntime/blob/v1.29.0/onnxruntime/core/providers/webgpu/nn/conv.cc#L82)
-dispatches rank-5 tensors to Conv3D.
-GPU mode disables CPU EP fallback so an unsupported graph fails explicitly.
+GPU processing uses the specialized `synthsr-blocked-fp32-v1` WebGPU executor in
+`../../packages/synthsr/src/gpu-session.js`. Its FP32 Conv3D kernel computes 16 spatial positions × 32
+output channels per workgroup, sharing input and weight tiles. All intermediate
+activations stay channels-last on the GPU; eligible Conv/ELU and Add/ELU pairs
+are fused, and buffers are reused after their last graph consumer. This is
+execution tiling inside a convolution, not approximate image tiling: the full
+spatial context, weights, skip connections and preprocessing remain the same.
+
+The previous ONNX Runtime WebGPU path used `Conv3DNaive`; its full-example
+measurements and the optimization evidence are recorded in
+[`docs/performance-investigation.md`](docs/performance-investigation.md).
+CPU/WASM remains the default and uses `onnxruntime-web@1.29.0` with the existing
+Asyncify SIMD/threaded module. GPU reports identify `gpuImplementation`; CPU
+reports identify `onnxRuntime`. GPU mode does not fall back to CPU on failure.
+
+The executor supports only the checksum-pinned SynthSR graph. It verifies the
+ONNX SHA-256 before reading initializer offsets from `../../packages/synthsr/src/gpu-model.json`; weights
+are read from the original ONNX bytes, not a second model download. After changing
+the validated model, regenerate this index with the conversion Python environment:
+
+```sh
+.venv/bin/python apps/synthsr/scripts/index_gpu_model.py /path/to/synthsr-v2.onnx
+```
+
+The generated graph/offset index is checked against the model manifest by unit
+tests. Browser tests compare kernels against an independent scalar reference and
+the complete pipeline against TensorFlow fixtures. The optional full-example
+regression below exercises the largest activation buffers on hardware.
 
 Full-volume memory remains substantial. The largest decoder tensor has 48
 float32 channels after the concat-convolution rewrite; the app checks the GPU's
@@ -119,6 +140,12 @@ maximum buffer and binding sizes and conservatively rejects tensors at or above
 despite a 4 GiB adapter limit. The CPU path has its own WASM memory ceiling. Allocation failure is
 reported; tiled mode is never silently substituted. Browser hardware determines
 practical image size and throughput.
+
+The full example's reusable GPU activation buffers total approximately 3.35 GiB,
+plus weights and output readback. Session release destroys the GPU device and its
+resources. Optional `createGpuSession(bytes, dims, {profile: true})` records per-pass
+GPU timestamps in `session.profile` when the adapter supports timestamp queries;
+normal application runs do not enable profiling.
 
 ## Validation
 
@@ -153,13 +180,20 @@ For the optional full-volume regression, set `SYNTHSR_HARDWARE_GPU=1`,
 when running the browser suite. This requires a GPU with sufficient buffer limits
 and memory; the default CI suite uses small synthetic volumes and software WebGPU.
 
-On the public example FLAIR (padded shape 192×256×160), hardware WebGPU completed
+Before the blocked-kernel optimization, on the public example FLAIR (padded shape 192×256×160), hardware WebGPU completed
 single-pass synthesis in 98 seconds and matched the native reference at all
 10,000 sampled output voxels. With default flip averaging and sharpening, the run
 took 151 seconds: 297 of 6,598,560 output voxels differed by one uint8 intensity
 step; all other voxels matched. Maximum affine error was 0.0000036 mm. See
 `test/fixtures/browser-validation.json`. This validates that example and device; it is not
 a clinical validation or a cross-device performance guarantee.
+
+The optimized FP32 executor completed the same example with default flip and
+sharpening in 17.78 seconds on the measured Apple GPU, including 7.25 seconds of
+inference. Its output differed from the native reference by one uint8 step at
+424 of 6,598,560 voxels, within the existing parity tolerance. See
+[`docs/optimized-gpu-2026-09-08.json`](docs/optimized-gpu-2026-09-08.json) for
+production-build timings, hardware details and validation scope.
 
 ## Standalone / HPC
 

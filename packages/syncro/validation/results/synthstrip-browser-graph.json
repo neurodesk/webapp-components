@@ -1,0 +1,17 @@
+{
+  "brain": {
+    "max_absolute_difference": 0.0,
+    "different_voxels": 0,
+    "mean_absolute_difference": 0.0
+  },
+  "mask": {
+    "max_absolute_difference": 0.0,
+    "different_voxels": 0,
+    "mean_absolute_difference": 0.0
+  },
+  "distance": {
+    "max_absolute_difference": 2.1219253540039062e-05,
+    "different_voxels": 9448022,
+    "mean_absolute_difference": 1.4990974995523001e-06
+  }
+}

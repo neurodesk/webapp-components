@@ -1,0 +1,7 @@
+Advanced Normalization Tools (ANTs), Apache-2.0, ANTsX contributors.
+https://github.com/ANTsX/ANTs
+ANTs source: 52bc0ab588102682587303d31c720de94e6ef6c1 (2.6.2).
+ITK: Insight Software Consortium / NumFOCUS, Apache-2.0.
+Build toolchain: itkwasm/emscripten@sha256:d6c35290a9f1c5cfeb8168c18bbf64d78394cd111b6a19c6091921e98a3aaa1d
+Neurodesk wrapper limits registration to scalar 3D float processing and adds
+scalar image transform application. Registration algorithms are ANTs code.

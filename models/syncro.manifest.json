@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "app": "syncro",
+  "repository": "sbollmann/neurodesk-webapps-assets",
+  "revision": "e0a056b3d6b2b075bab5b780281af17fc9d6421d",
+  "base_url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/e0a056b3d6b2b075bab5b780281af17fc9d6421d/syncro/",
+  "license": "Mixed; see individual assets and upstream licenses",
+  "preprocessing_contract": {
+    "source": "packages/synthstrip/src/index.js",
+    "spacing_mm": [
+      1,
+      1,
+      1
+    ],
+    "orientation": "LIA",
+    "graph_optimization": "Split decoder channel concatenation/convolutions; unchanged weights and spatial context"
+  },
+  "assets": [
+    {
+      "filename": "synthstrip-browser.onnx",
+      "bytes": 10296357,
+      "sha256": "dc9e11999b58d7949d77ddf1b2ed2910df66f8725c078a6b46ae08b8ebcc2800",
+      "license": "Apache-2.0"
+    },
+    {
+      "filename": "MNI152_T1_1mm_brain.nii.gz",
+      "bytes": 3219212,
+      "sha256": "32d5be33460f995a5d305507053c8862c823d9ca6bfb543381308df14590f212",
+      "license": "FSL non-commercial terms; see FSL-LICENSE.txt"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { runSynthsr } from '@neurodesk/synthsr';
+import { createBrowserSession, browserRuntime } from '@neurodesk/synthsr/browser';
 import * as ort from 'onnxruntime-web/webgpu';
 import wasmURL from 'onnxruntime-web/ort-wasm-simd-threaded.asyncify.wasm?url';
 import wasmModuleURL from 'onnxruntime-web/ort-wasm-simd-threaded.asyncify.mjs?url';
@@ -42,37 +43,13 @@ async function modelBytes(model) {
   return { bytes, hash };
 }
 
-async function createSession(bytes, backend, shape) {
-  if (backend === 'webgpu') {
-    const adapter = await navigator.gpu?.requestAdapter({ powerPreference: 'high-performance' });
-    if (!adapter) throw new Error('WebGPU is unavailable. Select CPU (WASM), or use a browser with WebGPU support.');
-    // Optimized decoder avoids concatenation; largest tensor has 48 channels.
-    const required = shape.reduce((a,b) => a*b,1)*48*4;
-    // Larger buffers produced incorrect values in full-volume validation even
-    // when the adapter advertised 4 GiB. Keep this conservative runtime ceiling.
-    if (required >= 2 ** 31 || required > adapter.limits.maxStorageBufferBindingSize || required > adapter.limits.maxBufferSize) {
-      throw new Error('This volume exceeds the validated GPU buffer limit. Choose tiled mode (approximate), or use native SynthSR for full-volume processing.');
-    }
-    ort.env.webgpu.device = await adapter.requestDevice({
-      requiredLimits: {
-        maxBufferSize: adapter.limits.maxBufferSize,
-        maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
-      },
-    });
-  }
-  return ort.InferenceSession.create(bytes, {
-    executionProviders: [backend], graphOptimizationLevel: 'all',
-    // Never silently partition a requested GPU run onto CPU.
-    ...(backend === 'webgpu' ? { extra: { session: { disable_cpu_ep_fallback: '1' } } } : {}),
-  });
-}
 
 self.onmessage = async ({ data: job }) => {
   try {
     const {buffer,provenance}=await runSynthsr({
       buffer:await job.file.arrayBuffer(),options:job.options,Tensor:ort.Tensor,
-      loadModel:()=>modelBytes(job.model),createSession,onProgress:progress,
-      runtime:{app:'SynthSR web 0.1.0',onnxRuntime:'1.29.0'},
+      loadModel:()=>modelBytes(job.model),createSession:(...args)=>createBrowserSession(ort,...args),onProgress:progress,
+      runtime:{app:'SynthSR web 0.1.1',...browserRuntime(job.options.backend)},
     });
     self.postMessage({type:'result',buffer,provenance},[buffer]);
   } catch(error) { self.postMessage({type:'error',message:error.message || String(error)}); }

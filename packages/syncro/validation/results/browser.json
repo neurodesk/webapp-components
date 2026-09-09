@@ -1,0 +1,195 @@
+{
+  "brain_mask": {
+    "max_absolute_difference": 1.0,
+    "mean_absolute_difference": 2.86102294921875e-07,
+    "dice_nonzero": 0.9999990366135038
+  },
+  "warped_brain": {
+    "max_absolute_difference": 85.75155639648438,
+    "mean_absolute_difference": 0.5716603624919905,
+    "dice_nonzero": 0.9974374321516778,
+    "correlation": 0.9977392873370102
+  },
+  "warped_original": {
+    "max_absolute_difference": 218.1344757080078,
+    "mean_absolute_difference": 2.487239999165822,
+    "dice_nonzero": 0.9980850875691114,
+    "correlation": 0.999049956991393
+  },
+  "runtime": {
+    "seconds": 763.648,
+    "browser": "149.0.7827.55",
+    "errors": [],
+    "annotations": "Synthetic fixtures on the real anatomical grid"
+  },
+  "provenance": {
+    "version": "0.1.0",
+    "ct": false,
+    "stages": {
+      "synthsr": {
+        "package": "@neurodesk/synthsr",
+        "version": "0.1.0",
+        "model": "synthsr_v20_230130",
+        "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+        "app": "SYNcro",
+        "onnxRuntime": "1.29.0",
+        "threads": 4,
+        "ct": false,
+        "tiled": false,
+        "flip": true,
+        "sharpen": true,
+        "backend": "wasm",
+        "inputShape": [
+          160,
+          192,
+          192
+        ],
+        "outputShape": [
+          160,
+          256,
+          256
+        ],
+        "outputAffine": [
+          [
+            1,
+            0,
+            0,
+            -83
+          ],
+          [
+            0,
+            1,
+            0,
+            -125.16666650772095
+          ],
+          [
+            0,
+            0,
+            1,
+            -136.16666650772095
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "spacingMm": [
+          1,
+          1,
+          1
+        ],
+        "seconds": 466.18377499961855,
+        "timings": {
+          "read": 0.3837649993896484,
+          "preprocess": 4.045695000648498,
+          "model": 1.3945549993515014,
+          "initialize": 3.0115300006866454,
+          "inference": 450.2119600000382,
+          "release": 0.20758999919891358,
+          "postprocess": 6.927940000534058
+        },
+        "synthetic": true
+      },
+      "synthstrip": {
+        "modelHash": "dc9e11999b58d7949d77ddf1b2ed2910df66f8725c078a6b46ae08b8ebcc2800",
+        "modelDims": [
+          192,
+          256,
+          256
+        ],
+        "border": 1
+      },
+      "registration": {
+        "engine": "ANTs 2.6.2",
+        "method": "SyN",
+        "seed": 42,
+        "precision": "float",
+        "threads": 1
+      }
+    },
+    "additional": [
+      {
+        "name": "binary.nii.gz",
+        "type": "binary",
+        "policy": "3mm FWHM, linear warp, midpoint threshold"
+      },
+      {
+        "name": "labels.nii.gz",
+        "type": "labels",
+        "policy": "nearest"
+      }
+    ],
+    "timings": {
+      "synthsr": 466.299095000267,
+      "synthstrip": 100.65327999973297,
+      "registration": 148.86635999965668,
+      "resampling": 6.564354999542236
+    },
+    "totalSeconds": 737.5496700000763,
+    "outputSpace": {
+      "dims": [
+        182,
+        218,
+        182
+      ],
+      "affine": [
+        [
+          -1,
+          0,
+          0,
+          90
+        ],
+        [
+          0,
+          1,
+          0,
+          -126
+        ],
+        [
+          0,
+          0,
+          1,
+          -72
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ]
+    },
+    "resamplingDatatype": "float32",
+    "synthetic": true,
+    "templateHash": "18576c0190c0f6496f3d4a6bf40cfd6e9cddb4b6eaa8517bb0af2b88ff67c0c5",
+    "inputHash": "bdb7022ae229c5b8edd16425928c9243c562f84082b9b8e6f97cdba8b9354a98"
+  },
+  "synthsr": {
+    "max_absolute_difference": 1.0,
+    "different_voxels": 318,
+    "mean_absolute_difference": 3.032684326171875e-05
+  },
+  "binary": {
+    "max_absolute_difference": 1.0,
+    "different_voxels": 79,
+    "mean_absolute_difference": 1.0940264494050158e-05,
+    "dice_nonzero": 0.9960307491332965,
+    "output_values": [
+      0.0,
+      1.0
+    ]
+  },
+  "labels": {
+    "max_absolute_difference": 7.0,
+    "different_voxels": 136,
+    "mean_absolute_difference": 5.927130637282871e-05,
+    "dice_nonzero": 0.9936460474677631,
+    "output_values": [
+      0.0,
+      3.0,
+      7.0
+    ]
+  }
+}

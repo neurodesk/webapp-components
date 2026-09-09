@@ -1,0 +1,7 @@
+SynthStrip model and spatial processing: FreeSurfer SynthStrip, Hoopes et al.
+https://surfer.nmr.mgh.harvard.edu/docs/synthstrip/
+https://github.com/freesurfer/freesurfer
+Surfa geometry and postprocessing contract: https://github.com/freesurfer/surfa
+Apache-2.0. JavaScript port and runtime injection by Neurodesk.
+Based on the SynthStrip inference integration in Neurodesk VesselBoost, corrected
+against FreeSurfer SynthStrip 1.8 container preprocessing and postprocessing.

@@ -1,0 +1,81 @@
+import {readFile,writeFile,mkdir,rename,stat} from 'node:fs/promises';
+import {resolve,join,dirname} from 'node:path';
+import {homedir,availableParallelism} from 'node:os';
+import {createHash,randomUUID} from 'node:crypto';
+import {runSyncro,asBuffer} from './pipeline.js';
+import {assets} from './assets.js';
+import {runSynthsr,readVolume,writeVolume} from '../../synthsr/src/index.js';
+import {runSynthstrip} from '../../synthstrip/src/index.js';
+import {createRegistration} from '../../registration/src/index.js';
+const hash=b=>createHash('sha256').update(b).digest('hex');
+export const defaultCacheDir=()=>join(process.env.XDG_CACHE_HOME||join(homedir(),'.cache'),'neurodesk','syncro');
+export async function downloadModels({cacheDir=defaultCacheDir(),offline=false,onProgress=()=>{}}={}) {
+  const result={};
+  for(const [name,asset]of Object.entries(assets)) {
+    const path=join(cacheDir,asset.sha256,name+'.onnx');let bytes;
+    try {bytes=await readFile(path);}catch(e){if(e.code!=='ENOENT')throw e;}
+    if(bytes&&(bytes.length!==asset.bytes||hash(bytes)!==asset.sha256))throw new Error(`Cached ${name} model failed checksum verification: ${path}`);
+    if(!bytes) {
+      if(offline)throw new Error(`${name} is not cached. Run syncro download-models on a networked node first.`);
+      onProgress('download',0,`Downloading ${name}…`);const response=await fetch(asset.url);
+      if(!response.ok)throw new Error(`Failed to download ${name}: HTTP ${response.status}`);
+      bytes=Buffer.from(await response.arrayBuffer());
+      if(bytes.length!==asset.bytes||hash(bytes)!==asset.sha256)throw new Error(`${name} download failed checksum verification.`);
+      await mkdir(dirname(path),{recursive:true});const temporary=path+'.'+randomUUID()+'.partial';
+      await writeFile(temporary,bytes,{flag:'wx'});await rename(temporary,path);
+    }
+    result[name]={bytes,hash:asset.sha256};
+  }
+  return result;
+}
+export async function normalize({input,output,additional=[],ct=false,threads=Number(process.env.SLURM_CPUS_PER_TASK)||Math.min(4,availableParallelism()),cacheDir,offline=false,resume=false,onProgress=()=>{}}={}) {
+  if(!input||!output)throw new Error('Input image and output directory are required.');
+  if(!Number.isSafeInteger(threads)||threads<1)throw new Error('Threads must be a positive integer.');
+  const inputBytes=await readFile(input),out=resolve(output),checkpoint=join(out,'.checkpoints');
+  const template=await readFile(new URL('../data/MNI152_T1_1mm_brain.nii.gz',import.meta.url));
+  if(hash(template)!=='32d5be33460f995a5d305507053c8862c823d9ca6bfb543381308df14590f212')throw new Error('Template checksum mismatch.');
+  const registrationURL=new URL('./registration/syncro-registration.mjs',import.meta.url);
+  const wasm=await readFile(new URL('./registration/syncro-registration.wasm',import.meta.url));
+  const fingerprint=hash(JSON.stringify({input:hash(inputBytes),ct,code:hash(await readFile(new URL(import.meta.url))),wasm:hash(wasm),template:hash(template),models:Object.values(assets).map(a=>a.sha256)}));
+  let exists=false;try{await stat(out);exists=true;}catch(e){if(e.code!=='ENOENT')throw e;}
+  if(exists) {
+    if(!resume)throw new Error('Output directory already exists. Choose a new directory or --resume an interrupted SYNcro run.');
+    const marker=JSON.parse(await readFile(join(checkpoint,'run.json'),'utf8'));
+    if(marker.fingerprint!==fingerprint)throw new Error('Checkpoint input, options or software differ. Choose a new output directory.');
+  } else {await mkdir(checkpoint,{recursive:true});await writeFile(join(checkpoint,'run.json'),JSON.stringify({fingerprint}));}
+  const models=await downloadModels({cacheDir,offline,onProgress});
+  const ort=await import('onnxruntime-node');
+  const createSession=bytes=>ort.InferenceSession.create(bytes,{executionProviders:['cpu'],intraOpNumThreads:threads,interOpNumThreads:1,graphOptimizationLevel:'all'});
+  async function cached(name,fn,encode,decode) {
+    const record=join(checkpoint,name+'.json');
+    if(resume) {
+      try {
+        const metadata=JSON.parse(await readFile(record,'utf8')),files={};
+        for(const [file,checksum]of Object.entries(metadata.files)){const b=await readFile(join(checkpoint,file));if(hash(b)!==checksum)throw new Error(`Checkpoint corrupted: ${file}`);files[file]=b;}
+        onProgress(name,1,`Reusing verified ${name} checkpoint`);return decode(files,metadata.provenance);
+      }catch(e){if(e.code!=='ENOENT')throw e;}
+    }
+    const result=await fn(),files=encode(result),checksums={};
+    for(const [file,data]of Object.entries(files)){await writeFile(join(checkpoint,file),data);checksums[file]=hash(data);}
+    await writeFile(record,JSON.stringify({files:checksums,provenance:result.provenance}));return result;
+  }
+  let engine;
+  const result=await runSyncro({input:asBuffer(inputBytes),template:asBuffer(template),ct,onProgress,
+    additional:await Promise.all(additional.map(async item=>({...item,buffer:asBuffer(await readFile(item.path)),name:item.path}))),
+    synthesize:args=>cached('synthsr',()=>runSynthsr({buffer:args.buffer,options:{ct,backend:'cpu'},loadModel:async()=>models.synthsr,createSession,Tensor:ort.Tensor,onProgress:args.onProgress,runtime:{threads,onnxRuntime:ort.env.versions.node}}),
+      r=>({'synthsr.nii':new Uint8Array(r.buffer)}),(f,provenance)=>({buffer:asBuffer(f['synthsr.nii']),provenance})),
+    extractBrain:args=>cached('synthstrip',()=>runSynthstrip({...args,loadModel:async()=>models.synthstrip,createSession,Tensor:ort.Tensor}),
+      r=>({'brain.nii':new Uint8Array(writeVolume(r.brain)),'mask.nii':new Uint8Array(writeVolume(r.mask))}),
+      (f,provenance)=>({brain:readVolume(asBuffer(f['brain.nii'])),mask:{...readVolume(asBuffer(f['mask.nii'])),data:Uint8Array.from(readVolume(asBuffer(f['mask.nii'])).data)},provenance})),
+    registration:{
+      async register(args){const {default:createModule}=await import(registrationURL);engine=await createRegistration({createModule,wasmBinary:wasm,onLog:m=>onProgress('registration',null,m)});return engine.register(args);},
+      apply:args=>engine.apply(args),release:reg=>engine.release(reg),
+    },
+  });
+  result.provenance.input=resolve(input);result.provenance.inputHash=hash(inputBytes);result.provenance.templateHash=hash(template);result.provenance.registrationWasmHash=hash(wasm);
+  result.outputs['provenance.json']=new TextEncoder().encode(JSON.stringify(result.provenance,null,2)+'\n');
+  for(const [name,data]of Object.entries(result.outputs)) {
+    const temp=join(out,name+'.'+randomUUID()+'.partial');await writeFile(temp,data,{flag:'wx'});await rename(temp,join(out,name));
+  }
+  return {output:out,provenance:result.provenance};
+}

@@ -1,0 +1,18 @@
+{
+  "jacobian": {
+    "minimum": 0.20962020754814148,
+    "nonpositive_voxels": 0
+  },
+  "labels": {
+    "3": {
+      "dice": 0.993722145013658,
+      "reference_voxels": 10422,
+      "candidate_voxels": 10445
+    },
+    "7": {
+      "dice": 0.9906890130353817,
+      "reference_voxels": 268,
+      "candidate_voxels": 269
+    }
+  }
+}

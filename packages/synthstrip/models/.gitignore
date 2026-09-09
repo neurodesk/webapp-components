@@ -1,0 +1,2 @@
+# Browser graph is published through models/syncro.manifest.json.
+*.onnx

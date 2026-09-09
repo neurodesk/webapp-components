@@ -1,0 +1,20 @@
+{
+  "smoothing": {
+    "max_absolute_difference": 5.960464477539063e-08,
+    "different_voxels": 4426
+  },
+  "binary": {
+    "max_absolute_difference": 0.0,
+    "different_voxels": 0
+  },
+  "labels": {
+    "max_absolute_difference": 0.0,
+    "different_voxels": 0
+  },
+  "fixture": "Synthetic lesion and label fixtures on the real ds000001/sub-01 anatomical grid.",
+  "jacobian": {
+    "minimum": 0.21151432394981384,
+    "nonpositive_voxels": 0,
+    "voxel_count": 7221032
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "backend": "webgpu",
+  "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) T3Code(Alpha)/0.0.40 Chrome/150.0.7871.224 Safari/537.36",
+  "input": "OpenNeuro ds000001/sub-01/anat/sub-01_T1w.nii.gz",
+  "maxAffineError": 0,
+  "maxError": 1,
+  "mismatches": 744,
+  "pass": true,
+  "provenance": {
+    "app": "SYNcro",
+    "backend": "webgpu",
+    "ct": false,
+    "flip": true,
+    "gpuImplementation": "synthsr-blocked-fp32-v1",
+    "inputShape": [
+      160,
+      192,
+      192
+    ],
+    "model": "synthsr_v20_230130",
+    "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+    "outputAffine": [
+      [
+        1,
+        0,
+        0,
+        -83
+      ],
+      [
+        0,
+        1,
+        0,
+        -125.16666650772095
+      ],
+      [
+        0,
+        0,
+        1,
+        -136.16666650772095
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "outputShape": [
+      160,
+      256,
+      256
+    ],
+    "package": "@neurodesk/synthsr",
+    "seconds": 25.913990000009537,
+    "sharpen": true,
+    "spacingMm": [
+      1,
+      1,
+      1
+    ],
+    "synthetic": true,
+    "threads": 4,
+    "tiled": false,
+    "timings": {
+      "inference": 10.08259500002861,
+      "initialize": 0.6543350000381469,
+      "model": 0.33409499990940095,
+      "postprocess": 4.142330000042915,
+      "preprocess": 10.27009000003338,
+      "read": 0.42997000002861024,
+      "release": 0.000559999942779541
+    },
+    "version": "0.1.0"
+  },
+  "scope": "SynthSR stage only; reference is the pinned Neurodesk container output.",
+  "viewer": "NiiVue displaying the same real scan during inference",
+  "voxels": 10485760,
+  "workerSeconds": 27.039465000033378
+}

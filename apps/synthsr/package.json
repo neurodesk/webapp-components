@@ -1,6 +1,6 @@
 {
   "name": "synthsr",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test": "node --test test/*.test.js",
     "test:e2e": "playwright test",
-    "lint": "node --check src/main.js && node --check src/inference-worker.js && node --check src/volume.js"
+    "lint": "node --check src/main.js && node --check src/inference-worker.js && node --check src/volume.js && node --check ../../packages/synthsr/src/gpu-session.js && node --check ../../packages/synthsr/src/gpu-conv3d.js"
   },
   "dependencies": {
     "@neurodesk/webapp-components": "workspace:*",

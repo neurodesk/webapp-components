@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Normalize brain scans and lesion maps to MNI space locally with SYNcro."><title>SYNcro · Neurodesk</title></head><body>
+<header id="controls">
+<section class="nd-sidebar-section"><h2>Normalize a brain scan</h2><p>Synthesize a T1, extract the brain and align to MNI space. Images stay on this device.</p>
+<label for="input">Anatomical image (.nii or .nii.gz)</label><input id="input" type="file" accept=".nii,.gz"><button id="example">Load OpenNeuro example</button><p id="fileInfo" class="hint">Choose one 3D scan to begin.</p>
+<label for="modality">Input modality</label><select id="modality"><option value="mri">MRI</option><option value="ct">CT · Hounsfield units</option></select>
+<button id="runButton" disabled>Normalize to MNI</button><button id="cancel" hidden>Cancel processing</button></section>
+<details class="nd-sidebar-section" id="additionalSection"><summary>Accompanying images</summary><p class="hint">Images must already match the anatomical scan's dimensions and geometry.</p><label for="additional">Add aligned images or lesion maps</label><input id="additional" type="file" accept=".nii,.gz" multiple><div id="additionalList"></div></details>
+<details class="nd-sidebar-section"><summary>Processing settings</summary><label for="synthsrBackend">SynthSR processing device</label><select id="synthsrBackend"><option value="webgpu">GPU · optimized WebGPU (default)</option><option value="wasm">CPU · WebAssembly</option></select><p class="hint">Full-volume SynthSR with flip averaging and sharpening. Brain extraction and registration use CPU · WebAssembly.</p><p class="hint">Full scans need several GB of memory. A desktop browser is recommended.</p><label for="localSr">Offline SynthSR model</label><input id="localSr" type="file" accept=".onnx"><label for="localStrip">Offline SynthStrip browser model</label><input id="localStrip" type="file" accept=".onnx"><a id="browserModelLink" download>Download validated browser model</a></details>
+<details class="nd-sidebar-section" id="results"><summary>Results and downloads</summary><label for="resultSelect">Result to view</label><select id="resultSelect" disabled><option>Run normalization first</option></select><label for="opacity">Overlay opacity</label><input id="opacity" type="range" min="0" max="1" step="0.05" value="0.5" disabled><button id="download" disabled>Download all results (.zip)</button><p class="hint">Includes warped acquired images, synthetic images, masks, forward/inverse transforms and processing details.</p></details>
+<details class="nd-sidebar-section"><summary>Standalone / HPC</summary><p>Run the same pipeline with Node.js 22+ on a workstation or compute node. Synthesis and brain extraction use native ONNX Runtime; registration uses the same ANTs WebAssembly build.</p><a id="packageLink" download>Download npm package · 0.1.0</a><pre><code>ONNXRUNTIME_NODE_INSTALL=skip npm install -g \
+  --prefix "$HOME/.local" ./neurodesk-syncro-0.1.0.tgz
+export PATH="$HOME/.local/bin:$PATH"
+syncro input.nii.gz results --threads 4
+syncro download-models --cache-dir /shared/syncro
+syncro input.nii.gz results \
+  --cache-dir /shared/syncro --offline</code></pre><p>On SLURM, request 4 CPUs and 32 GB RAM initially. Set <code>--threads "$SLURM_CPUS_PER_TASK"</code>. Use <code>--lesion lesion.nii.gz</code> for binary lesions, or <code>--labels atlas.nii.gz</code> for categorical labels. <code>--resume</code> reuses verified synthesis and extraction checkpoints after interruption.</p></details>
+<details class="nd-sidebar-section"><summary>Technical log</summary><pre id="log" aria-label="Processing log"></pre></details>
+<button id="aboutBtn" hidden>About</button><button id="citeBtn" hidden>Cite</button><button id="privacyBtn" hidden>Privacy</button>
+</header>
+<main id="viewer"><div class="viewer-actions"><button id="originalView" disabled>Original scan</button><span id="viewLabel">Image workspace</span></div><div class="canvas-wrap"><canvas id="gl1" aria-label="Brain image viewer"></canvas><p id="empty">Load a brain scan to begin.</p></div><p id="viewerError" hidden></p></main>
+<footer id="status"><span id="statusText" role="status" aria-live="polite">Ready · choose an anatomical image</span><progress id="progress" value="0" max="1" aria-label="Normalization progress"></progress><span id="elapsed"></span></footer>
+<dialog id="info"><h2 id="infoTitle"></h2><div id="infoBody"></div><form method="dialog"><button class="nd-app-dialog__close">Close</button></form></dialog>
+<script type="module" src="/src/main.js"></script></body></html>

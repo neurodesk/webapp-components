@@ -1,0 +1,39 @@
+{
+  "name": "@neurodesk/syncro",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "SYNcro spatial normalization for browsers and standalone computers",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "syncro": "./bin/syncro.js"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./node": "./dist/node.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "data",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "validation/README.md",
+    "validation/results"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.js",
+    "lint": "node --check src/pipeline.js && node --check src/node.js"
+  },
+  "dependencies": {
+    "onnxruntime-node": "1.29.0",
+    "nifti-reader-js": "0.8.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

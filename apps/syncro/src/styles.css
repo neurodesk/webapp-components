@@ -1,0 +1,15 @@
+@import '@neurodesk/webapp-components/styles/imaging-workspace.css';
+#controls {overflow-y:auto;padding:var(--nd-space-3,12px);}
+.nd-sidebar-section {padding:12px;margin-bottom:10px;border:1px solid var(--nd-border-color,#64748b55);border-radius:8px;}
+.nd-sidebar-section>summary {cursor:pointer;font-weight:600;min-height:44px;display:list-item;align-content:center;}
+#controls label {display:block;margin:12px 0 5px;}#controls input:not([type=range]),#controls select {width:100%;max-width:100%;box-sizing:border-box;}
+#controls button,#controls select,#controls input {min-height:44px;font-size:16px;}#controls button {margin-top:10px;}
+#runButton,#download {width:100%;}#controls p {line-height:1.5;}h2 {font-size:1.2rem;margin:0 0 10px;}.hint {font-size:.9rem;opacity:.8;}
+pre {font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:240px;overflow:auto;}#log {max-height:180px;}
+#viewer {display:flex;flex-direction:column;min-height:400px;min-width:0;}.viewer-actions {display:flex;gap:12px;align-items:center;padding:8px;flex-wrap:wrap;}.viewer-actions button {min-height:44px;}.canvas-wrap {position:relative;flex:1;min-height:340px;}#gl1 {position:absolute;width:100%;height:100%;}#empty {position:absolute;inset:40% 0 auto;text-align:center;pointer-events:none;}#status {display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:10px;}#statusText {flex:1;min-width:150px;}#progress {width:130px;}dialog {max-width:560px;width:calc(100% - 48px);border-radius:10px;}dialog::backdrop {background:#0009;}[hidden] {display:none!important;}
+@media(max-width:700px){#viewer{min-height:380px;}#controls{padding:8px;}#status{font-size:14px;}.nd-sidebar-section{padding:10px;}}
+
+#info .nd-app-dialog__close {position:static;min-width:44px;min-height:44px;font-size:16px;}
+#packageLink, #browserModelLink {display:flex;align-items:center;min-height:44px;}
+#controls button, .viewer-actions button, #info button {background:var(--nd-color-surface-elevated);color:var(--nd-color-text);border:1px solid var(--nd-color-border);border-radius:var(--nd-radius-sm);}
+#controls button:hover:not(:disabled) {background:var(--nd-color-border);}
