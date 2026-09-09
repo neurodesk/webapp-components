@@ -58,10 +58,13 @@ test('full-volume dispatch covers output without exceeding WebGPU per-axis limit
 });
 
 test('convolution tiles stay inside baseline WebGPU workgroup limits',()=>{
-  for(const node of planGpuGraph([192,256,160]).nodes.filter(n=>n.op==='Conv'&&n.shape.channels>1)) {
-    const tile=conv3dTile(node.shape.channels);
-    assert.ok(tile.threads<=256,`${node.name} uses ${tile.threads} invocations`);
-    assert.ok(tile.sharedBytes<=16384,`${node.name} uses ${tile.sharedBytes} bytes of workgroup storage`);
+  const channels=new Set(planGpuGraph([192,256,160]).nodes.filter(n=>n.op==='Conv'&&n.shape.channels>1).map(n=>n.shape.channels));
+  for(let count=4;count<=256;count+=4)channels.add(count); // any channel count the kernel accepts, not only the pinned graph's
+  for(const count of channels) {
+    const tile=conv3dTile(count);
+    assert.ok(count%tile.channels===0,`tile ${tile.channels} does not divide ${count} channels`);
+    assert.ok(tile.threads<=256,`${count} channels use ${tile.threads} invocations`);
+    assert.ok(tile.sharedBytes<=16384,`${count} channels use ${tile.sharedBytes} bytes of workgroup storage`);
   }
 });
 

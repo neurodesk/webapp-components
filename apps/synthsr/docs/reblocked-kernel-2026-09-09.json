@@ -33,8 +33,11 @@
   "isolatedConvolutions": {
     "method": "One convolution per measurement, GPU timestamp queries, minimum of three runs.",
     "peakFmaCeiling": {
-      "note": "Memory-free FP32 FMA loop through WGSL on this GPU, for scale. The 10.4 TFLOP/s figure from core counts is not reachable through this stack.",
-      "tflopsByAccumulators": { "4": 2.36, "8": 3.66, "16": 4.11, "32": 1.17 }
+      "note": "Memory-free FP32 FMA loop through WGSL on this GPU, for scale. The 10.4 TFLOP/s figure from core counts is not reachable through this stack. Two loop forms were measured: 'coupled' chains each accumulator to its neighbour and is partly latency-limited; 'independent' keeps every chain self-contained and is the sounder ceiling. It was still rising at 24 accumulators, so 4.4 is a lower bound. Whether this wall is WGSL or shader-compiler codegen rather than the hardware's real rate is unresolved; separating them needs an equivalent Metal Shading Language measurement, which was not run.",
+      "coupledTflopsByAccumulators": { "4": 2.36, "8": 3.73, "16": 4.11, "24": 4.21, "32": 1.17 },
+      "independentTflopsByAccumulators": { "4": 3.2, "8": 3.92, "16": 4.27, "20": 4.35, "24": 4.43 },
+      "ceilingTflops": 4.43,
+      "kernelFractionOfCeiling": "The re-blocked kernel's 0.98-1.11 TFLOP/s is about 23% of this ceiling; the previous kernel's 0.60-0.88 was about 15%. The collapse at 32 accumulators is register spilling."
     },
     "dawn": [
       { "shape": "192x256x160 48->24", "previousMs": 589.5, "reblockedMs": 501.4, "speedup": 1.18, "reblockedTflops": 0.98 },
