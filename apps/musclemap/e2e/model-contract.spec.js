@@ -8,6 +8,8 @@ test('renders model metadata from the generated catalog', async ({ page }) => {
   await expect(modelOptions.nth(1)).toHaveText('Whole Body (99 structures, v1.3 — legacy)');
   await expect(page.locator('#overlapSelect')).toHaveValue('0.9');
 
+  if (await page.locator('#enterAppButton').isVisible()) await page.locator('#enterAppButton').click();
+  await page.getByRole('button', { name: 'Inference Settings' }).click();
   await page.locator('#modelSelect').selectOption('musclemap-wholebody-v1.3');
   await expect(page.locator('#overlapSelect')).toHaveValue('0.5');
   await expect(page.locator('#aboutModelVersion')).toHaveText('v1.3');

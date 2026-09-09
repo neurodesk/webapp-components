@@ -75,7 +75,10 @@ try {
         if (phase === 'workspace') {
           const enter = page.locator('#enterAppButton, #landingLaunch').filter({ visible: true }).first();
           if (await enter.count()) await enter.tap();
-          if (app.id === 'dicompare') await page.getByRole('link', { name: 'Open Workspace', exact: true }).tap();
+          if (app.id === 'dicompare') {
+            await page.getByRole('link', { name: 'Open Workspace', exact: true }).tap();
+            await expect(page.locator('header').filter({ has: page.locator('h1').filter({ hasText: /^Workspace$/ }) }).locator('.nd-app-bar')).toBeVisible();
+          }
           const welcome = page.locator('#welcomeLater');
           if (await welcome.isVisible()) await welcome.tap();
           if (app.id !== 'catalog') await expect(page.locator('.nd-app-bar:visible')).toHaveCount(1);

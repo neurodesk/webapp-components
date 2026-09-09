@@ -3,22 +3,33 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Synthesize a 1 mm T1-weighted brain image locally with SynthSR."><title>SynthSR · Neurodesk</title></head>
 <body>
 <header id="controls">
-  <section class="control-section"><span class="eyebrow">01 / INPUT</span><h2>Start with a brain scan</h2><p>Turn an MR or CT image into a synthetic, 1 mm T1-weighted image.</p>
-    <label class="drop-zone" id="dropZone" for="imageInput"><span class="upload-icon">↥</span><strong>Choose a NIfTI image</strong><small>or drop .nii / .nii.gz here</small><input id="imageInput" type="file" accept=".nii,.gz" aria-label="Choose NIfTI image"></label>
-    <button id="exampleBtn" class="text-button">Load example FLAIR</button>
+  <section class="control-section" id="inputSection">
+    <h2>Input image</h2>
+    <div id="dropZone">
+      <label class="file-picker" for="imageInput">Choose NIfTI image<input id="imageInput" type="file" accept=".nii,.nii.gz" aria-label="Choose NIfTI image"></label>
+      <p class="hint">or drop a .nii / .nii.gz file here</p>
+    </div>
     <div id="fileInfo" class="file-info" hidden></div>
+    <details id="exampleImages">
+      <summary>Example images</summary>
+      <label class="sr-only" for="exampleSelect">Example image</label>
+      <div class="example-controls"><select id="exampleSelect"></select><button id="exampleBtn" type="button">Load</button></div>
+      <p class="hint">For synthesis, choose a 3D human brain scan.</p>
+    </details>
   </section>
-  <section class="control-section"><span class="eyebrow">02 / SYNTHESIS</span>
+  <section class="control-section"><h2>Synthesis</h2>
     <label for="modality">Input modality</label><select id="modality"><option value="mr">MRI</option><option value="ct">CT · Hounsfield units</option></select>
+    <details id="processingSettings"><summary>Processing settings</summary>
     <label for="backend">Processing device</label><select id="backend"><option value="wasm" selected>CPU · WebAssembly</option><option value="webgpu">GPU · WebGPU</option></select>
     <label for="mode">Processing mode</label><select id="mode"><option value="full">Full volume · reference method</option><option value="tiled">Tiled · lower memory, approximate</option></select>
     <p id="modeHelp" class="hint">Full-volume synthesis can require several GB of memory.</p>
     <label class="check"><input id="flip" type="checkbox" checked> Average left–right predictions</label>
     <label class="check"><input id="sharpen" type="checkbox" checked> Sharpen synthetic image</label>
+    </details>
     <button id="processButton" disabled>Synthesize T1 <span>→</span></button><button id="cancelBtn" hidden>Cancel processing</button>
     <p class="privacy"><span>●</span> Images stay on your device.</p>
   </section>
-  <section class="control-section"><span class="eyebrow">03 / OUTPUT</span><button id="saveBtn" disabled>Download synthetic T1</button><button id="reportBtn" class="text-button" disabled>Download processing details</button><p class="hint">Synthetic contrast may alter or fill lesions. Keep the original scan for interpretation.</p></section>
+  <details class="control-section" id="outputSection"><summary>Output</summary><button id="saveBtn" disabled>Download synthetic T1</button><button id="reportBtn" class="text-button" disabled>Download processing details</button><p class="hint">Synthetic contrast may alter or fill lesions. Keep the original scan for interpretation.</p></details>
   <details class="control-section"><summary>Model settings</summary><p class="hint">Weights download once and are cached. For offline use, select the validated model file.</p><label for="modelInput">Local synthsr-v2.onnx</label><input id="modelInput" type="file" accept=".onnx"><p id="modelInfo" class="hint">SynthSR v2 · original pretrained weights</p></details>
   <button id="standaloneBtn" class="text-button">Run standalone / HPC</button>
   <button id="aboutBtn" class="text-button">About &amp; citation</button>
