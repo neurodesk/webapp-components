@@ -1,0 +1,89 @@
+name: synthsr-macos
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/synthsr-macos.yml'
+      - 'exes/synthsr/**'
+      - 'packages/synthsr/**'
+      - 'apps/synthsr/test/fixtures/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/synthsr-macos.yml'
+      - 'exes/synthsr/**'
+      - 'packages/synthsr/**'
+      - 'apps/synthsr/test/fixtures/**'
+  workflow_dispatch:
+    inputs:
+      sign_release:
+        description: Sign, notarize and attach the package to an existing draft or prerelease
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: Verify native inference
+        run: make -C exes/synthsr test lint fmt
+      - name: Build test installer
+        run: |
+          make -C exes/synthsr macos-pkg-adhoc
+          exes/synthsr/scripts/verify_macos_pkg.sh exes/synthsr/dist/*-adhoc.pkg
+      - uses: actions/upload-artifact@v7
+        with:
+          name: synthsr-macos-arm64-test-installer
+          path: exes/synthsr/dist/*-adhoc.pkg
+          if-no-files-found: error
+
+  release:
+    if: github.event_name == 'workflow_dispatch' && inputs.sign_release
+    needs: package
+    runs-on: macos-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Check release target
+        id: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' exes/synthsr/Cargo.toml)
+          tag="synthsr-v$version"
+          test "$(gh release view "$tag" --json isDraft,isPrerelease --jq '.isDraft or .isPrerelease')" = true
+          test "$(git rev-parse "$tag^{commit}")" = "$GITHUB_SHA"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+      - name: Sign and notarize installer
+        env:
+          APPLEID: ${{ secrets.APPLEID }}
+          APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_INSTALLER_LINK: ${{ secrets.CSC_INSTALLER_LINK }}
+          CSC_INSTALLER_KEY_PASSWORD: ${{ secrets.CSC_INSTALLER_KEY_PASSWORD }}
+        run: exes/synthsr/scripts/ci_macos_release.sh
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: synthsr-macos-arm64-release
+          path: exes/synthsr/dist/
+      - name: Attach verified release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.target.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" exes/synthsr/dist/*.pkg exes/synthsr/dist/*.sha256 exes/synthsr/dist/*.validation.txt --clobber

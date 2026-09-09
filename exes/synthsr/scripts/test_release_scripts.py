@@ -43,6 +43,42 @@ fi
         self.assertEqual(result.returncode, 42, result.stdout + result.stderr)
         self.assertNotIn("Verified", result.stdout)
 
+    def test_ci_signing_requires_credentials(self):
+        environment = {key: value for key, value in self.environment.items()
+                       if not key.startswith(("APPLE", "CSC_"))}
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/ci_macos_release.sh")],
+            env=environment, capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("Missing signing secret: APPLEID", result.stderr)
+
+    def test_ci_signing_cleans_keychain_after_release_failure(self):
+        log = self.directory / "security.log"
+        self.executable("security", '''
+printf '%s\\n' "$*" >> "$SECURITY_LOG"
+if [ "$*" = 'default-keychain -d user' ]; then
+    printf '"/tmp/original.keychain-db"\\n'
+fi
+''')
+        self.executable("xcrun", "exit 0\n")
+        self.executable("make", "exit 19\n")
+        environment = {**self.environment, "SECURITY_LOG": str(log),
+                       "RUNNER_TEMP": str(self.directory)}
+        for key in ["APPLEID", "APPLEIDPASS", "APPLE_TEAM_ID", "CSC_KEY_PASSWORD",
+                    "CSC_INSTALLER_KEY_PASSWORD"]:
+            environment[key] = "test-value"
+        environment["CSC_LINK"] = environment["CSC_INSTALLER_LINK"] = "dGVzdA=="
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/ci_macos_release.sh")],
+            env=environment, capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 19, result.stdout + result.stderr)
+        calls = log.read_text()
+        self.assertIn("default-keychain -d user -s /tmp/original.keychain-db", calls)
+        self.assertIn("delete-keychain", calls)
+        self.assertEqual(list(self.directory.glob("synthsr-signing.*")), [])
+
     def release(self, fail_phase=""):
         log = self.directory / "phases"
         log.write_text("")

@@ -27,6 +27,10 @@ const { ensureHostedAsset } = require('./hosted-assets.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const WORKER_PATH = path.join(ROOT, 'web/js/inference-worker.js');
+const workerTimeoutMinutes = Number(process.env.SCT_WORKER_TIMEOUT_MINUTES || 30);
+if (!Number.isFinite(workerTimeoutMinutes) || workerTimeoutMinutes <= 0) {
+  throw new Error('SCT_WORKER_TIMEOUT_MINUTES must be a positive number');
+}
 
 function prepareModuleWorkerSource(source) {
   return source
@@ -380,9 +384,12 @@ async function runWorkerCase(testCase) {
   }).catch(rejectDone);
 
   // Watchdog
-  const timeout = setTimeout(() => rejectDone(new Error('worker did not complete in 5min')), 5 * 60 * 1000);
-  await donePromise;
-  clearTimeout(timeout);
+  const timeout = setTimeout(() => rejectDone(new Error(`worker did not complete in ${workerTimeoutMinutes}min`)), workerTimeoutMinutes * 60 * 1000);
+  try {
+    await donePromise;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (Array.isArray(testCase.expectedStages) && testCase.expectedStages.length > 0) {
     for (const stage of testCase.expectedStages) {

@@ -1,0 +1,42 @@
+name: sct-full-tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 2 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sct-full-tests-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  full-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      SCT_WORKER_TIMEOUT_MINUTES: '30'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Run full SCT suite
+        id: tests
+        shell: bash
+        run: |
+          set -o pipefail
+          pnpm --filter spinalcordtoolbox test 2>&1 | tee "$RUNNER_TEMP/sct-full-tests.log"
+      - name: Summarize failures
+        if: failure() && steps.tests.outcome == 'failure'
+        run: node apps/spinalcordtoolbox/scripts/summarize_test_failures.cjs "$RUNNER_TEMP/sct-full-tests.log" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: sct-full-test-log
+          path: ${{ runner.temp }}/sct-full-tests.log
