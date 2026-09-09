@@ -9,6 +9,7 @@ test('mountImagingWorkspace preserves region, canvas, and listener identity', ()
     <main id="viewer"><canvas id="gl"></canvas></main>
     <footer id="status">Ready</footer>
     <dialog id="about"></dialog>
+    <button id="standalone">Standalone</button>
   </body>`);
   const { document } = dom.window;
   const controls = document.querySelector('#controls');
@@ -24,6 +25,7 @@ test('mountImagingWorkspace preserves region, canvas, and listener identity', ()
     viewer,
     status,
     title: 'Deface',
+    controlsContract: { standalone: '#standalone' },
   });
 
   assert.equal(workspace.querySelector('#controls'), controls);
@@ -31,6 +33,7 @@ test('mountImagingWorkspace preserves region, canvas, and listener identity', ()
   assert.equal(workspace.querySelector('#status'), status);
   assert.equal(workspace.querySelector('#gl'), canvas);
   assert.equal(document.body.querySelector('#about').parentElement, document.body);
+  assert.equal(document.body.querySelector('#standalone').dataset.neurodeskControl, 'standalone');
   assert.equal(workspace.querySelector('[title="More Neurodesk web apps"]').getAttribute('href'), '../');
   assert.equal(mountImagingWorkspace({ document, controls, viewer, status }), workspace);
   document.querySelector('#apply').click();

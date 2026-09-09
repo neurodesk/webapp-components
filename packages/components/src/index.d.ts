@@ -1,4 +1,4 @@
-export type ShellControlAction = 'about' | 'cite' | 'privacy';
+export type ShellControlAction = 'about' | 'cite' | 'privacy' | 'standalone';
 export type ShellTarget = string | Element;
 export type ShellTargetSet = ShellTarget | readonly ShellTarget[];
 export type ShellControlsContract = Partial<Record<ShellControlAction, ShellTargetSet>>;

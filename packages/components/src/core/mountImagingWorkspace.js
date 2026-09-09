@@ -59,7 +59,7 @@ export function mountImagingWorkspace(config = {}) {
     }),
   ]);
 
-  const actions = new Set(['about', 'cite', 'privacy']);
+  const actions = new Set(['about', 'cite', 'privacy', 'standalone']);
   for (const [action, configuredTargets] of Object.entries(config.controlsContract || {})) {
     if (!actions.has(action)) throw new Error(`Unsupported shell control: ${action}`);
     const targets = Array.isArray(configuredTargets) ? configuredTargets : [configuredTargets];

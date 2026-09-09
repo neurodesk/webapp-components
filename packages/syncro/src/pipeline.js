@@ -38,7 +38,7 @@ export function thresholdBinary(volume) {
 // Inference and filesystem/runtime ownership stay in injected adapters.
 export async function runSyncro({input,additional=[],template,synthesize,extractBrain,registration,brainExtractor='synthstrip',ct=false,onProgress=()=>{},onStage=()=>{}}) {
   if(!['mindgrab','synthstrip'].includes(brainExtractor))throw new Error('Brain extractor must be mindgrab or synthstrip.');
-  const start=performance.now(),timings={},outputs={},provenance={version:'0.1.3',ct,stages:{}};
+  const start=performance.now(),timings={},outputs={},provenance={version:'0.1.4',ct,stages:{}};
   const volume=readVolume(asBuffer(input)),fixed=readVolume(asBuffer(template));
   const accompanying=additional.map((item,i)=>{
     const v=readAdditional(item.buffer,item.type||'image');
