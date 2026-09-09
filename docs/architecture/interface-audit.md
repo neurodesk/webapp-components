@@ -26,6 +26,8 @@ All 14 registered apps were reviewed on 8 September 2026, starting from `c514f87
 
 Scan fields now accept NIfTI and DICOM through the same multi-file picker, including extensionless DICOM instances. SynthSR converts locally, provides a series selector, and supports cancellation and retry. NiiMath, Deface, and BrowserQC share the bundled image importer. Easy MP2RAGE routes its main picker through its existing DICOM parser and rejects mixed series instead of assembling unrelated scans. CALMaR's structural, lesion, DWI, ADC, and manual-mask fields and QSMbly's mask field support conversion. SeedSeg and QSMbly no longer filter out DICOM filename variants.
 
+Static apps retain a checksum-verified DICOM runtime inside each app's service-worker scope. GitHub Pages does not supply isolation headers for workers outside that scope. The DICOM browser suite serves the site without isolation headers and waits for the service-worker reload, reproducing the deployed environment instead of masking this requirement with local-server headers.
+
 Every file input declares its scientific purpose. Scan fields are checked by `audit:interfaces` for multi-file selection and unrestricted filenames. Surface and per-vertex overlays in SurfAnnotate, acquisition protocols in dicompare, and OME-Zarr datasets in ZARRo retain their specialized inputs. Model weights, BIDS directories, schemas, and gradient tables remain separate input types.
 
 Root `AGENTS.md` requires [the interface standard](interface-standard.md) for existing and new apps. The standard defines navigation ownership, disclosure defaults, state preservation, touch controls, and completion checks.

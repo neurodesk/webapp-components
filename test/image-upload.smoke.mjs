@@ -7,7 +7,7 @@ import { dicomSeries } from '../test-utils/dicom-fixture.mjs';
 
 const { apps } = await loadAppsRegistry();
 const expect = baseExpect.configure({ timeout: 60000 });
-const site = await serveSite(join(repoRoot, 'dist'));
+const site = await serveSite(join(repoRoot, 'dist'), { isolationHeaders: false });
 const browser = await chromium.launch({ args: ['--enable-webgl', '--use-gl=angle', '--use-angle=swiftshader'] });
 const failures = [];
 if (process.env.UPLOAD_ARTIFACTS) await mkdir(process.env.UPLOAD_ARTIFACTS, { recursive: true });
@@ -49,6 +49,10 @@ try {
     page.setDefaultTimeout(60000);
     try {
       await page.goto(`${process.env.BASE_URL || site.origin}/${app.path}/`, { waitUntil: 'domcontentloaded' });
+      if (await page.locator('script[src*="coi-serviceworker"]').count()) {
+        await page.waitForFunction(() => crossOriginIsolated);
+      }
+      await page.waitForLoadState('load');
       const enter = page.locator('#enterAppButton:visible, #landingLaunch:visible');
       if (await enter.count()) await enter.first().click();
       await expect(page.locator(selector)).toBeAttached();
