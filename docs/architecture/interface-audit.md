@@ -20,8 +20,15 @@ All 14 registered apps were reviewed on 8 September 2026, starting from `c514f87
 | BrowserQC | Empty Results start collapsed and open on completion or QC failure. Initial processing help is shorter. The shared bar owns About, with a standalone fallback outside the Results panel. |
 | SurfAnnotate | Surfaces stay open. Overlay, annotation, ROI, and export controls start collapsed. The first surface opens overlay and annotation controls; ROI creation or filling reveals export. Panels use shared spacing and full sidebar width. |
 | ZARRo | Source selection stays open. Navigate, Display, and Measure & Export start collapsed. The first loaded volume opens Navigate and Display. Advanced settings remain collapsed, and touch measurement and export remain available. |
+| SynthSR | The upload control is 44px tall, with a compact input heading. Example images load on selection, excluding CT_Abdo, CT_Electrodes, Iguana and spmMotor. Scaled negative voxels select CT; otherwise MRI, with a manual override. WebGPU is the default. Processing settings and unavailable outputs start collapsed; completed synthesis opens Output and reveals the Synthetic T1 tab. Loading a new image hides that tab. Terminal help is reduced to curl, local installation and one run command. Browser tests cap upload height at 48px and initial input-section height at 220px. |
 
 ## Rules and enforcement
+
+Scan fields now accept NIfTI and DICOM through the same multi-file picker, including extensionless DICOM instances. SynthSR converts locally, provides a series selector, and supports cancellation and retry. NiiMath, Deface, and BrowserQC share the bundled image importer. Easy MP2RAGE routes its main picker through its existing DICOM parser and rejects mixed series instead of assembling unrelated scans. CALMaR's structural, lesion, DWI, ADC, and manual-mask fields and QSMbly's mask field support conversion. SeedSeg and QSMbly no longer filter out DICOM filename variants.
+
+Static apps retain a checksum-verified DICOM runtime inside each app's service-worker scope. GitHub Pages does not supply isolation headers for workers outside that scope. The DICOM browser suite serves the site without isolation headers and waits for the service-worker reload, reproducing the deployed environment instead of masking this requirement with local-server headers.
+
+Every file input declares its scientific purpose. Scan fields are checked by `audit:interfaces` for multi-file selection and unrestricted filenames. Surface and per-vertex overlays in SurfAnnotate, acquisition protocols in dicompare, and OME-Zarr datasets in ZARRo retain their specialized inputs. Model weights, BIDS directories, schemas, and gradient tables remain separate input types.
 
 Root `AGENTS.md` requires [the interface standard](interface-standard.md) for existing and new apps. The standard defines navigation ownership, disclosure defaults, state preservation, touch controls, and completion checks.
 
@@ -35,6 +42,10 @@ Release verification includes SynthSR, added to production during this work. The
 
 Data workflows exercised for this change include:
 
+- `pnpm test:image-uploads` imports a generated four-slice DICOM series through the main scan picker in SynthSR, NiiMath, CALMaR, VesselBoost, SCT, MuscleMap, SeedSeg, QSMbly, Easy MP2RAGE, and MRI2VID. It also checks CALMaR DWI/ADC inputs, QSMbly mask conversion, and Easy MP2RAGE mixed-series rejection. CI runs this suite alongside the interface audit.
+- SynthSR's browser suite checks extensionless and `.IMA` DICOM, multiple converted series, return to NIfTI, invalid-input state preservation, cancellation, and retry.
+
+- SynthSR compact input bounds, shared examples, failed-download state preservation, and real `chris_t1` loading at 188 × 256 × 190 voxels. All 19 shared example URLs returned HTTP 200.
 - Easy MP2RAGE parameter-family selection, tutorial targets, NIfTI denoising, downloads, and About.
 - MRI2VID NIfTI import and the About and Privacy dialogs.
 - SCT NIfTI import and threshold preservation across disclosure changes.

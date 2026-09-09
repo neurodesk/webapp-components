@@ -346,7 +346,7 @@ drop.onclick = () => $('#file').click();
 drop.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('#file').click(); }
 });
-$('#file').onchange = (e) => addFiles(e.target.files);
+$('#file').onchange = (e) => addPickedFolders(e.target.files);
 ['dragover', 'dragenter'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('hover'); }));
 ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('hover'); }));
 drop.addEventListener('drop', handleDrop);

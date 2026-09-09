@@ -464,6 +464,7 @@ class MuscleMapApp {
       startPage.classList.add('hidden');
       document.getElementById('fileInput')?.focus();
     });
+    enterButton.disabled = false;
 
     const startPrivacyButton = document.getElementById('startPrivacyButton');
     if (startPrivacyButton) startPrivacyButton.addEventListener('click', () => this.privacyModal.open());

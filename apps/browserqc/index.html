@@ -14,12 +14,12 @@
   <aside id="qcPanel" aria-label="Image quality metrics">
     <section class="control-section" aria-labelledby="inputHeading">
       <h2 id="inputHeading">1. Input image</h2>
-      <p>Choose one NIfTI image or a folder containing a DICOM series. Files stay in this browser.</p>
+      <p>Choose NIfTI or DICOM files, or a DICOM folder. Files stay in this browser.</p>
       <div class="upload-actions">
-        <label class="upload-button" for="niftiInput">Choose NIfTI</label>
-        <input id="niftiInput" type="file" accept=".nii,.nii.gz,.mgh,.mgz,.nrrd,.mha,.mhd,.nhdr,.head,.v" hidden />
+        <label class="upload-button" for="niftiInput">Choose NIfTI / DICOM</label>
+        <input id="niftiInput" type="file" data-neurodesk-input="image" multiple hidden />
         <label class="upload-button" for="dicomInput">Choose DICOM folder</label>
-        <input id="dicomInput" type="file" webkitdirectory multiple hidden />
+        <input id="dicomInput" type="file" data-neurodesk-input="image" webkitdirectory multiple hidden />
       </div>
       <p class="drop-hint">You can also drop either format onto the viewer.</p>
       <select id="dicomPick" class="hidden" aria-label="Pick a converted NIfTI series"></select>

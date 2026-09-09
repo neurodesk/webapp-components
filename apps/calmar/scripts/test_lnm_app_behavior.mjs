@@ -817,6 +817,7 @@ async function waitForMicrotaskCondition(predicate, message, attempts = 20) {
     manualMaskFileInput: manualMaskInput
   });
   const uploaded = { name: 'notes.txt' };
+  app.readScanInput = async () => uploaded;
   app.startUploadedLesionMaskReview = async () => {
     throw new Error('Input is not a NIfTI file');
   };

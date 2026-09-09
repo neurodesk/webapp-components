@@ -473,8 +473,8 @@ class QSMApp {
     });
 
     // Centralized mask file input (in Masking section)
-    document.getElementById('maskFiles')?.addEventListener('change', (e) => {
-      this.fileIOController.handleMaskInput(e);
+    document.getElementById('maskFiles')?.addEventListener('change', async (e) => {
+      await this.fileIOController.handleMaskInput(e);
       this.updateMaskSectionState();
       this.updateEchoInfo();
     });
@@ -894,7 +894,7 @@ class QSMApp {
 
     for (const file of files) {
       const name = file.name.toLowerCase();
-      if (name.endsWith('.dcm') || (!name.includes('.') && file.size > 1000)) {
+      if (!(/\.(nii(\.gz)?|json)$/i.test(name))) {
         // .dcm or extensionless files (common for DICOM)
         dicomFiles.push(file);
       } else {

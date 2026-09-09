@@ -43,13 +43,15 @@ async function modelBytes(model) {
   return { bytes, hash };
 }
 
-
 self.onmessage = async ({ data: job }) => {
   try {
+    const runtime={app:'SynthSR web 0.1.2',...browserRuntime(job.options.backend)};
     const {buffer,provenance}=await runSynthsr({
       buffer:await job.file.arrayBuffer(),options:job.options,Tensor:ort.Tensor,
-      loadModel:()=>modelBytes(job.model),createSession:(...args)=>createBrowserSession(ort,...args),onProgress:progress,
-      runtime:{app:'SynthSR web 0.1.1',...browserRuntime(job.options.backend)},
+      loadModel:()=>modelBytes(job.model),createSession:(bytes,backend,shape)=>{
+        Object.assign(runtime,browserRuntime(backend,shape));
+        return createBrowserSession(ort,bytes,backend,shape);
+      },onProgress:progress,runtime,
     });
     self.postMessage({type:'result',buffer,provenance},[buffer]);
   } catch(error) { self.postMessage({type:'error',message:error.message || String(error)}); }

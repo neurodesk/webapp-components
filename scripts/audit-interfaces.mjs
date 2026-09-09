@@ -70,6 +70,19 @@ try {
         }
         if (result.clippedNavigation.length) result.failures.push(`Clipped navigation: ${result.clippedNavigation.join(', ')}`);
         if (result.duplicates.length) result.failures.push(`Duplicate navigation: ${result.duplicates.join(', ')}`);
+        result.uploads = await page.locator('input[type="file"]').evaluateAll(inputs => inputs.map(input => ({
+          id: input.id || input.name || 'unnamed file input',
+          kind: input.dataset.neurodeskInput,
+          accept: input.accept,
+          multiple: input.multiple,
+        })));
+        for (const input of result.uploads) {
+          if (!['image', 'model', 'surface', 'protocol', 'gradients', 'metadata', 'dataset'].includes(input.kind)) {
+            result.failures.push(`${input.id}: declare data-neurodesk-input; scan fields must use image`);
+          } else if (input.kind === 'image' && (input.accept || !input.multiple)) {
+            result.failures.push(`${input.id}: use one multi-file NIfTI/DICOM picker without an accept filter, including extensionless DICOM`);
+          }
+        }
         const initialSections = await page.locator('[data-disclosure]').evaluateAll(nodes => nodes.map(node => ({ id: node.id, collapsed: node.classList.contains('collapsed') })));
         for (const toggle of await page.locator('[data-disclosure-toggle]').all()) {
           if (!await toggle.isVisible()) continue;

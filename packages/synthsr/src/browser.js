@@ -1,3 +1,4 @@
+import { createStreamedWasmSession, needsStreamedWasm, WASM_IMPLEMENTATION } from './wasm-session.js';
 import { createGpuSession, GPU_IMPLEMENTATION } from './gpu-session.js';
 
 export { createGpuSession, planGpuGraph, GPU_IMPLEMENTATION } from './gpu-session.js';
@@ -7,13 +8,14 @@ export { createGpuSession, planGpuGraph, GPU_IMPLEMENTATION } from './gpu-sessio
 export function createBrowserSession(ort, bytes, backend = 'wasm', shape) {
   if (backend === 'webgpu') return createGpuSession(bytes, shape);
   if (backend !== 'wasm') throw new Error('SynthSR browser backend must be wasm or webgpu.');
+  if (shape && needsStreamedWasm(shape)) return createStreamedWasmSession(bytes, shape, ort);
   return ort.InferenceSession.create(bytes, {
     executionProviders: ['wasm'], graphOptimizationLevel: 'all',
   });
 }
 
-export function browserRuntime(backend = 'wasm') {
+export function browserRuntime(backend = 'wasm', shape) {
   return backend === 'webgpu'
     ? { gpuImplementation: GPU_IMPLEMENTATION }
-    : { onnxRuntime: '1.29.0' };
+    : { onnxRuntime: '1.29.0', ...(shape ? {wasmImplementation:needsStreamedWasm(shape)?WASM_IMPLEMENTATION:'onnxruntime-full-volume'} : {}) };
 }

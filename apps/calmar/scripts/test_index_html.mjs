@@ -218,8 +218,8 @@ assert.match(
 );
 assert.match(
   advancedWorkflow,
-  /<input\b[^>]*id=["']manualMaskFileInput["'][^>]*class=["']hidden["'][^>]*accept=["']\.nii,\.nii\.gz["'][^>]*>/i,
-  'manual mask upload must use a hidden NIfTI-only file input behind the compact buttons'
+  /<input\b[^>]*data-neurodesk-input=["']image["'][^>]*id=["']manualMaskFileInput["'][^>]*class=["']hidden["'][^>]*multiple[^>]*>/i,
+  'manual mask upload must use a hidden multi-file scan input behind the compact buttons'
 );
 assert.match(
   advancedWorkflow,

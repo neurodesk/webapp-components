@@ -19,7 +19,12 @@ test('only declared app-scoped runtime families remain in composite app copies',
   const registry = await loadAppsRegistry();
   for (const app of registry.apps) {
     const appDist = join(dist, app.path);
-    await assert.rejects(access(join(appDist, 'dcm2niix')));
+    if (app.app_scoped_runtime_families.includes('dcm2niix')) {
+      for (const file of ['index.js', 'worker.js', 'dcm2niix.js', 'dcm2niix.wasm']) {
+        assert.deepEqual(await readFile(join(appDist, 'dcm2niix', file)),
+          await readFile(join(dist, '_runtime', 'dcm2niix', '1', file)), `${app.id}: scoped ${file}`);
+      }
+    } else await assert.rejects(access(join(appDist, 'dcm2niix')));
     await assert.rejects(access(join(appDist, 'nifti-js')));
     await assert.rejects(access(join(appDist, 'vendor', 'webapp-components')));
     try {

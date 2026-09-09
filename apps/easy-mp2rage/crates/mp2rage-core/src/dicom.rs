@@ -245,6 +245,9 @@ pub struct Series {
 pub fn assemble(files: Vec<DicomFile>) -> Result<Series, String> {
     if files.is_empty() { return Err("empty series".into()); }
     let f0 = &files[0];
+    if files.iter().any(|file| file.series_uid != f0.series_uid) {
+        return Err("Several DICOM series selected. Choose one series at a time, or select a folder with each series in its own subfolder.".into());
+    }
     let (nx, ny) = (f0.cols, f0.rows);
     let row = [f0.iop[0], f0.iop[1], f0.iop[2]];
     let col = [f0.iop[3], f0.iop[4], f0.iop[5]];
@@ -558,6 +561,13 @@ pub fn write_derived_series(sources: &[&[u8]], t1: &[f32], nx: usize, ny: usize,
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn rejects_mixed_series_before_assembling_pixels() {
+        let first = DicomFile { series_uid: "1.2.3".into(), ..Default::default() };
+        let second = DicomFile { series_uid: "1.2.4".into(), ..Default::default() };
+        assert!(assemble(vec![first, second]).err().unwrap().contains("one series at a time"));
+    }
 
     fn el(group: u16, elem: u16, vr: &[u8; 2], data: &[u8]) -> Elem {
         Elem { group, elem, vr: *vr, data: data.to_vec() }

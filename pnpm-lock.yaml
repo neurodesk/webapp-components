@@ -386,6 +386,9 @@ importers:
 
   apps/synthsr:
     dependencies:
+      '@neurodesk/runtime-support':
+        specifier: workspace:*
+        version: link:../../packages/runtime-support
       '@neurodesk/synthsr':
         specifier: workspace:*
         version: link:../../packages/synthsr

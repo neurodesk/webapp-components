@@ -1,6 +1,6 @@
 {
   "name": "synthsr",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,13 +9,14 @@
     "preview": "vite preview",
     "test": "node --test test/*.test.js",
     "test:e2e": "playwright test",
-    "lint": "node --check src/main.js && node --check src/inference-worker.js && node --check src/volume.js && node --check ../../packages/synthsr/src/gpu-session.js && node --check ../../packages/synthsr/src/gpu-conv3d.js"
+    "lint": "node --check src/main.js && node --check src/inference-worker.js && node --check src/volume.js && node --check ../../packages/synthsr/src/gpu-session.js && node --check ../../packages/synthsr/src/gpu-conv3d.js && node --check ../../packages/synthsr/src/wasm-session.js"
   },
   "dependencies": {
     "@neurodesk/webapp-components": "workspace:*",
     "@niivue/niivue": "1.0.0-rc.11",
     "onnxruntime-web": "1.29.0",
-    "@neurodesk/synthsr": "workspace:*"
+    "@neurodesk/synthsr": "workspace:*",
+    "@neurodesk/runtime-support": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",

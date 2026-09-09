@@ -44,6 +44,7 @@ type FileWithRelativePath = File & { _webkitRelativePath?: string }
 
 /** Options for {@link runDcm2niix}. */
 export interface RunDcm2niixOptions {
+  signal?: AbortSignal
   /**
    * Filter the result list down to NIfTI outputs (`.nii` and `.nii.gz`).
    * BIDS sidecars and other dcm2niix outputs are dropped. Default: `true`.
@@ -69,7 +70,8 @@ export async function runDcm2niix(
   files: FileList | File[] | null | undefined,
   options: RunDcm2niixOptions = {},
 ): Promise<File[]> {
-  const { niftiOnly = true } = options
+  const { niftiOnly = true, signal } = options
+  signal?.throwIfAborted()
   if (!files || files.length === 0) return []
 
   const dcm2niix = new Dcm2niix()
@@ -87,6 +89,7 @@ export async function runDcm2niix(
       })(),
       RUN_TIMEOUT_MS,
       'dcm2niix',
+      signal,
     )) as File[]
     return niftiOnly
       ? result.filter((f) => /\.nii(\.gz)?$/i.test(f.name))
@@ -97,14 +100,35 @@ export async function runDcm2niix(
 }
 
 const RUN_TIMEOUT_MS = 120_000
-function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+function withTimeout<T>(p: Promise<T>, ms: number, label: string, signal?: AbortSignal): Promise<T> {
   return new Promise<T>((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms} ms`)), ms)
+    const abort = () => { cleanup(); reject(signal?.reason ?? new DOMException('Cancelled', 'AbortError')) }
+    const timer = setTimeout(() => { cleanup(); reject(new Error(`${label} timed out after ${ms} ms`)) }, ms)
+    const cleanup = () => { clearTimeout(timer); signal?.removeEventListener('abort', abort) }
+    signal?.addEventListener('abort', abort, { once: true })
     p.then(
-      (v) => { clearTimeout(timer); resolve(v) },
-      (e) => { clearTimeout(timer); reject(e) },
+      (v) => { cleanup(); resolve(v) },
+      (e) => { cleanup(); reject(e) },
     )
   })
+}
+
+/** Keep direct volumes and convert all DICOM slices together, including extensionless files. */
+export async function readImageFiles(
+  files: FileList | File[],
+  options: RunDcm2niixOptions & { directVolume?: RegExp } = {},
+): Promise<File[]> {
+  const directVolume = options.directVolume ?? /\.nii(\.gz)?$/i
+  const direct: File[] = []
+  const dicom: File[] = []
+  for (const file of Array.from(files)) {
+    if (directVolume.test(file.name)) direct.push(file)
+    else if (!/\.(json|bval|bvec)$/i.test(file.name)) dicom.push(file)
+  }
+  if (!dicom.length) return direct
+  const converted = await runDcm2niix(dicom, options)
+  if (!converted.length) throw new Error('No images produced. Choose NIfTI files or a complete DICOM series.')
+  return [...direct, ...converted]
 }
 
 /**
