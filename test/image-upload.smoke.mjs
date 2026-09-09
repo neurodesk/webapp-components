@@ -8,6 +8,7 @@ import { dicomSeries } from '../test-utils/dicom-fixture.mjs';
 const { apps } = await loadAppsRegistry();
 const expect = baseExpect.configure({ timeout: 60000 });
 const site = await serveSite(join(repoRoot, 'dist'), { isolationHeaders: false });
+const baseURL = (process.env.BASE_URL || site.origin).replace(/\/+$/, '');
 const browser = await chromium.launch({ args: ['--enable-webgl', '--use-gl=angle', '--use-angle=swiftshader'] });
 const failures = [];
 if (process.env.UPLOAD_ARTIFACTS) await mkdir(process.env.UPLOAD_ARTIFACTS, { recursive: true });
@@ -48,7 +49,7 @@ try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
     page.setDefaultTimeout(60000);
     try {
-      await page.goto(`${process.env.BASE_URL || site.origin}/${app.path}/`, { waitUntil: 'domcontentloaded' });
+      await page.goto(`${baseURL}/${app.path}/`, { waitUntil: 'domcontentloaded' });
       if (await page.locator('script[src*="coi-serviceworker"]').count()) {
         await page.waitForFunction(() => crossOriginIsolated);
       }
