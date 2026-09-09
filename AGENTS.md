@@ -1,5 +1,7 @@
 # Repository instructions
 
+This repository stores source code only. Large validation datasets and models belong on [https://huggingface.co/datasets/neurodeskorg/webapps](https://huggingface.co/datasets/neurodeskorg/webapps). Version patch numbers typically use the release date as `YYYYMMDD` (e.g., `0.1.20260808`).
+
 ## Interface changes and new applications
 
 Before changing UI, adding controls, or scaffolding an app, read [the interface standard](docs/architecture/interface-standard.md). Use QSMbly's compact workflow grouping as the visual reference.
@@ -23,3 +25,17 @@ When a user needs an interactive remote preview, use this host's existing HTTPS 
 5. Verify the public HTTPS app URL, a built asset URL, and the target workflow in the shared browser.
 
 Keep preview servers bound to loopback. Use a different path and port for another app so its preview cannot replace the T3 route or another active preview.
+
+## Native executables (exes/)
+
+`exes/<app>` holds native Rust executables, not pnpm packages. `exes/synthsr`
+builds with `make` inside that directory (`check-model`, `build`, `test`,
+`test-real`, `macos-release`), not `pnpm`. Model assets come from the Hugging
+Face dataset `neurodeskorg/webapps` via a pinned manifest and are never
+committed.
+
+`exes/synthsr/src/nifti.rs` and `src/volume.rs` are line-for-line ports of
+`packages/synthsr/src/volume.js` and must stay bit-identical (f64 math, f32
+storage): change the JS and the Rust together. `exes/synthsr/src/metal.rs`
+mirrors `packages/synthsr/src/gpu-conv3d.js` and `gpu-session.js` the same
+way.

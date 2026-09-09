@@ -30,7 +30,7 @@ Without isolation CPU inference uses one thread. WebGPU inference runs in a dedi
 Large weights are excluded from Git and `dist/`. The manifest at
 `models/synthsr.manifest.json` pins the validated ONNX file by SHA-256 and immutable
 Hugging Face revision. The app downloads it from the public
-[`sbollmann/neurodesk-webapps-assets` dataset](https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/tree/f6efb00454c5b3a687b0967cee96cf4c77af8ab9/synthsr).
+[`neurodeskorg/webapps` dataset](https://huggingface.co/datasets/neurodeskorg/webapps/tree/88c3dd6b9aac13429f760d9b0b48249040d3ee5f/synthsr/models).
 No authentication is required. Successful downloads are checksum-verified
 and cached using Cache Storage; cache/quota failures do not prevent inference.
 
@@ -234,7 +234,7 @@ Linux x64 machine, including curl downloads of Node.js and the standalone packag
 The first run downloads the verified model automatically. No npm registry publication
 or administrator access is needed. See the [standalone README](../../../packages/synthsr/README.md).
 
-Every app build includes `downloads/neurodesk-synthsr-0.1.0.tgz`. It uses the shared
+Every app build includes `downloads/neurodesk-synthsr-0.2.20260909.tgz`. It uses the shared
 processing pipeline with native CPU ONNX Runtime, independently of this repository.
 Build the tarball directly with `npm pack` in `packages/synthsr`.
 
