@@ -43,3 +43,16 @@ test('macOS signing is manual, tested and separate from pull-request packages', 
   assert.match(steps[target].run, /git rev-parse/);
   assert.match(steps[target].run, /GITHUB_SHA/);
 });
+
+test('native and independent test workflows pin actions and discard checkout credentials', async () => {
+  for (const name of ['synthsr-native', 'synthsr-macos', 'sct-full-tests']) {
+    const flow = await workflow(name);
+    for (const job of Object.values(flow.jobs)) {
+      for (const step of job.steps) {
+        if (!step.uses) continue;
+        assert.match(step.uses, /^[\w-]+\/[\w-]+@[0-9a-f]{40}$/, `${name}: ${step.uses}`);
+        if (step.uses.startsWith('actions/checkout@')) assert.equal(step.with['persist-credentials'], false);
+      }
+    }
+  }
+});

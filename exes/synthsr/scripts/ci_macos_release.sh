@@ -35,4 +35,4 @@ security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$password
 xcrun notarytool store-credentials synthsr-ci --keychain "$keychain" \
     --apple-id "$APPLEID" --password "$APPLEIDPASS" --team-id "$APPLE_TEAM_ID"
 # The temporary keychain is the sole user search keychain, so Make selects its identities.
-make -C "$root" macos-release NOTARY_PROFILE=synthsr-ci
+EXPECTED_TEAM_ID="$APPLE_TEAM_ID" make -C "$root" macos-release NOTARY_PROFILE=synthsr-ci

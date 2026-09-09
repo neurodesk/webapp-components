@@ -95,7 +95,7 @@ The benchmark volumes themselves live outside the repository
 
 ```sh
 make macos-notary-profile APPLE_ID='you@example.com' TEAM_ID='ABCDE12345'   # once; password prompted, stored in Keychain
-make macos-release VERSION=0.2.20260909   # identities default to the Developer ID certificates in your Keychain
+EXPECTED_TEAM_ID=ABCDE12345 make macos-release VERSION=0.2.20260909   # identities default to the Developer ID certificates in your Keychain
 ```
 
 `MACOS_SIGN_IDENTITY` / `MACOS_INSTALLER_IDENTITY` default to the first
@@ -110,6 +110,10 @@ package to re-verify signature/dependencies/execution, and runs `spctl
 `make macos-pkg-adhoc` writes `dist/synthsr-VERSION-macos-arm64-adhoc.pkg`
 (never the release name) for local testing. No secret is passed as a Make
 variable.
+
+Signed package verification requires `EXPECTED_TEAM_ID` and checks both the
+installer certificate and executable team before execution. To verify a trusted
+local ad-hoc build, use `scripts/verify_macos_pkg.sh FILE.pkg --allow-adhoc`.
 
 ## GitHub Actions macOS builds
 

@@ -350,9 +350,16 @@ impl Session {
         let opts = CompileOptions::new();
         opts.set_fast_math_enabled(false); // keep IEEE FP32 like the WGSL executor
         let upload = |v: &[f32]| {
+            let mut padding = [0.0f32; 4];
+            let data = if v.len() < padding.len() {
+                padding[..v.len()].copy_from_slice(v);
+                &padding[..]
+            } else {
+                v
+            };
             device.new_buffer_with_data(
-                v.as_ptr().cast(),
-                (v.len() * 4).max(16) as u64,
+                data.as_ptr().cast(),
+                std::mem::size_of_val(data) as u64,
                 MTLResourceOptions::StorageModeShared,
             )
         };

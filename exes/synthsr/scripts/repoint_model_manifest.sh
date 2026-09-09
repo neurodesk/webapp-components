@@ -3,6 +3,10 @@
 # manifests to that commit:  repoint_model_manifest.sh <commit-sha>
 set -eu
 rev=${1:?usage: repoint_model_manifest.sh COMMIT_SHA}
+case "$rev" in
+    *[!0-9a-fA-F]*|'') echo "Revision must be a full 40-character hexadecimal commit ID" >&2; exit 2 ;;
+esac
+[ "${#rev}" -eq 40 ] || { echo "Revision must be a full 40-character hexadecimal commit ID" >&2; exit 2; }
 root=$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)
 for f in "$root/packages/synthsr/model.manifest.json" "$root/models/synthsr.manifest.json"; do
 	python3 - "$f" "$rev" <<'PY'
