@@ -2,6 +2,8 @@
 
 The implementation was checked against the published Neurodesk container on **OpenNeuro ds000001/sub-01/anat/sub-01_T1w.nii.gz**, the real anatomical image used by Neurodesk's own SYNcro full test. The input has 160 × 192 × 192 voxels with approximately 1 × 1.333 × 1.333 mm spacing.
 
+These parity results describe the SynthStrip path, which remains selectable in the browser and is still used by the standalone CLI. The browser now defaults to MindGrab, so the SynthStrip end-to-end parity claim must not be transferred to a default MindGrab run. A paired extraction resource benchmark is recorded in [`results/brain-extraction-benchmark.json`](results/brain-extraction-benchmark.json), including a repeat with each extractor isolated in a fresh Chromium process and 100 ms Linux process-tree RSS sampling. Broader mask and downstream registration validation remains separate work.
+
 - [Neurodesk recipe and source](https://github.com/neurodesk/neurocontainers/tree/f993bfd6ea658f6d56ba5f6a131e4a8c79b7e0e7/recipes/syncro)
 - [Input download](https://s3.amazonaws.com/openneuro.org/ds000001/sub-01/anat/sub-01_T1w.nii.gz)
 - Input SHA-256: `bdb7022ae229c5b8edd16425928c9243c562f84082b9b8e6f97cdba8b9354a98`

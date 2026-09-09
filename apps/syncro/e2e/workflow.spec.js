@@ -34,7 +34,7 @@ test('cancellation restores input controls and invalid input cannot reuse an old
  await page.addInitScript(()=>{
   const OriginalWorker=window.Worker;
   window.Worker=class extends OriginalWorker {
-   postMessage(job,...rest){window.sentBackend=job.synthsrBackend;return super.postMessage(job,...rest);}
+   postMessage(job,...rest){if(job.synthsrBackend){window.sentBackend=job.synthsrBackend;window.sentBrainExtractor=job.brainExtractor;}return super.postMessage(job,...rest);}
   };
  });
  await page.goto('./');
@@ -42,15 +42,20 @@ test('cancellation restores input controls and invalid input cannot reuse an old
  await expect(page.locator('#runButton')).toBeEnabled({timeout:30000});
  await page.getByText('Processing settings',{exact:true}).click();
  await expect(page.locator('#synthsrBackend')).toHaveValue('webgpu');
+ await expect(page.locator('#brainExtractor')).toHaveValue('mindgrab');
  await page.route('**/MNI152_T1_1mm_brain.nii.gz',()=>{});
  await page.locator('#runButton').click();
  await expect(page.locator('#synthsrBackend')).toBeDisabled();
+ await expect(page.locator('#brainExtractor')).toBeDisabled();
  expect(await page.evaluate(()=>window.sentBackend)).toBe('webgpu');
+ expect(await page.evaluate(()=>window.sentBrainExtractor)).toBe('mindgrab');
  await page.locator('#cancel').click();
  await expect(page.locator('#statusText')).toContainText('cancelled');
  await expect(page.locator('#input')).toBeEnabled();
  await expect(page.locator('#synthsrBackend')).toBeEnabled();
+ await expect(page.locator('#brainExtractor')).toBeEnabled();
  await expect(page.locator('#synthsrBackend')).toHaveValue('webgpu');
+ await expect(page.locator('#brainExtractor')).toHaveValue('mindgrab');
  await expect(page.locator('#download')).toBeDisabled();
  await page.locator('#input').setInputFiles({name:'broken.nii',mimeType:'application/octet-stream',buffer:Buffer.from('not a NIfTI')});
  await expect(page.locator('#runButton')).toBeDisabled();
@@ -82,7 +87,7 @@ test('compact help, standalone commands and result switching remain reachable',a
  await page.locator('.info-icon').first().focus();
  await expect(page.locator('.info-tooltip').first()).toBeVisible();
  await page.locator('#standalone > summary').click();
- await expect(page.locator('#downloadCommand')).toContainText('curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-0.1.2.tgz');
+ await expect(page.locator('#downloadCommand')).toContainText('curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-0.1.3.tgz');
  await page.locator('[data-copy-target="downloadCommand"]').click();
  expect(await page.evaluate(()=>window.copiedText)).toContain('curl -LO');
 
