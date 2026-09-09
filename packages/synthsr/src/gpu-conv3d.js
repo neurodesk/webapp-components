@@ -7,13 +7,20 @@
 const POSITIONS = 2;   // spatial positions accumulated per thread
 const CHUNK = 16;      // reduction elements staged per barrier
 const ROWS = 64;       // thread rows per workgroup; POSITIONS*ROWS positions per tile
+const INVOCATIONS = 256; // WebGPU's baseline maxComputeInvocationsPerWorkgroup
+const STORAGE = 16384;   // WebGPU's baseline maxComputeWorkgroupStorageSize
 
 // Largest channel tile that divides the layer's channels, so no lane computes a
 // discarded channel. The pinned graph's convolutions are all multiples of eight.
+// Tiles that would exceed WebGPU's baseline workgroup limits are rejected rather
+// than emitted, so an unsupported channel count cannot reach pipeline creation.
 function channelBlock(outputChannels) {
   for (const channels of [8, 4]) {
     for (let tile = Math.min(32, outputChannels); tile >= channels; tile -= channels) {
-      if (outputChannels % tile === 0 && tile % channels === 0) return { channels, tile };
+      if (outputChannels % tile || tile % channels) continue;
+      if ((tile / channels) * ROWS > INVOCATIONS) continue;
+      if (4 * CHUNK * (POSITIONS * ROWS + tile) > STORAGE) continue;
+      return { channels, tile };
     }
   }
   throw new Error('Blocked Conv3D requires output channels divisible by four.');

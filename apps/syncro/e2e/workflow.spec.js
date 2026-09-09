@@ -13,6 +13,11 @@ function scan(name,translation=0){
  buffer.writeFloatLE(translation,292);buffer.write('n+1\0',344);buffer.fill(20,352);
  return {name,mimeType:'application/octet-stream',buffer};
 }
+async function expectCentered(page,locator){
+ const box=await locator.boundingBox(),viewport=page.viewportSize();
+ expect(Math.abs(box.x-(viewport.width-box.width)/2)).toBeLessThan(2);
+ expect(Math.abs(box.y-(viewport.height-box.height)/2)).toBeLessThan(2);
+}
 test('geometry error reveals retained accompanying controls before inference',async({page})=>{
  const modelRequests=[];page.on('request',r=>{if(r.url().includes('.onnx'))modelRequests.push(r.url());});
  await page.goto('./');
@@ -86,10 +91,21 @@ test('compact help, standalone commands and result switching remain reachable',a
  await expect(page.locator('#localSr, #localStrip, #browserModelLink')).toHaveCount(0);
  await page.locator('.info-icon').first().focus();
  await expect(page.locator('.info-tooltip').first()).toBeVisible();
- await page.locator('#standalone > summary').click();
- await expect(page.locator('#downloadCommand')).toContainText('curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-0.1.3.tgz');
+ await expect(page.locator('#standalone')).toHaveCount(0);
+ await page.locator('.nd-app-bar').getByRole('button',{name:'Standalone',exact:true}).click();
+ await expect(page.locator('#info')).toBeVisible();
+ await expect(page.locator('#infoTitle')).toHaveText('Standalone');
+ await expectCentered(page,page.locator('#info'));
+ await expect(page.locator('#downloadCommand')).toContainText('curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-0.1.4.tgz');
  await page.locator('[data-copy-target="downloadCommand"]').click();
  expect(await page.evaluate(()=>window.copiedText)).toContain('curl -LO');
+ await page.locator('#info').getByRole('button',{name:'Close'}).click();
+ for(const label of ['About','Privacy']){
+  await page.locator('.nd-app-bar').getByRole('button',{name:label,exact:true}).click();
+  await expect(page.locator('#info')).toBeVisible();
+  await expectCentered(page,page.locator('#info'));
+  await page.locator('#info').getByRole('button',{name:'Close'}).click();
+ }
 
  await page.locator('#input').setInputFiles(scan('anatomical.nii'));
  await expect(page.locator('#resultSelect')).toHaveValue('original');
@@ -111,8 +127,9 @@ test('compact help, standalone commands and result switching remain reachable',a
  await expect(page.locator('#viewLabel')).toHaveText('MNI template + warped-original.nii.gz');
  await expect(page.locator('#opacityControl')).toBeVisible();
 
- await page.locator('#citeBtn').evaluate(button=>button.click());
+ await page.locator('.nd-app-bar').getByRole('button',{name:'Cite',exact:true}).click();
  await expect(page.locator('#info')).toHaveClass(/citations-dialog/);
+ await expectCentered(page,page.locator('#info'));
  await expect(page.locator('#infoTitle')).toHaveText('Citations');
  await expect(page.locator('.citation-section h3')).toHaveText(['Image synthesis','Brain extraction','Image registration','Visualization']);
  await expect(page.locator('#infoBody')).toContainText('Alzheimer’s Disease Neuroimaging Initiative');

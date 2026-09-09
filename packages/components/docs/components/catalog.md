@@ -6,7 +6,8 @@
 
 Moves existing controls, viewer, and status regions into the shared imaging
 workspace without cloning app-owned nodes or listeners. The hosted-site shell
-uses the same `data-neurodesk-control` contract for About, Cite, and Privacy.
+uses the same `data-neurodesk-control` contract for About, Cite, Privacy, and an
+optional Standalone package dialog.
 
 ## UI
 

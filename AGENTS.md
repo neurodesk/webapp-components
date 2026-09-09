@@ -6,7 +6,7 @@ This repository stores source code only. Large validation datasets and models be
 
 Before changing UI, adding controls, or scaffolding an app, read [the interface standard](docs/architecture/interface-standard.md). Use QSMbly's compact workflow grouping as the visual reference.
 
-- Keep one shared application bar. Register app-specific About, Cite and Privacy handlers through the shell's control contract.
+- Keep one shared application bar. Register app-specific About, Cite and Privacy handlers through the shell's control contract. If an app ships a command-line package, register its Standalone instructions through the optional shell control instead of placing them in the workflow sidebar.
 - Keep the current task visible. Put optional settings, technical logs and inactive output controls in accessible collapsible sections.
 - Place technical logs in a collapsed console below the viewer, following QSMbly's `console-container` disclosure pattern. Keep Copy and Clear actions in the console header.
 - Reuse shared layout, spacing and control components. Preserve input values when sections close.

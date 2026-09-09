@@ -1,6 +1,6 @@
 # Interface consistency audit
 
-All 14 registered apps were reviewed on 8 September 2026, starting from `c514f87d`. The identified interface changes are implemented. Production workspaces were checked at 1440 × 900 and 390 × 844, with additional narrow-phone, landscape, and tablet checks.
+All 16 registered apps were reviewed on 9 September 2026, starting from `e6ef75e`. The identified interface changes are implemented. Production workspaces were checked at 1440 × 900 and 390 × 844, with additional narrow-phone, landscape, and tablet checks.
 
 ## Changes by app
 
@@ -21,6 +21,7 @@ All 14 registered apps were reviewed on 8 September 2026, starting from `c514f87
 | SurfAnnotate | Surfaces stay open. Overlay, annotation, ROI, and export controls start collapsed. The first surface opens overlay and annotation controls; ROI creation or filling reveals export. Panels use shared spacing and full sidebar width. |
 | ZARRo | Source selection stays open. Navigate, Display, and Measure & Export start collapsed. The first loaded volume opens Navigate and Display. Advanced settings remain collapsed, and touch measurement and export remain available. |
 | SynthSR | The upload control is 44px tall, with a compact input heading. Example images load on selection, excluding CT_Abdo, CT_Electrodes, Iguana and spmMotor. Scaled negative voxels select CT; otherwise MRI, with a manual override. WebGPU is the default. Processing settings and unavailable outputs start collapsed; completed synthesis opens Output and reveals the Synthetic T1 tab. Loading a new image hides that tab. Terminal help is reduced to curl, local installation and one run command. Browser tests cap upload height at 48px and initial input-section height at 220px. |
+| SYNcro | Standalone package instructions open from the shared application bar instead of occupying the workflow sidebar. About, Cite, Privacy and Standalone share one centered, viewport-bounded information dialog. The technical log remains collapsed below the viewer and overlay opacity remains in the viewer toolbar. |
 
 ## Rules and enforcement
 
@@ -32,13 +33,13 @@ Every file input declares its scientific purpose. Scan fields are checked by `au
 
 Root `AGENTS.md` requires [the interface standard](interface-standard.md) for existing and new apps. The standard defines navigation ownership, disclosure defaults, state preservation, touch controls, and completion checks.
 
-The shared shell hides registered duplicate information triggers while retaining their handlers and standalone fallbacks. Shared native disclosures and `bindSectionDisclosures` preserve control identity, synchronize workflow expansion, and remove closed content from keyboard navigation. The new-app template uses these components and a collapsed technical log; its documentation mirror matches.
+The shared shell hides registered duplicate information triggers while retaining their handlers and standalone fallbacks. It provides consistent About, Cite and Privacy actions, plus an optional Standalone action for apps with a command-line distribution. Shared fallback dialogs are centered; rich app-owned dialogs remain responsible for matching the same QSMbly modal geometry. Shared native disclosures and `bindSectionDisclosures` preserve control identity, synchronize workflow expansion, and remove closed content from keyboard navigation. The new-app template uses these components and a collapsed technical log; its documentation mirror matches.
 
 `pnpm audit:interfaces` derives coverage from the canonical app registry. Every app must have one unclipped shared bar, no exact duplicate navigation actions, working disclosure keyboard controls, and zero mouse-only heading handlers. There are no per-app exceptions. CI also runs mobile and representative data-workflow checks and retains desktop and phone screenshots plus JSON.
 
 ## Verification
 
-Release verification includes SynthSR, added to production during this work. The catalog audit passes all 30 desktop and phone cases across the resulting 15 apps with zero legacy heading handlers. Repository and shared-component tests cover the registry, template, shell, native disclosures, and class-driven disclosure state. Mobile checks cover narrow phones, tablets, landscape layouts, navigation, dialogs, and imaging interaction.
+Release verification includes SynthSR and SYNcro. The catalog audit passes all 32 desktop and phone cases across 16 apps with zero legacy heading handlers. Repository and shared-component tests cover the registry, template, shell, native disclosures, and class-driven disclosure state. Mobile checks cover narrow phones, tablets, landscape layouts, navigation, dialogs, and imaging interaction.
 
 Data workflows exercised for this change include:
 

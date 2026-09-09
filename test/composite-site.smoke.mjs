@@ -318,7 +318,11 @@ try {
       if (!identity.includes(app.title)) failures.push(`${app.id}: top bar is missing the app name`);
       if (!identity.includes(app.description)) failures.push(`${app.id}: top bar is missing the short explanation`);
       if (!/v\d+\.\d+/.test(identity)) failures.push(`${app.id}: top bar is missing a version`);
-      if (actions.replace(/\s+/g, ' ').trim() !== 'About Cite Privacy Light More Apps GitHub') {
+      const hasStandalone = await page.locator('[data-neurodesk-control="standalone"]').count() > 0;
+      const expectedActions = hasStandalone
+        ? 'About Cite Standalone Privacy Light More Apps GitHub'
+        : 'About Cite Privacy Light More Apps GitHub';
+      if (actions.replace(/\s+/g, ' ').trim() !== expectedActions) {
         failures.push(`${app.id}: top-bar actions are out of contract: ${actions.replace(/\s+/g, ' ').trim()}`);
       }
       if (githubHref !== `https://github.com/neurodesk/webapps/tree/main/apps/${app.id}`) {

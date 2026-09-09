@@ -589,6 +589,7 @@
 
 .nd-app-dialog {
   width: min(520px, calc(100vw - 32px));
+  margin: auto;
   padding: 0;
   color: var(--nd-brand-text);
   background: var(--nd-brand-surface);

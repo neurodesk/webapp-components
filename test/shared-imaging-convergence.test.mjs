@@ -21,6 +21,7 @@ test('the workspace and static pages expose one typed shell-control contract', a
   const declarations = await source('packages', 'components', 'src', 'core', 'mountImagingWorkspace.d.ts');
   assert.match(declarations, /controlsContract\?:\s*ShellControlsContract/);
   assert.match(declarations, /ShellTargetSet/);
+  assert.match(declarations, /'standalone'/);
 
   for (const app of inferenceApps) {
     const html = await source('apps', app, 'web', 'index.html');
@@ -35,6 +36,9 @@ test('the workspace and static pages expose one typed shell-control contract', a
   }
   assert.match(qsm, /data-neurodesk-shell-link=["']more-apps["']/);
   assert.match(qsm, /data-neurodesk-shell-link=["']github["']/);
+
+  const syncro = await source('apps', 'syncro', 'index.html');
+  assert.match(syncro, /data-neurodesk-control=["']standalone["']/);
 
   const theme = await source('site', 'app-theme.css');
   assert.doesNotMatch(theme, /href\*?=["'][^"']*qsmbly|QSMbly|QSMxT/i);

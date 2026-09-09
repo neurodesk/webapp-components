@@ -224,7 +224,8 @@ harness's run-to-run spread, so no end-to-end change is claimed there. Blocking
 constants are named at the top of `../../packages/synthsr/src/gpu-conv3d.js`;
 a sweep of ~190 configurations put them within 4% of Dawn's optimum, and both
 WebGPU implementations converge near 1.0 TFLOP/s against a measured WGSL FP32 FMA
-ceiling of 4.11 TFLOP/s on this GPU. See
+ceiling of at least 4.4 TFLOP/s on this GPU, far below the 10.4 TFLOP/s implied by
+core counts. See
 [`docs/reblocked-kernel-2026-09-09.json`](docs/reblocked-kernel-2026-09-09.json).
 
 ## Standalone
