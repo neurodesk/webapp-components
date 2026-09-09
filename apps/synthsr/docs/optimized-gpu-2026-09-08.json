@@ -1,0 +1,838 @@
+{
+  "date": "2026-09-08",
+  "implementation": "synthsr-blocked-fp32-v1",
+  "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+  "environment": {
+    "agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) T3Code(Alpha)/0.0.40 Chrome/150.0.7871.224 Safari/537.36",
+    "crossOriginIsolated": true,
+    "gpu": {
+      "architecture": "metal-3",
+      "isFallbackAdapter": false,
+      "vendor": "apple"
+    },
+    "threads": 10,
+    "url": "https://203.101.224.182/synthsr-gpu/"
+  },
+  "method": "Full built-in FLAIR, full volume, flip averaging and sharpening enabled. Final production build served through the existing HTTPS reverse proxy. Original worker code executed unchanged; a passive message listener retained provenance and output buffers. No inference profiling enabled for production measurements. Earlier released-app baselines are in released-example-2026-09-08.json. Timings exclude example acquisition and final viewer rendering, as in the application's processing report.",
+  "finalBuildWorkerSha256": "e9452b246ae53c85b6c193d4be9ab99cdf870de44105bb030d2e044d5071c5d7",
+  "finalBuild": {
+    "comparison": {
+      "maxAffineError": 0.0000035762786865234375,
+      "maxError": 1,
+      "mismatches": 424,
+      "voxels": 6598560
+    },
+    "runs": [
+      {
+        "provenance": {
+          "app": "SynthSR web 0.1.0",
+          "backend": "webgpu",
+          "ct": false,
+          "flip": true,
+          "gpuImplementation": "synthsr-blocked-fp32-v1",
+          "inputShape": [
+            176,
+            232,
+            159
+          ],
+          "model": "synthsr_v20_230130",
+          "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+          "outputAffine": [
+            [
+              0.9991199778467502,
+              0.028677280827491186,
+              0.030608552976331024,
+              -89.15002447891334
+            ],
+            [
+              -0.028663832144099052,
+              0.9995887222074593,
+              -0.0008781360000428226,
+              -103.40590667825974
+            ],
+            [
+              -0.03062114619546966,
+              4.778623247401481e-9,
+              0.9995310627298486,
+              -77.37201107895406
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ]
+          ],
+          "outputShape": [
+            177,
+            233,
+            160
+          ],
+          "package": "@neurodesk/synthsr",
+          "seconds": 17.779314999938013,
+          "sharpen": true,
+          "spacingMm": [
+            1,
+            1,
+            1
+          ],
+          "synthetic": true,
+          "tiled": false,
+          "timings": {
+            "inference": 7.245034999966621,
+            "initialize": 0.5697200000286102,
+            "model": 0.37981500005722046,
+            "postprocess": 2.747615000009537,
+            "preprocess": 5.875589999914169,
+            "read": 0.9609900000095367,
+            "release": 0.0005299999713897706
+          },
+          "version": "0.1.0"
+        },
+        "start": 21721.2800000906,
+        "wallSeconds": 18.856284999966622,
+        "workerURL": "https://203.101.224.182/synthsr-gpu/assets/inference-worker-CnHOcuFL.js"
+      }
+    ],
+    "status": "Synthetic T1 ready · 177 × 233 × 160 · 18 s"
+  },
+  "previousBuild": {
+    "runs": [
+      {
+        "events": [
+          {
+            "message": "Reading NIfTI…",
+            "seconds": 1.0283250000476838,
+            "type": "progress"
+          },
+          {
+            "message": "Resampling to 1 mm and preparing intensities…",
+            "seconds": 1.91625,
+            "type": "progress"
+          },
+          {
+            "message": "Prepared 192 × 256 × 160 voxels",
+            "seconds": 7.799365000009537,
+            "type": "progress"
+          },
+          {
+            "message": "Initializing inference…",
+            "seconds": 8.166935000061988,
+            "type": "progress"
+          },
+          {
+            "message": "Synthesizing volume… this can take several minutes",
+            "seconds": 9.48265499997139,
+            "type": "progress"
+          },
+          {
+            "message": "Synthesizing flipped image…",
+            "seconds": 13.091264999985695,
+            "type": "progress"
+          },
+          {
+            "message": "Synthesizing volume… this can take several minutes",
+            "seconds": 13.109460000038148,
+            "type": "progress"
+          },
+          {
+            "message": "Restoring orientation and saving synthetic T1…",
+            "seconds": 16.91525499999523,
+            "type": "progress"
+          },
+          {
+            "seconds": 19.410700000047683,
+            "type": "result"
+          }
+        ],
+        "provenance": {
+          "app": "SynthSR web 0.1.0",
+          "backend": "webgpu",
+          "ct": false,
+          "flip": true,
+          "gpuImplementation": "synthsr-blocked-fp32-v1",
+          "inputShape": [
+            176,
+            232,
+            159
+          ],
+          "model": "synthsr_v20_230130",
+          "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+          "outputAffine": [
+            [
+              0.9991199778467502,
+              0.028677280827491186,
+              0.030608552976331024,
+              -89.15002447891334
+            ],
+            [
+              -0.028663832144099052,
+              0.9995887222074593,
+              -0.0008781360000428226,
+              -103.40590667825974
+            ],
+            [
+              -0.03062114619546966,
+              4.778623247401481e-9,
+              0.9995310627298486,
+              -77.37201107895406
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ]
+          ],
+          "outputShape": [
+            177,
+            233,
+            160
+          ],
+          "package": "@neurodesk/synthsr",
+          "seconds": 18.382539999961853,
+          "sharpen": true,
+          "spacingMm": [
+            1,
+            1,
+            1
+          ],
+          "synthetic": true,
+          "tiled": false,
+          "timings": {
+            "inference": 7.431789999961853,
+            "initialize": 1.3173450000286102,
+            "model": 0.36618499994277953,
+            "postprocess": 2.4959700000286102,
+            "preprocess": 5.882855000019074,
+            "read": 0.8878400000333786,
+            "release": 0.0005299999713897706
+          },
+          "version": "0.1.0"
+        },
+        "start": 46487.19499993324,
+        "wallSeconds": 19.410735000014306,
+        "workerURL": "https://203.101.224.182/synthsr-gpu/assets/inference-worker-BsHr59fL.js"
+      },
+      {
+        "events": [
+          {
+            "message": "Reading NIfTI…",
+            "seconds": 0.378039999961853,
+            "type": "progress"
+          },
+          {
+            "message": "Resampling to 1 mm and preparing intensities…",
+            "seconds": 1.1971150000095367,
+            "type": "progress"
+          },
+          {
+            "message": "Prepared 192 × 256 × 160 voxels",
+            "seconds": 7.184924999952316,
+            "type": "progress"
+          },
+          {
+            "message": "Initializing inference…",
+            "seconds": 7.45134500002861,
+            "type": "progress"
+          },
+          {
+            "message": "Synthesizing volume… this can take several minutes",
+            "seconds": 8.096980000019073,
+            "type": "progress"
+          },
+          {
+            "message": "Synthesizing flipped image…",
+            "seconds": 11.634730000019074,
+            "type": "progress"
+          },
+          {
+            "message": "Synthesizing volume… this can take several minutes",
+            "seconds": 11.649799999952316,
+            "type": "progress"
+          },
+          {
+            "message": "Restoring orientation and saving synthetic T1…",
+            "seconds": 15.512909999966622,
+            "type": "progress"
+          },
+          {
+            "seconds": 18.23431999993324,
+            "type": "result"
+          }
+        ],
+        "provenance": {
+          "app": "SynthSR web 0.1.0",
+          "backend": "webgpu",
+          "ct": false,
+          "flip": true,
+          "gpuImplementation": "synthsr-blocked-fp32-v1",
+          "inputShape": [
+            176,
+            232,
+            159
+          ],
+          "model": "synthsr_v20_230130",
+          "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+          "outputAffine": [
+            [
+              0.9991199778467502,
+              0.028677280827491186,
+              0.030608552976331024,
+              -89.15002447891334
+            ],
+            [
+              -0.028663832144099052,
+              0.9995887222074593,
+              -0.0008781360000428226,
+              -103.40590667825974
+            ],
+            [
+              -0.03062114619546966,
+              4.778623247401481e-9,
+              0.9995310627298486,
+              -77.37201107895406
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ]
+          ],
+          "outputShape": [
+            177,
+            233,
+            160
+          ],
+          "package": "@neurodesk/synthsr",
+          "seconds": 17.859549999952318,
+          "sharpen": true,
+          "spacingMm": [
+            1,
+            1,
+            1
+          ],
+          "synthetic": true,
+          "tiled": false,
+          "timings": {
+            "inference": 7.414355000019073,
+            "initialize": 0.6463299999237061,
+            "model": 0.26543500006198884,
+            "postprocess": 2.723375,
+            "preprocess": 5.987459999918937,
+            "read": 0.822375,
+            "release": 0.0001950000524520874
+          },
+          "version": "0.1.0"
+        },
+        "start": 96291.27499997616,
+        "wallSeconds": 18.23433499991894,
+        "workerURL": "https://203.101.224.182/synthsr-gpu/assets/inference-worker-BsHr59fL.js"
+      }
+    ],
+    "comparisons": {
+      "reference": "Known native CPU full-example reference, default flip and sharpen",
+      "referenceSha256": "5685b8f4041ddcdef9ab6faf40adb5af58988ecd598e07357e48f34b72eddaea",
+      "versusReference": [
+        {
+          "maxAffineError": 0.0000035762786865234375,
+          "maxError": 1,
+          "meanError": 0.000064256443830169,
+          "mismatches": 424,
+          "voxels": 6598560
+        },
+        {
+          "maxAffineError": 0.0000035762786865234375,
+          "maxError": 1,
+          "meanError": 0.000064256443830169,
+          "mismatches": 424,
+          "voxels": 6598560
+        }
+      ]
+    },
+    "repeatOutputsIdentical": true
+  },
+  "prototype": {
+    "note": "Prototype substituted only session creation in the released worker. Legacy onnxRuntime provenance field did not describe the substituted GPU executor.",
+    "seconds": 15.927290000081062,
+    "timings": {
+      "inference": 7.283174999952316,
+      "initialize": 1.1896599999666213,
+      "model": 0.265375,
+      "postprocess": 2.660649999976158,
+      "preprocess": 3.766390000104904,
+      "read": 0.7615149999856949,
+      "release": 0.0005049999952316285
+    },
+    "comparisonAgainstReleasedWasm": {
+      "affinesEqual": true,
+      "maxError": 1,
+      "meanError": 0.0000678936010281031,
+      "mismatches": 448,
+      "voxels": 6598560
+    },
+    "gpuProfiles": [
+      [
+        {
+          "milliseconds": 20.31616,
+          "name": "unet_conv_downarm_0_0_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 305.528832,
+          "name": "unet_conv_downarm_0_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 4.063232,
+          "name": "unet_bn_down_0",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 2.228224,
+          "name": "unet_maxpool_0",
+          "op": "MaxPool"
+        },
+        {
+          "milliseconds": 72.0896,
+          "name": "unet_conv_downarm_1_0_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 140.24704,
+          "name": "unet_conv_downarm_1_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.98304,
+          "name": "unet_bn_down_1",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 0.589824,
+          "name": "unet_maxpool_1",
+          "op": "MaxPool"
+        },
+        {
+          "milliseconds": 26.083328,
+          "name": "unet_conv_downarm_2_0_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 53.149696,
+          "name": "unet_conv_downarm_2_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.262144,
+          "name": "unet_bn_down_2",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 0.196608,
+          "name": "unet_maxpool_2",
+          "op": "MaxPool"
+        },
+        {
+          "milliseconds": 13.43488,
+          "name": "unet_conv_downarm_3_0_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 27.066368,
+          "name": "unet_conv_downarm_3_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.065536,
+          "name": "unet_bn_down_3",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 0,
+          "name": "unet_maxpool_3",
+          "op": "MaxPool"
+        },
+        {
+          "milliseconds": 7.143424,
+          "name": "unet_conv_downarm_4_0_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 14.352384,
+          "name": "unet_conv_downarm_4_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.065536,
+          "name": "unet_bn_down_4",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 0.131072,
+          "name": "unet_up_5",
+          "op": "Resize"
+        },
+        {
+          "milliseconds": 27.262976,
+          "name": "unet_conv_uparm_5_0_conv_part0",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 54.460416,
+          "name": "unet_conv_uparm_5_0_conv_part1",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.065536,
+          "name": "unet_conv_uparm_5_0_conv_sum",
+          "op": "Add"
+        },
+        {
+          "milliseconds": 27.131904,
+          "name": "unet_conv_uparm_5_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0,
+          "name": "unet_bn_up_0",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 0.524288,
+          "name": "unet_up_6",
+          "op": "Resize"
+        },
+        {
+          "milliseconds": 53.08416,
+          "name": "unet_conv_uparm_6_0_conv_part0",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 106.889216,
+          "name": "unet_conv_uparm_6_0_conv_part1",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.32768,
+          "name": "unet_conv_uparm_6_0_conv_sum",
+          "op": "Add"
+        },
+        {
+          "milliseconds": 53.018624,
+          "name": "unet_conv_uparm_6_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.262144,
+          "name": "unet_bn_up_1",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 1.900544,
+          "name": "unet_up_7",
+          "op": "Resize"
+        },
+        {
+          "milliseconds": 140.509184,
+          "name": "unet_conv_uparm_7_0_conv_part0",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 285.147136,
+          "name": "unet_conv_uparm_7_0_conv_part1",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 1.507328,
+          "name": "unet_conv_uparm_7_0_conv_sum",
+          "op": "Add"
+        },
+        {
+          "milliseconds": 140.312576,
+          "name": "unet_conv_uparm_7_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.98304,
+          "name": "unet_bn_up_2",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 7.274496,
+          "name": "unet_up_8",
+          "op": "Resize"
+        },
+        {
+          "milliseconds": 302.44864,
+          "name": "unet_conv_uparm_8_0_conv_part0",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 585.826304,
+          "name": "unet_conv_uparm_8_0_conv_part1",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 6.029312,
+          "name": "unet_conv_uparm_8_0_conv_sum",
+          "op": "Add"
+        },
+        {
+          "milliseconds": 301.989888,
+          "name": "unet_conv_uparm_8_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 4.063232,
+          "name": "unet_bn_up_3",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 2.555904,
+          "name": "unet_likelihood_conv",
+          "op": "Conv"
+        }
+      ],
+      [
+        {
+          "milliseconds": 20.250624,
+          "name": "unet_conv_downarm_0_0_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 301.924352,
+          "name": "unet_conv_downarm_0_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 4.063232,
+          "name": "unet_bn_down_0",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 2.29376,
+          "name": "unet_maxpool_0",
+          "op": "MaxPool"
+        },
+        {
+          "milliseconds": 72.155136,
+          "name": "unet_conv_downarm_1_0_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 140.312576,
+          "name": "unet_conv_downarm_1_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 1.048576,
+          "name": "unet_bn_down_1",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 0.589824,
+          "name": "unet_maxpool_1",
+          "op": "MaxPool"
+        },
+        {
+          "milliseconds": 26.148864,
+          "name": "unet_conv_downarm_2_0_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 53.08416,
+          "name": "unet_conv_downarm_2_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.196608,
+          "name": "unet_bn_down_2",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 0.131072,
+          "name": "unet_maxpool_2",
+          "op": "MaxPool"
+        },
+        {
+          "milliseconds": 13.369344,
+          "name": "unet_conv_downarm_3_0_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 27.19744,
+          "name": "unet_conv_downarm_3_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0,
+          "name": "unet_bn_down_3",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 0,
+          "name": "unet_maxpool_3",
+          "op": "MaxPool"
+        },
+        {
+          "milliseconds": 7.077888,
+          "name": "unet_conv_downarm_4_0_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 14.286848,
+          "name": "unet_conv_downarm_4_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0,
+          "name": "unet_bn_down_4",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 0.131072,
+          "name": "unet_up_5",
+          "op": "Resize"
+        },
+        {
+          "milliseconds": 27.131904,
+          "name": "unet_conv_uparm_5_0_conv_part0",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 54.132736,
+          "name": "unet_conv_uparm_5_0_conv_part1",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.065536,
+          "name": "unet_conv_uparm_5_0_conv_sum",
+          "op": "Add"
+        },
+        {
+          "milliseconds": 27.19744,
+          "name": "unet_conv_uparm_5_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0,
+          "name": "unet_bn_up_0",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 0.458752,
+          "name": "unet_up_6",
+          "op": "Resize"
+        },
+        {
+          "milliseconds": 53.215232,
+          "name": "unet_conv_uparm_6_0_conv_part0",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 106.82368,
+          "name": "unet_conv_uparm_6_0_conv_part1",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.393216,
+          "name": "unet_conv_uparm_6_0_conv_sum",
+          "op": "Add"
+        },
+        {
+          "milliseconds": 53.149696,
+          "name": "unet_conv_uparm_6_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.262144,
+          "name": "unet_bn_up_1",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 1.835008,
+          "name": "unet_up_7",
+          "op": "Resize"
+        },
+        {
+          "milliseconds": 140.57472,
+          "name": "unet_conv_uparm_7_0_conv_part0",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 285.016064,
+          "name": "unet_conv_uparm_7_0_conv_part1",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 1.507328,
+          "name": "unet_conv_uparm_7_0_conv_sum",
+          "op": "Add"
+        },
+        {
+          "milliseconds": 140.312576,
+          "name": "unet_conv_uparm_7_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 0.98304,
+          "name": "unet_bn_up_2",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 7.274496,
+          "name": "unet_up_8",
+          "op": "Resize"
+        },
+        {
+          "milliseconds": 302.12096,
+          "name": "unet_conv_uparm_8_0_conv_part0",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 586.678272,
+          "name": "unet_conv_uparm_8_0_conv_part1",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 6.094848,
+          "name": "unet_conv_uparm_8_0_conv_sum",
+          "op": "Add"
+        },
+        {
+          "milliseconds": 307.232768,
+          "name": "unet_conv_uparm_8_1_conv",
+          "op": "Conv"
+        },
+        {
+          "milliseconds": 4.128768,
+          "name": "unet_bn_up_3",
+          "op": "BatchNormalization"
+        },
+        {
+          "milliseconds": 2.555904,
+          "name": "unet_likelihood_conv",
+          "op": "Conv"
+        }
+      ]
+    ]
+  },
+  "nativeReference": {
+    "path": "example-default-reference.nii.gz",
+    "sha256": "5685b8f4041ddcdef9ab6faf40adb5af58988ecd598e07357e48f34b72eddaea",
+    "backend": "native ONNX Runtime CPU with pinned Python preprocessing/postprocessing"
+  },
+  "validation": {
+    "unitTestsPassed": 17,
+    "browserTestsPassed": 5,
+    "browserTestsSkipped": 1,
+    "browserSkip": "Hardware-only full-volume test omitted in server software-GPU suite; full-volume checks performed in shared hardware browser and recorded above.",
+    "standaloneTestsPassed": 5,
+    "standaloneTestsSkipped": 1,
+    "standaloneSkip": "Optional native inference test; native inference code was unchanged.",
+    "indexRegenerationIdentical": true,
+    "notes": "One hardware adapter; performance on other GPUs remains unmeasured. Final contract-guard changes were checked by 17 unit tests and a new full-volume production hardware run."
+  }
+}

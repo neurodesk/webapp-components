@@ -72,5 +72,7 @@ for(const backend of ['wasm','webgpu']) test(`real ${backend} inference matches 
   expect(mismatches/output.data.length).toBeLessThan(.001);
   const reportPromise=page.waitForEvent('download');await page.locator('#reportBtn').click();const report=JSON.parse(await readFile(await (await reportPromise).path(),'utf8'));
   expect(report.backend).toBe(backend);expect(report.synthetic).toBe(true);expect(report.flip).toBe(true);expect(report.modelSha256).toMatch(/^[a-f0-9]{64}$/);
+  if(backend==='webgpu')expect(report.gpuImplementation).toBe('synthsr-blocked-fp32-v1');
+  else expect(report.onnxRuntime).toBe('1.29.0');
   await page.locator('#inputTab').click();await expect(page.locator('#resultBadge')).toBeHidden();
 });
