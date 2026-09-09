@@ -355,6 +355,9 @@ importers:
 
   apps/syncro:
     dependencies:
+      '@brainchop/mindgrab':
+        specifier: 0.1.20260813
+        version: 0.1.20260813
       '@neurodesk/registration':
         specifier: workspace:*
         version: link:../../packages/registration
@@ -687,6 +690,9 @@ packages:
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+
+  '@brainchop/mindgrab@0.1.20260813':
+    resolution: {integrity: sha512-HpushBfOzG5yhzgKmhjy1q+8DYxLdM96LeeciF+W2wwStKFzNW1ABY87fwGZjFXcivoWVv+HWPfakBe/GrQPsA==}
 
   '@cbor-extract/cbor-extract-darwin-arm64@2.2.2':
     resolution: {integrity: sha512-ZKZ/F8US7JR92J4DMct6cLW/Y66o2K576+zjlEN/MevH70bFIsB10wkZEQPLzl2oNh2SMGy55xpJ9JoBRl5DOA==}
@@ -5561,6 +5567,10 @@ snapshots:
       '@babel/helper-validator-identifier': 7.29.7
 
   '@bcoe/v8-coverage@0.2.3': {}
+
+  '@brainchop/mindgrab@0.1.20260813':
+    dependencies:
+      '@webgpu/types': 0.1.71
 
   '@cbor-extract/cbor-extract-darwin-arm64@2.2.2':
     optional: true

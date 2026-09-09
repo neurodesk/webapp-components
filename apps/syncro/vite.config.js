@@ -1,11 +1,15 @@
 import {neurodeskViteConfig} from '../../scripts/lib/vite-app-config.mjs';
 import {readFile,mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
+import {dirname,join} from 'node:path';
 import {execFileSync} from 'node:child_process';
+import {createRequire} from 'node:module';
 import {isolationFallback} from '../synthsr/scripts/coi-plugin.mjs';
+const require=createRequire(import.meta.url),mindgrabRoot=dirname(require.resolve('@brainchop/mindgrab/package.json')),mindgrabDist=join(mindgrabRoot,'dist');
 function assets(){return {name:'syncro-assets',async generateBundle(){
  for(const name of ['syncro-registration.mjs','syncro-registration.wasm'])this.emitFile({type:'asset',fileName:'registration/'+name,source:await readFile(new URL('../../packages/registration/wasm/'+name,import.meta.url))});
+ for(const name of ['brainchop-mindgrab-gpu.js','brainchop-mindgrab-gpu.wasm','brainchop-mindgrab-gl.js','brainchop-mindgrab-gl.wasm','brainchop-mindgrab.js','brainchop-mindgrab.wasm'])this.emitFile({type:'asset',fileName:'mindgrab/'+name,source:await readFile(join(mindgrabDist,name))});
+ this.emitFile({type:'asset',fileName:'mindgrab/LICENSE',source:await readFile(join(mindgrabRoot,'LICENSE'))});
  for(const name of ['FSL-LICENSE.txt'])this.emitFile({type:'asset',fileName:'data/'+name,source:await readFile(new URL('../../packages/syncro/data/'+name,import.meta.url))});
  execFileSync('node',['scripts/build.mjs'],{cwd:new URL('../../packages/syncro/',import.meta.url),stdio:'inherit'});
  const temporary=await mkdtemp(join(tmpdir(),'syncro-pack-'));

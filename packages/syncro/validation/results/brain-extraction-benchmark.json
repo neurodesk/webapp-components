@@ -1,0 +1,76 @@
+{
+  "date": "2026-09-09",
+  "input": {
+    "description": "SYNcro SynthSR output for OpenNeuro ds000001/sub-01",
+    "sha256": "7aff6b81935358330773800b865bff7948221f90bfd574e4102eece32375c4c4",
+    "bytes": 4866041
+  },
+  "environment": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.7827.55 Safari/537.36",
+    "hardwareConcurrency": 16,
+    "crossOriginIsolated": true
+  },
+  "mindgrab": {
+    "package": "@brainchop/mindgrab@0.1.20260813",
+    "backend": "cpu",
+    "runtimeAssetBytes": 810780,
+    "engineMs": 67528.10999965668,
+    "wallMs": 72853.66499996185
+  },
+  "synthstrip": {
+    "model": "synthstrip-browser.onnx",
+    "modelSha256": "dc9e11999b58d7949d77ddf1b2ed2910df66f8725c078a6b46ae08b8ebcc2800",
+    "backend": "wasm",
+    "modelBytes": 10296357,
+    "wallMs": 68468.61000061035
+  },
+  "comparison": {
+    "mindgrabCpuWallTimeRatioToSynthstrip": 1.0640447498,
+    "mindgrabCpuWallTimePercentDifference": 6.404474984,
+    "synthstripModelSizeRatioToMindgrabCpuRuntime": 12.6993228743,
+    "notes": "Paired wall times use the same input and fresh production inference workers. This CPU comparison does not predict MindGrab WebGPU or WebGL2 performance. The SynthStrip size is its marginal model asset and excludes ONNX Runtime, which SYNcro already uses for SynthSR."
+  },
+  "repeatWithPeakRam": {
+    "methodology": {
+      "browserIsolation": "A fresh headless Chromium process was launched for each extractor.",
+      "memory": "Linux aggregate VmRSS for the Chromium root and all descendants, targeted every 100 ms. Aggregate RSS can count shared pages in more than one process.",
+      "baseline": "Loaded SYNcro application immediately before fetching the inference input and creating the worker."
+    },
+    "mindgrab": {
+      "backend": "cpu",
+      "engineMs": 67254.93499946594,
+      "wallMs": 72611.6950006485,
+      "memory": {
+        "samples": 615,
+        "idleBaselineRssKiB": 438596,
+        "peakRssKiB": 3394860,
+        "peakOverIdleRssKiB": 2956264,
+        "peakGiB": 3.2375907898,
+        "peakOverIdleGiB": 2.8193130493,
+        "idleProcessCount": 6,
+        "peakProcessCount": 6
+      }
+    },
+    "synthstrip": {
+      "backend": "wasm",
+      "wallMs": 76890.26500034332,
+      "memory": {
+        "samples": 766,
+        "idleBaselineRssKiB": 428900,
+        "peakRssKiB": 4618672,
+        "peakOverIdleRssKiB": 4189772,
+        "peakGiB": 4.4047088623,
+        "peakOverIdleGiB": 3.995677948,
+        "idleProcessCount": 6,
+        "peakProcessCount": 6
+      }
+    },
+    "comparison": {
+      "mindgrabWallTimeRatioToSynthstrip": 0.9443548543,
+      "mindgrabWallTimePercentFaster": 5.5645145711,
+      "mindgrabAbsolutePeakRamPercentLower": 26.4970536986,
+      "mindgrabPeakOverIdleRamPercentLower": 29.4409337787,
+      "notes": "The repeat uses the same input, app build, CPU backend selection and host as the initial run. MindGrab time was stable (-0.33%), while SynthStrip time increased 12.30%, so the single-run speed ordering is not treated as conclusive. Peak-over-idle is the more useful application workload comparison."
+    }
+  }
+}

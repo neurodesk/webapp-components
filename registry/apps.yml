@@ -331,7 +331,7 @@ apps:
     title: SYNcro
     description: Normalize brain scans and aligned lesion maps to MNI space.
     category: data-preparation
-    keywords: [SYNcro, SynthSR, SynthStrip, ANTs, MNI, registration]
+    keywords: [SYNcro, SynthSR, MindGrab, Brainchop, SynthStrip, ANTs, MNI, registration]
     legacy_domain: null
     runtime: vite-webgpu
     model_manifest: models/syncro.manifest.json

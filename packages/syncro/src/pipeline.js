@@ -36,8 +36,9 @@ export function thresholdBinary(volume) {
 }
 
 // Inference and filesystem/runtime ownership stay in injected adapters.
-export async function runSyncro({input,additional=[],template,synthesize,extractBrain,registration,ct=false,onProgress=()=>{},onStage=()=>{}}) {
-  const start=performance.now(),timings={},outputs={},provenance={version:'0.1.2',ct,stages:{}};
+export async function runSyncro({input,additional=[],template,synthesize,extractBrain,registration,brainExtractor='synthstrip',ct=false,onProgress=()=>{},onStage=()=>{}}) {
+  if(!['mindgrab','synthstrip'].includes(brainExtractor))throw new Error('Brain extractor must be mindgrab or synthstrip.');
+  const start=performance.now(),timings={},outputs={},provenance={version:'0.1.3',ct,stages:{}};
   const volume=readVolume(asBuffer(input)),fixed=readVolume(asBuffer(template));
   const accompanying=additional.map((item,i)=>{
     const v=readAdditional(item.buffer,item.type||'image');
@@ -50,10 +51,11 @@ export async function runSyncro({input,additional=[],template,synthesize,extract
   }
   const sr=await stage('synthsr',()=>synthesize({buffer:asBuffer(input),ct,onProgress:(v,m)=>onProgress('synthsr',v,m)}));
   outputs['synthetic-t1.nii']=new Uint8Array(sr.buffer);provenance.stages.synthsr=sr.provenance;
-  const strip=await stage('synthstrip',()=>extractBrain({volume:readVolume(sr.buffer),onProgress:(v,m)=>onProgress('synthstrip',v,m)}));
-  outputs['synthetic-brain.nii']=new Uint8Array(writeVolume(strip.brain,'SynthStrip synthetic brain'));
-  outputs['brain-mask.nii']=new Uint8Array(writeVolume(strip.mask,'SynthStrip brain mask'));
-  provenance.stages.synthstrip=strip.provenance;
+  const extractorName=brainExtractor==='mindgrab'?'MindGrab':'SynthStrip';
+  const strip=await stage(brainExtractor,()=>extractBrain({volume:readVolume(sr.buffer),onProgress:(v,m)=>onProgress(brainExtractor,v,m)}));
+  outputs['synthetic-brain.nii']=new Uint8Array(writeVolume(strip.brain,extractorName+' synthetic brain'));
+  outputs['brain-mask.nii']=new Uint8Array(writeVolume(strip.mask,extractorName+' brain mask'));
+  provenance.brainExtractor=brainExtractor;provenance.stages[brainExtractor]=strip.provenance;
   const reg=await stage('registration',()=>registration.register({fixed:writeVolume(fixed,'MNI template'),moving:outputs['synthetic-brain.nii']}));
   try {
     outputs['warped-synthetic-brain.nii.gz']=reg.warped;

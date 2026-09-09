@@ -9,6 +9,7 @@ function infer(job,onProgress){return new Promise((resolve,reject)=>{
  child.onerror=e=>finish(new Error(e.message||'Inference worker failed.'));
  child.onmessage=({data})=>{
   if(data.type==='progress')onProgress(data.value,data.message);
+  else if(data.type==='log')self.postMessage(data);
   else if(data.type==='error')finish(new Error(data.message));
   else if(data.type==='result')finish(null,data.result);
  };
@@ -31,7 +32,10 @@ self.onmessage=async({data:job})=>{
   const result=await runSyncro({input:await job.input.arrayBuffer(),ct:job.ct,template,
    additional:await Promise.all(job.additional.map(async item=>({name:item.file.name,type:item.type,buffer:await item.file.arrayBuffer()}))),
    synthesize:args=>infer({stage:'synthsr',buffer:args.buffer,ct:job.ct,backend:job.synthsrBackend??'webgpu',modelBase:job.modelBase},args.onProgress),
-   extractBrain:args=>infer({stage:'synthstrip',volume:args.volume,modelBase:job.modelBase},args.onProgress),
+   brainExtractor:job.brainExtractor,
+   extractBrain:args=>infer(job.brainExtractor==='mindgrab'
+    ? {stage:'mindgrab',volume:args.volume,assetPath:job.mindgrabAssetPath}
+    : {stage:'synthstrip',volume:args.volume,modelBase:job.modelBase},args.onProgress),
    registration:{async register(args){
     const {default:createModule}=await import(/* @vite-ignore */ job.registrationURL);
     engine=await createRegistration({createModule,onLog:message=>self.postMessage({type:'log',message})});return engine.register(args);
