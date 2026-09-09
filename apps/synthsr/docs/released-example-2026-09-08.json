@@ -1,0 +1,562 @@
+{
+  "date": "2026-09-08T21:53:11.517Z",
+  "environment": {
+    "agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) T3Code(Alpha)/0.0.40 Chrome/150.0.7871.224 Safari/537.36",
+    "gpu": {
+      "architecture": "metal-3",
+      "isFallbackAdapter": false,
+      "vendor": "apple"
+    },
+    "isolated": true,
+    "scripts": [
+      "https://webapps.neurodesk.org/synthsr/coi-serviceworker.js",
+      "https://webapps.neurodesk.org/synthsr/assets/index-ChKwnz-a.js",
+      "https://webapps.neurodesk.org/theme.js",
+      "https://webapps.neurodesk.org/app-shell.js",
+      "https://www.googletagmanager.com/gtag/js?id=G-4Z9774J59Y"
+    ],
+    "threads": 10,
+    "url": "https://webapps.neurodesk.org/synthsr/",
+    "wasmThreads": 4
+  },
+  "runs": [
+    {
+      "events": [
+        {
+          "message": "Reading NIfTI…",
+          "seconds": 0.26285000002384185,
+          "type": "progress",
+          "value": 0.01
+        },
+        {
+          "message": "Resampling to 1 mm and preparing intensities…",
+          "seconds": 0.9957900000810623,
+          "type": "progress",
+          "value": 0.03
+        },
+        {
+          "message": "Prepared 192 × 256 × 160 voxels",
+          "seconds": 7.471925000071526,
+          "type": "progress",
+          "value": 0.12
+        },
+        {
+          "message": "Initializing inference…",
+          "seconds": 7.7336050000190735,
+          "type": "progress",
+          "value": 0.26
+        },
+        {
+          "message": "Synthesizing volume… this can take several minutes",
+          "seconds": 12.740450000047684,
+          "type": "progress",
+          "value": 0.32
+        },
+        {
+          "message": "Synthesizing flipped image…",
+          "seconds": 107.53167500007153,
+          "type": "progress",
+          "value": 0.6
+        },
+        {
+          "message": "Synthesizing volume… this can take several minutes",
+          "seconds": 107.5342950000763,
+          "type": "progress",
+          "value": 0.6
+        },
+        {
+          "message": "Restoring orientation and saving synthetic T1…",
+          "seconds": 140.61950499999523,
+          "type": "progress",
+          "value": 0.92
+        },
+        {
+          "seconds": 142.24380000007153,
+          "type": "result"
+        }
+      ],
+      "provenance": {
+        "app": "SynthSR web 0.1.0",
+        "backend": "wasm",
+        "ct": false,
+        "flip": true,
+        "inputShape": [
+          176,
+          232,
+          159
+        ],
+        "model": "synthsr_v20_230130",
+        "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+        "onnxRuntime": "1.29.0",
+        "outputAffine": [
+          [
+            0.9991199778467502,
+            0.028677280827491186,
+            0.030608552976331024,
+            -89.15002447891334
+          ],
+          [
+            -0.028663832144099052,
+            0.9995887222074593,
+            -0.0008781360000428226,
+            -103.40590667825974
+          ],
+          [
+            -0.03062114619546966,
+            4.778623247401481e-9,
+            0.9995310627298486,
+            -77.37201107895406
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "outputShape": [
+          177,
+          233,
+          160
+        ],
+        "package": "@neurodesk/synthsr",
+        "seconds": 141.98196000003816,
+        "sharpen": true,
+        "spacingMm": [
+          1,
+          1,
+          1
+        ],
+        "synthetic": true,
+        "tiled": false,
+        "timings": {
+          "inference": 127.96118499994277,
+          "initialize": 4.923514999985695,
+          "model": 0.261039999961853,
+          "postprocess": 1.6239899998903276,
+          "preprocess": 6.47575,
+          "read": 0.7340650000572204,
+          "release": 0.002390000104904175
+        },
+        "version": "0.1.0"
+      },
+      "start": 54921.28499996662,
+      "wallSeconds": 142.24380500006674,
+      "workerURL": "https://webapps.neurodesk.org/synthsr/assets/inference-worker-BzExymYu.js"
+    },
+    {
+      "events": [
+        {
+          "message": "Reading NIfTI…",
+          "seconds": 0.1275400000810623,
+          "type": "progress",
+          "value": 0.01
+        },
+        {
+          "message": "Resampling to 1 mm and preparing intensities…",
+          "seconds": 0.6938600000143051,
+          "type": "progress",
+          "value": 0.03
+        },
+        {
+          "message": "Prepared 192 × 256 × 160 voxels",
+          "seconds": 6.377200000047684,
+          "type": "progress",
+          "value": 0.12
+        },
+        {
+          "message": "Initializing inference…",
+          "seconds": 6.671725000023842,
+          "type": "progress",
+          "value": 0.26
+        },
+        {
+          "message": "Synthesizing volume… this can take several minutes",
+          "seconds": 9.200450000047685,
+          "type": "progress",
+          "value": 0.32
+        },
+        {
+          "message": "Synthesizing flipped image…",
+          "seconds": 76.03615499997139,
+          "type": "progress",
+          "value": 0.6
+        },
+        {
+          "message": "Synthesizing volume… this can take several minutes",
+          "seconds": 76.05775499999523,
+          "type": "progress",
+          "value": 0.6
+        },
+        {
+          "message": "Restoring orientation and saving synthetic T1…",
+          "seconds": 143.6006100000143,
+          "type": "progress",
+          "value": 0.92
+        },
+        {
+          "seconds": 146.31338499999046,
+          "type": "result"
+        }
+      ],
+      "provenance": {
+        "app": "SynthSR web 0.1.0",
+        "backend": "webgpu",
+        "ct": false,
+        "flip": true,
+        "inputShape": [
+          176,
+          232,
+          159
+        ],
+        "model": "synthsr_v20_230130",
+        "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+        "onnxRuntime": "1.29.0",
+        "outputAffine": [
+          [
+            0.9991199778467502,
+            0.028677280827491186,
+            0.030608552976331024,
+            -89.15002447891334
+          ],
+          [
+            -0.028663832144099052,
+            0.9995887222074593,
+            -0.0008781360000428226,
+            -103.40590667825974
+          ],
+          [
+            -0.03062114619546966,
+            4.778623247401481e-9,
+            0.9995310627298486,
+            -77.37201107895406
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "outputShape": [
+          177,
+          233,
+          160
+        ],
+        "package": "@neurodesk/synthsr",
+        "seconds": 146.18688499999047,
+        "sharpen": true,
+        "spacingMm": [
+          1,
+          1,
+          1
+        ],
+        "synthetic": true,
+        "tiled": false,
+        "timings": {
+          "inference": 134.3690299999714,
+          "initialize": 2.5289550000429153,
+          "model": 0.2947649999856949,
+          "postprocess": 2.712149999976158,
+          "preprocess": 5.684269999980926,
+          "read": 0.5667300000190735,
+          "release": 0.0309650000333786
+        },
+        "version": "0.1.0"
+      },
+      "start": 257373.77499997616,
+      "wallSeconds": 146.31341000008584,
+      "workerURL": "https://webapps.neurodesk.org/synthsr/assets/inference-worker-BzExymYu.js"
+    },
+    {
+      "events": [
+        {
+          "message": "Reading NIfTI…",
+          "seconds": 0.12453999996185303,
+          "type": "progress",
+          "value": 0.01
+        },
+        {
+          "message": "Resampling to 1 mm and preparing intensities…",
+          "seconds": 0.9996000000238419,
+          "type": "progress",
+          "value": 0.03
+        },
+        {
+          "message": "Prepared 192 × 256 × 160 voxels",
+          "seconds": 8.088284999966621,
+          "type": "progress",
+          "value": 0.12
+        },
+        {
+          "message": "Initializing inference…",
+          "seconds": 8.477495000004769,
+          "type": "progress",
+          "value": 0.26
+        },
+        {
+          "message": "Synthesizing volume… this can take several minutes",
+          "seconds": 12.62125,
+          "type": "progress",
+          "value": 0.32
+        },
+        {
+          "message": "Synthesizing flipped image…",
+          "seconds": 39.06975,
+          "type": "progress",
+          "value": 0.6
+        },
+        {
+          "message": "Synthesizing volume… this can take several minutes",
+          "seconds": 39.072409999966624,
+          "type": "progress",
+          "value": 0.6
+        },
+        {
+          "message": "Restoring orientation and saving synthetic T1…",
+          "seconds": 58.51179499995708,
+          "type": "progress",
+          "value": 0.92
+        },
+        {
+          "seconds": 60.107634999990466,
+          "type": "result"
+        }
+      ],
+      "provenance": {
+        "app": "SynthSR web 0.1.0",
+        "backend": "wasm",
+        "ct": false,
+        "flip": true,
+        "inputShape": [
+          176,
+          232,
+          159
+        ],
+        "model": "synthsr_v20_230130",
+        "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+        "onnxRuntime": "1.29.0",
+        "outputAffine": [
+          [
+            0.9991199778467502,
+            0.028677280827491186,
+            0.030608552976331024,
+            -89.15002447891334
+          ],
+          [
+            -0.028663832144099052,
+            0.9995887222074593,
+            -0.0008781360000428226,
+            -103.40590667825974
+          ],
+          [
+            -0.03062114619546966,
+            4.778623247401481e-9,
+            0.9995310627298486,
+            -77.37201107895406
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "outputShape": [
+          177,
+          233,
+          160
+        ],
+        "package": "@neurodesk/synthsr",
+        "seconds": 59.98522500002384,
+        "sharpen": true,
+        "spacingMm": [
+          1,
+          1,
+          1
+        ],
+        "synthetic": true,
+        "tiled": false,
+        "timings": {
+          "inference": 45.89163999998569,
+          "initialize": 4.140625,
+          "model": 0.3893650000095367,
+          "postprocess": 1.5955950000286103,
+          "preprocess": 7.088519999980926,
+          "read": 0.8771299999952317,
+          "release": 0.0023250000476837157
+        },
+        "version": "0.1.0"
+      },
+      "start": 440328.87999999523,
+      "wallSeconds": 60.10763999998569,
+      "workerURL": "https://webapps.neurodesk.org/synthsr/assets/inference-worker-BzExymYu.js"
+    },
+    {
+      "events": [
+        {
+          "message": "Reading NIfTI…",
+          "seconds": 0.15289000010490417,
+          "type": "progress",
+          "value": 0.01
+        },
+        {
+          "message": "Resampling to 1 mm and preparing intensities…",
+          "seconds": 0.9277750000953674,
+          "type": "progress",
+          "value": 0.03
+        },
+        {
+          "message": "Prepared 192 × 256 × 160 voxels",
+          "seconds": 5.946890000104904,
+          "type": "progress",
+          "value": 0.12
+        },
+        {
+          "message": "Initializing inference…",
+          "seconds": 6.196920000076294,
+          "type": "progress",
+          "value": 0.26
+        },
+        {
+          "message": "Synthesizing volume… this can take several minutes",
+          "seconds": 9.111080000042916,
+          "type": "progress",
+          "value": 0.32
+        },
+        {
+          "message": "Synthesizing flipped image…",
+          "seconds": 77.06443500006199,
+          "type": "progress",
+          "value": 0.6
+        },
+        {
+          "message": "Synthesizing volume… this can take several minutes",
+          "seconds": 77.0792950000763,
+          "type": "progress",
+          "value": 0.6
+        },
+        {
+          "message": "Restoring orientation and saving synthetic T1…",
+          "seconds": 137.6596100000143,
+          "type": "progress",
+          "value": 0.92
+        },
+        {
+          "seconds": 140.28947000002862,
+          "type": "result"
+        }
+      ],
+      "provenance": {
+        "app": "SynthSR web 0.1.0",
+        "backend": "webgpu",
+        "ct": false,
+        "flip": true,
+        "inputShape": [
+          176,
+          232,
+          159
+        ],
+        "model": "synthsr_v20_230130",
+        "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+        "onnxRuntime": "1.29.0",
+        "outputAffine": [
+          [
+            0.9991199778467502,
+            0.028677280827491186,
+            0.030608552976331024,
+            -89.15002447891334
+          ],
+          [
+            -0.028663832144099052,
+            0.9995887222074593,
+            -0.0008781360000428226,
+            -103.40590667825974
+          ],
+          [
+            -0.03062114619546966,
+            4.778623247401481e-9,
+            0.9995310627298486,
+            -77.37201107895406
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "outputShape": [
+          177,
+          233,
+          160
+        ],
+        "package": "@neurodesk/synthsr",
+        "seconds": 140.13733999991416,
+        "sharpen": true,
+        "spacingMm": [
+          1,
+          1,
+          1
+        ],
+        "synthetic": true,
+        "tiled": false,
+        "timings": {
+          "inference": 128.52896500003337,
+          "initialize": 2.914164999961853,
+          "model": 0.25047000002861025,
+          "postprocess": 2.6310799999237062,
+          "preprocess": 5.019534999966622,
+          "read": 0.7754399999380112,
+          "release": 0.017665000081062317
+        },
+        "version": "0.1.0"
+      },
+      "start": 518722.5449999571,
+      "wallSeconds": 140.28949000000955,
+      "workerURL": "https://webapps.neurodesk.org/synthsr/assets/inference-worker-BzExymYu.js"
+    }
+  ],
+  "status": "Synthetic T1 ready · 177 × 233 × 160 · 140 s",
+  "method": "Released https://webapps.neurodesk.org/synthsr/ UI. Loaded built-in FLAIR example once via Example images > Load. Ran sequentially WASM, WebGPU, WASM, WebGPU in the same browser tab; full volume, MRI, flip averaging and sharpening enabled for every run. Original deployed inference worker was unchanged. A pass-through window.Worker subclass added message listeners to retain original provenance, progress timestamps and result buffers. Native app recreated its worker/session each time. Model already cached; no cache clearing or forced runtime reset. Values are app provenance timings, not synthetic-input benchmarks. Browser not isolated from other system workloads. No per-operator profiling.",
+  "comparison": {
+    "comparisons": [
+      {
+        "maxUint8Error": 0,
+        "meanUint8Error": 0,
+        "mismatched": 0,
+        "runs": [
+          1,
+          3
+        ],
+        "voxels": 6598560
+      },
+      {
+        "maxUint8Error": 0,
+        "meanUint8Error": 0,
+        "mismatched": 0,
+        "runs": [
+          2,
+          4
+        ],
+        "voxels": 6598560
+      },
+      {
+        "maxUint8Error": 1,
+        "meanUint8Error": 0.00004500982032443442,
+        "mismatched": 297,
+        "runs": [
+          3,
+          4
+        ],
+        "voxels": 6598560
+      }
+    ],
+    "outputBytes": [
+      6598912,
+      6598912,
+      6598912,
+      6598912
+    ]
+  }
+}

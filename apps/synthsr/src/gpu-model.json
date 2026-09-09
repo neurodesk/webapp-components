@@ -1,0 +1,1897 @@
+{
+  "sha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+  "bytes": 52980984,
+  "input": "input",
+  "output": "output",
+  "tensors": {
+    "unet_conv_downarm_0_0_W": {
+      "dims": [
+        24,
+        1,
+        3,
+        3,
+        3
+      ],
+      "offset": 9654,
+      "bytes": 2592
+    },
+    "unet_conv_downarm_0_0_B": {
+      "dims": [
+        24
+      ],
+      "offset": 12279,
+      "bytes": 96
+    },
+    "unet_conv_downarm_0_1_W": {
+      "dims": [
+        24,
+        24,
+        3,
+        3,
+        3
+      ],
+      "offset": 12420,
+      "bytes": 62208
+    },
+    "unet_conv_downarm_0_1_B": {
+      "dims": [
+        24
+      ],
+      "offset": 74661,
+      "bytes": 96
+    },
+    "unet_bn_down_0_0": {
+      "dims": [
+        24
+      ],
+      "offset": 74783,
+      "bytes": 96
+    },
+    "unet_bn_down_0_1": {
+      "dims": [
+        24
+      ],
+      "offset": 74905,
+      "bytes": 96
+    },
+    "unet_bn_down_0_2": {
+      "dims": [
+        24
+      ],
+      "offset": 75027,
+      "bytes": 96
+    },
+    "unet_bn_down_0_3": {
+      "dims": [
+        24
+      ],
+      "offset": 75149,
+      "bytes": 96
+    },
+    "unet_conv_downarm_1_0_W": {
+      "dims": [
+        48,
+        24,
+        3,
+        3,
+        3
+      ],
+      "offset": 75290,
+      "bytes": 124416
+    },
+    "unet_conv_downarm_1_0_B": {
+      "dims": [
+        48
+      ],
+      "offset": 199741,
+      "bytes": 192
+    },
+    "unet_conv_downarm_1_1_W": {
+      "dims": [
+        48,
+        48,
+        3,
+        3,
+        3
+      ],
+      "offset": 199978,
+      "bytes": 248832
+    },
+    "unet_conv_downarm_1_1_B": {
+      "dims": [
+        48
+      ],
+      "offset": 448845,
+      "bytes": 192
+    },
+    "unet_bn_down_1_0": {
+      "dims": [
+        48
+      ],
+      "offset": 449065,
+      "bytes": 192
+    },
+    "unet_bn_down_1_1": {
+      "dims": [
+        48
+      ],
+      "offset": 449285,
+      "bytes": 192
+    },
+    "unet_bn_down_1_2": {
+      "dims": [
+        48
+      ],
+      "offset": 449505,
+      "bytes": 192
+    },
+    "unet_bn_down_1_3": {
+      "dims": [
+        48
+      ],
+      "offset": 449725,
+      "bytes": 192
+    },
+    "unet_conv_downarm_2_0_W": {
+      "dims": [
+        96,
+        48,
+        3,
+        3,
+        3
+      ],
+      "offset": 449962,
+      "bytes": 497664
+    },
+    "unet_conv_downarm_2_0_B": {
+      "dims": [
+        96
+      ],
+      "offset": 947661,
+      "bytes": 384
+    },
+    "unet_conv_downarm_2_1_W": {
+      "dims": [
+        96,
+        96,
+        3,
+        3,
+        3
+      ],
+      "offset": 948090,
+      "bytes": 995328
+    },
+    "unet_conv_downarm_2_1_B": {
+      "dims": [
+        96
+      ],
+      "offset": 1943453,
+      "bytes": 384
+    },
+    "unet_bn_down_2_0": {
+      "dims": [
+        96
+      ],
+      "offset": 1943865,
+      "bytes": 384
+    },
+    "unet_bn_down_2_1": {
+      "dims": [
+        96
+      ],
+      "offset": 1944277,
+      "bytes": 384
+    },
+    "unet_bn_down_2_2": {
+      "dims": [
+        96
+      ],
+      "offset": 1944689,
+      "bytes": 384
+    },
+    "unet_bn_down_2_3": {
+      "dims": [
+        96
+      ],
+      "offset": 1945101,
+      "bytes": 384
+    },
+    "unet_conv_downarm_3_0_W": {
+      "dims": [
+        192,
+        96,
+        3,
+        3,
+        3
+      ],
+      "offset": 1945531,
+      "bytes": 1990656
+    },
+    "unet_conv_downarm_3_0_B": {
+      "dims": [
+        192
+      ],
+      "offset": 3936223,
+      "bytes": 768
+    },
+    "unet_conv_downarm_3_1_W": {
+      "dims": [
+        192,
+        192,
+        3,
+        3,
+        3
+      ],
+      "offset": 3937040,
+      "bytes": 3981312
+    },
+    "unet_conv_downarm_3_1_B": {
+      "dims": [
+        192
+      ],
+      "offset": 7918388,
+      "bytes": 768
+    },
+    "unet_bn_down_3_0": {
+      "dims": [
+        192
+      ],
+      "offset": 7919185,
+      "bytes": 768
+    },
+    "unet_bn_down_3_1": {
+      "dims": [
+        192
+      ],
+      "offset": 7919982,
+      "bytes": 768
+    },
+    "unet_bn_down_3_2": {
+      "dims": [
+        192
+      ],
+      "offset": 7920779,
+      "bytes": 768
+    },
+    "unet_bn_down_3_3": {
+      "dims": [
+        192
+      ],
+      "offset": 7921576,
+      "bytes": 768
+    },
+    "unet_conv_downarm_4_0_W": {
+      "dims": [
+        384,
+        192,
+        3,
+        3,
+        3
+      ],
+      "offset": 7922393,
+      "bytes": 7962624
+    },
+    "unet_conv_downarm_4_0_B": {
+      "dims": [
+        384
+      ],
+      "offset": 15885053,
+      "bytes": 1536
+    },
+    "unet_conv_downarm_4_1_W": {
+      "dims": [
+        384,
+        384,
+        3,
+        3,
+        3
+      ],
+      "offset": 15886638,
+      "bytes": 15925248
+    },
+    "unet_conv_downarm_4_1_B": {
+      "dims": [
+        384
+      ],
+      "offset": 31811922,
+      "bytes": 1536
+    },
+    "unet_bn_down_4_0": {
+      "dims": [
+        384
+      ],
+      "offset": 31813487,
+      "bytes": 1536
+    },
+    "unet_bn_down_4_1": {
+      "dims": [
+        384
+      ],
+      "offset": 31815052,
+      "bytes": 1536
+    },
+    "unet_bn_down_4_2": {
+      "dims": [
+        384
+      ],
+      "offset": 31816617,
+      "bytes": 1536
+    },
+    "unet_bn_down_4_3": {
+      "dims": [
+        384
+      ],
+      "offset": 31818182,
+      "bytes": 1536
+    },
+    "unet_up_5_scales": {
+      "dims": [
+        5
+      ],
+      "offset": 31819744,
+      "bytes": 20
+    },
+    "unet_conv_uparm_5_0_B": {
+      "dims": [
+        192
+      ],
+      "offset": 31819798,
+      "bytes": 768
+    },
+    "unet_conv_uparm_5_1_W": {
+      "dims": [
+        192,
+        192,
+        3,
+        3,
+        3
+      ],
+      "offset": 31820613,
+      "bytes": 3981312
+    },
+    "unet_conv_uparm_5_1_B": {
+      "dims": [
+        192
+      ],
+      "offset": 35801959,
+      "bytes": 768
+    },
+    "unet_bn_up_0_0": {
+      "dims": [
+        192
+      ],
+      "offset": 35802754,
+      "bytes": 768
+    },
+    "unet_bn_up_0_1": {
+      "dims": [
+        192
+      ],
+      "offset": 35803549,
+      "bytes": 768
+    },
+    "unet_bn_up_0_2": {
+      "dims": [
+        192
+      ],
+      "offset": 35804344,
+      "bytes": 768
+    },
+    "unet_bn_up_0_3": {
+      "dims": [
+        192
+      ],
+      "offset": 35805139,
+      "bytes": 768
+    },
+    "unet_up_6_scales": {
+      "dims": [
+        5
+      ],
+      "offset": 31819744,
+      "bytes": 20
+    },
+    "unet_conv_uparm_6_0_B": {
+      "dims": [
+        96
+      ],
+      "offset": 35805986,
+      "bytes": 384
+    },
+    "unet_conv_uparm_6_1_W": {
+      "dims": [
+        96,
+        96,
+        3,
+        3,
+        3
+      ],
+      "offset": 35806413,
+      "bytes": 995328
+    },
+    "unet_conv_uparm_6_1_B": {
+      "dims": [
+        96
+      ],
+      "offset": 36801774,
+      "bytes": 384
+    },
+    "unet_bn_up_1_0": {
+      "dims": [
+        96
+      ],
+      "offset": 36802184,
+      "bytes": 384
+    },
+    "unet_bn_up_1_1": {
+      "dims": [
+        96
+      ],
+      "offset": 36802594,
+      "bytes": 384
+    },
+    "unet_bn_up_1_2": {
+      "dims": [
+        96
+      ],
+      "offset": 36803004,
+      "bytes": 384
+    },
+    "unet_bn_up_1_3": {
+      "dims": [
+        96
+      ],
+      "offset": 36803414,
+      "bytes": 384
+    },
+    "unet_up_7_scales": {
+      "dims": [
+        5
+      ],
+      "offset": 31819744,
+      "bytes": 20
+    },
+    "unet_conv_uparm_7_0_B": {
+      "dims": [
+        48
+      ],
+      "offset": 36803877,
+      "bytes": 192
+    },
+    "unet_conv_uparm_7_1_W": {
+      "dims": [
+        48,
+        48,
+        3,
+        3,
+        3
+      ],
+      "offset": 36804112,
+      "bytes": 248832
+    },
+    "unet_conv_uparm_7_1_B": {
+      "dims": [
+        48
+      ],
+      "offset": 37052977,
+      "bytes": 192
+    },
+    "unet_bn_up_2_0": {
+      "dims": [
+        48
+      ],
+      "offset": 37053195,
+      "bytes": 192
+    },
+    "unet_bn_up_2_1": {
+      "dims": [
+        48
+      ],
+      "offset": 37053413,
+      "bytes": 192
+    },
+    "unet_bn_up_2_2": {
+      "dims": [
+        48
+      ],
+      "offset": 37053631,
+      "bytes": 192
+    },
+    "unet_bn_up_2_3": {
+      "dims": [
+        48
+      ],
+      "offset": 37053849,
+      "bytes": 192
+    },
+    "unet_up_8_scales": {
+      "dims": [
+        5
+      ],
+      "offset": 31819744,
+      "bytes": 20
+    },
+    "unet_conv_uparm_8_0_B": {
+      "dims": [
+        24
+      ],
+      "offset": 37054118,
+      "bytes": 96
+    },
+    "unet_conv_uparm_8_1_W": {
+      "dims": [
+        24,
+        24,
+        3,
+        3,
+        3
+      ],
+      "offset": 37054257,
+      "bytes": 62208
+    },
+    "unet_conv_uparm_8_1_B": {
+      "dims": [
+        24
+      ],
+      "offset": 37116496,
+      "bytes": 96
+    },
+    "unet_bn_up_3_0": {
+      "dims": [
+        24
+      ],
+      "offset": 37116616,
+      "bytes": 96
+    },
+    "unet_bn_up_3_1": {
+      "dims": [
+        24
+      ],
+      "offset": 37116736,
+      "bytes": 96
+    },
+    "unet_bn_up_3_2": {
+      "dims": [
+        24
+      ],
+      "offset": 37116856,
+      "bytes": 96
+    },
+    "unet_bn_up_3_3": {
+      "dims": [
+        24
+      ],
+      "offset": 37116976,
+      "bytes": 96
+    },
+    "unet_likelihood_W": {
+      "dims": [
+        1,
+        24,
+        1,
+        1,
+        1
+      ],
+      "offset": 37117108,
+      "bytes": 96
+    },
+    "unet_likelihood_B": {
+      "dims": [
+        1
+      ],
+      "offset": 37117231,
+      "bytes": 4
+    },
+    "unet_conv_uparm_5_0_conv_part0_W": {
+      "dims": [
+        192,
+        192,
+        3,
+        3,
+        3
+      ],
+      "offset": 37117293,
+      "bytes": 3981312
+    },
+    "unet_conv_uparm_5_0_conv_part1_W": {
+      "dims": [
+        192,
+        384,
+        3,
+        3,
+        3
+      ],
+      "offset": 41098663,
+      "bytes": 7962624
+    },
+    "unet_conv_uparm_6_0_conv_part0_W": {
+      "dims": [
+        96,
+        96,
+        3,
+        3,
+        3
+      ],
+      "offset": 49061341,
+      "bytes": 995328
+    },
+    "unet_conv_uparm_6_0_conv_part1_W": {
+      "dims": [
+        96,
+        192,
+        3,
+        3,
+        3
+      ],
+      "offset": 50056724,
+      "bytes": 1990656
+    },
+    "unet_conv_uparm_7_0_conv_part0_W": {
+      "dims": [
+        48,
+        48,
+        3,
+        3,
+        3
+      ],
+      "offset": 52047434,
+      "bytes": 248832
+    },
+    "unet_conv_uparm_7_0_conv_part1_W": {
+      "dims": [
+        48,
+        96,
+        3,
+        3,
+        3
+      ],
+      "offset": 52296320,
+      "bytes": 497664
+    },
+    "unet_conv_uparm_8_0_conv_part0_W": {
+      "dims": [
+        24,
+        24,
+        3,
+        3,
+        3
+      ],
+      "offset": 52794038,
+      "bytes": 62208
+    },
+    "unet_conv_uparm_8_0_conv_part1_W": {
+      "dims": [
+        24,
+        48,
+        3,
+        3,
+        3
+      ],
+      "offset": 52856300,
+      "bytes": 124416
+    }
+  },
+  "nodes": [
+    {
+      "name": "unet_conv_downarm_0_0_conv",
+      "op": "Conv",
+      "inputs": [
+        "input",
+        "unet_conv_downarm_0_0_W",
+        "unet_conv_downarm_0_0_B"
+      ],
+      "output": "unet_conv_downarm_0_0_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_0_0",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_downarm_0_0_conv"
+      ],
+      "output": "unet_conv_downarm_0_0",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_conv_downarm_0_1_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_downarm_0_0",
+        "unet_conv_downarm_0_1_W",
+        "unet_conv_downarm_0_1_B"
+      ],
+      "output": "unet_conv_downarm_0_1_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_0_1",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_downarm_0_1_conv"
+      ],
+      "output": "unet_conv_downarm_0_1",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_bn_down_0",
+      "op": "BatchNormalization",
+      "inputs": [
+        "unet_conv_downarm_0_1",
+        "unet_bn_down_0_0",
+        "unet_bn_down_0_1",
+        "unet_bn_down_0_2",
+        "unet_bn_down_0_3"
+      ],
+      "output": "unet_bn_down_0",
+      "attrs": {
+        "epsilon": 0.0010000000474974513
+      }
+    },
+    {
+      "name": "unet_maxpool_0",
+      "op": "MaxPool",
+      "inputs": [
+        "unet_bn_down_0"
+      ],
+      "output": "unet_maxpool_0",
+      "attrs": {
+        "auto_pad": "SAME_UPPER",
+        "kernel_shape": [
+          2,
+          2,
+          2
+        ],
+        "strides": [
+          2,
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_1_0_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_maxpool_0",
+        "unet_conv_downarm_1_0_W",
+        "unet_conv_downarm_1_0_B"
+      ],
+      "output": "unet_conv_downarm_1_0_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_1_0",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_downarm_1_0_conv"
+      ],
+      "output": "unet_conv_downarm_1_0",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_conv_downarm_1_1_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_downarm_1_0",
+        "unet_conv_downarm_1_1_W",
+        "unet_conv_downarm_1_1_B"
+      ],
+      "output": "unet_conv_downarm_1_1_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_1_1",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_downarm_1_1_conv"
+      ],
+      "output": "unet_conv_downarm_1_1",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_bn_down_1",
+      "op": "BatchNormalization",
+      "inputs": [
+        "unet_conv_downarm_1_1",
+        "unet_bn_down_1_0",
+        "unet_bn_down_1_1",
+        "unet_bn_down_1_2",
+        "unet_bn_down_1_3"
+      ],
+      "output": "unet_bn_down_1",
+      "attrs": {
+        "epsilon": 0.0010000000474974513
+      }
+    },
+    {
+      "name": "unet_maxpool_1",
+      "op": "MaxPool",
+      "inputs": [
+        "unet_bn_down_1"
+      ],
+      "output": "unet_maxpool_1",
+      "attrs": {
+        "auto_pad": "SAME_UPPER",
+        "kernel_shape": [
+          2,
+          2,
+          2
+        ],
+        "strides": [
+          2,
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_2_0_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_maxpool_1",
+        "unet_conv_downarm_2_0_W",
+        "unet_conv_downarm_2_0_B"
+      ],
+      "output": "unet_conv_downarm_2_0_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_2_0",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_downarm_2_0_conv"
+      ],
+      "output": "unet_conv_downarm_2_0",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_conv_downarm_2_1_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_downarm_2_0",
+        "unet_conv_downarm_2_1_W",
+        "unet_conv_downarm_2_1_B"
+      ],
+      "output": "unet_conv_downarm_2_1_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_2_1",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_downarm_2_1_conv"
+      ],
+      "output": "unet_conv_downarm_2_1",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_bn_down_2",
+      "op": "BatchNormalization",
+      "inputs": [
+        "unet_conv_downarm_2_1",
+        "unet_bn_down_2_0",
+        "unet_bn_down_2_1",
+        "unet_bn_down_2_2",
+        "unet_bn_down_2_3"
+      ],
+      "output": "unet_bn_down_2",
+      "attrs": {
+        "epsilon": 0.0010000000474974513
+      }
+    },
+    {
+      "name": "unet_maxpool_2",
+      "op": "MaxPool",
+      "inputs": [
+        "unet_bn_down_2"
+      ],
+      "output": "unet_maxpool_2",
+      "attrs": {
+        "auto_pad": "SAME_UPPER",
+        "kernel_shape": [
+          2,
+          2,
+          2
+        ],
+        "strides": [
+          2,
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_3_0_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_maxpool_2",
+        "unet_conv_downarm_3_0_W",
+        "unet_conv_downarm_3_0_B"
+      ],
+      "output": "unet_conv_downarm_3_0_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_3_0",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_downarm_3_0_conv"
+      ],
+      "output": "unet_conv_downarm_3_0",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_conv_downarm_3_1_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_downarm_3_0",
+        "unet_conv_downarm_3_1_W",
+        "unet_conv_downarm_3_1_B"
+      ],
+      "output": "unet_conv_downarm_3_1_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_3_1",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_downarm_3_1_conv"
+      ],
+      "output": "unet_conv_downarm_3_1",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_bn_down_3",
+      "op": "BatchNormalization",
+      "inputs": [
+        "unet_conv_downarm_3_1",
+        "unet_bn_down_3_0",
+        "unet_bn_down_3_1",
+        "unet_bn_down_3_2",
+        "unet_bn_down_3_3"
+      ],
+      "output": "unet_bn_down_3",
+      "attrs": {
+        "epsilon": 0.0010000000474974513
+      }
+    },
+    {
+      "name": "unet_maxpool_3",
+      "op": "MaxPool",
+      "inputs": [
+        "unet_bn_down_3"
+      ],
+      "output": "unet_maxpool_3",
+      "attrs": {
+        "auto_pad": "SAME_UPPER",
+        "kernel_shape": [
+          2,
+          2,
+          2
+        ],
+        "strides": [
+          2,
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_4_0_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_maxpool_3",
+        "unet_conv_downarm_4_0_W",
+        "unet_conv_downarm_4_0_B"
+      ],
+      "output": "unet_conv_downarm_4_0_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_4_0",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_downarm_4_0_conv"
+      ],
+      "output": "unet_conv_downarm_4_0",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_conv_downarm_4_1_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_downarm_4_0",
+        "unet_conv_downarm_4_1_W",
+        "unet_conv_downarm_4_1_B"
+      ],
+      "output": "unet_conv_downarm_4_1_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_downarm_4_1",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_downarm_4_1_conv"
+      ],
+      "output": "unet_conv_downarm_4_1",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_bn_down_4",
+      "op": "BatchNormalization",
+      "inputs": [
+        "unet_conv_downarm_4_1",
+        "unet_bn_down_4_0",
+        "unet_bn_down_4_1",
+        "unet_bn_down_4_2",
+        "unet_bn_down_4_3"
+      ],
+      "output": "unet_bn_down_4",
+      "attrs": {
+        "epsilon": 0.0010000000474974513
+      }
+    },
+    {
+      "name": "unet_up_5",
+      "op": "Resize",
+      "inputs": [
+        "unet_bn_down_4",
+        "",
+        "unet_up_5_scales"
+      ],
+      "output": "unet_up_5",
+      "attrs": {
+        "coordinate_transformation_mode": "asymmetric",
+        "mode": "nearest",
+        "nearest_mode": "floor"
+      }
+    },
+    {
+      "name": "unet_conv_uparm_5_0_conv_part0",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_downarm_3_1",
+        "unet_conv_uparm_5_0_conv_part0_W",
+        "unet_conv_uparm_5_0_B"
+      ],
+      "output": "unet_conv_uparm_5_0_conv_part0",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_5_0_conv_part1",
+      "op": "Conv",
+      "inputs": [
+        "unet_up_5",
+        "unet_conv_uparm_5_0_conv_part1_W"
+      ],
+      "output": "unet_conv_uparm_5_0_conv_part1",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_5_0_conv_sum",
+      "op": "Add",
+      "inputs": [
+        "unet_conv_uparm_5_0_conv_part0",
+        "unet_conv_uparm_5_0_conv_part1"
+      ],
+      "output": "unet_conv_uparm_5_0_conv",
+      "attrs": {}
+    },
+    {
+      "name": "unet_conv_uparm_5_0",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_uparm_5_0_conv"
+      ],
+      "output": "unet_conv_uparm_5_0",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_conv_uparm_5_1_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_uparm_5_0",
+        "unet_conv_uparm_5_1_W",
+        "unet_conv_uparm_5_1_B"
+      ],
+      "output": "unet_conv_uparm_5_1_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_5_1",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_uparm_5_1_conv"
+      ],
+      "output": "unet_conv_uparm_5_1",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_bn_up_0",
+      "op": "BatchNormalization",
+      "inputs": [
+        "unet_conv_uparm_5_1",
+        "unet_bn_up_0_0",
+        "unet_bn_up_0_1",
+        "unet_bn_up_0_2",
+        "unet_bn_up_0_3"
+      ],
+      "output": "unet_bn_up_0",
+      "attrs": {
+        "epsilon": 0.0010000000474974513
+      }
+    },
+    {
+      "name": "unet_up_6",
+      "op": "Resize",
+      "inputs": [
+        "unet_bn_up_0",
+        "",
+        "unet_up_6_scales"
+      ],
+      "output": "unet_up_6",
+      "attrs": {
+        "coordinate_transformation_mode": "asymmetric",
+        "mode": "nearest",
+        "nearest_mode": "floor"
+      }
+    },
+    {
+      "name": "unet_conv_uparm_6_0_conv_part0",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_downarm_2_1",
+        "unet_conv_uparm_6_0_conv_part0_W",
+        "unet_conv_uparm_6_0_B"
+      ],
+      "output": "unet_conv_uparm_6_0_conv_part0",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_6_0_conv_part1",
+      "op": "Conv",
+      "inputs": [
+        "unet_up_6",
+        "unet_conv_uparm_6_0_conv_part1_W"
+      ],
+      "output": "unet_conv_uparm_6_0_conv_part1",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_6_0_conv_sum",
+      "op": "Add",
+      "inputs": [
+        "unet_conv_uparm_6_0_conv_part0",
+        "unet_conv_uparm_6_0_conv_part1"
+      ],
+      "output": "unet_conv_uparm_6_0_conv",
+      "attrs": {}
+    },
+    {
+      "name": "unet_conv_uparm_6_0",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_uparm_6_0_conv"
+      ],
+      "output": "unet_conv_uparm_6_0",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_conv_uparm_6_1_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_uparm_6_0",
+        "unet_conv_uparm_6_1_W",
+        "unet_conv_uparm_6_1_B"
+      ],
+      "output": "unet_conv_uparm_6_1_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_6_1",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_uparm_6_1_conv"
+      ],
+      "output": "unet_conv_uparm_6_1",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_bn_up_1",
+      "op": "BatchNormalization",
+      "inputs": [
+        "unet_conv_uparm_6_1",
+        "unet_bn_up_1_0",
+        "unet_bn_up_1_1",
+        "unet_bn_up_1_2",
+        "unet_bn_up_1_3"
+      ],
+      "output": "unet_bn_up_1",
+      "attrs": {
+        "epsilon": 0.0010000000474974513
+      }
+    },
+    {
+      "name": "unet_up_7",
+      "op": "Resize",
+      "inputs": [
+        "unet_bn_up_1",
+        "",
+        "unet_up_7_scales"
+      ],
+      "output": "unet_up_7",
+      "attrs": {
+        "coordinate_transformation_mode": "asymmetric",
+        "mode": "nearest",
+        "nearest_mode": "floor"
+      }
+    },
+    {
+      "name": "unet_conv_uparm_7_0_conv_part0",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_downarm_1_1",
+        "unet_conv_uparm_7_0_conv_part0_W",
+        "unet_conv_uparm_7_0_B"
+      ],
+      "output": "unet_conv_uparm_7_0_conv_part0",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_7_0_conv_part1",
+      "op": "Conv",
+      "inputs": [
+        "unet_up_7",
+        "unet_conv_uparm_7_0_conv_part1_W"
+      ],
+      "output": "unet_conv_uparm_7_0_conv_part1",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_7_0_conv_sum",
+      "op": "Add",
+      "inputs": [
+        "unet_conv_uparm_7_0_conv_part0",
+        "unet_conv_uparm_7_0_conv_part1"
+      ],
+      "output": "unet_conv_uparm_7_0_conv",
+      "attrs": {}
+    },
+    {
+      "name": "unet_conv_uparm_7_0",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_uparm_7_0_conv"
+      ],
+      "output": "unet_conv_uparm_7_0",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_conv_uparm_7_1_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_uparm_7_0",
+        "unet_conv_uparm_7_1_W",
+        "unet_conv_uparm_7_1_B"
+      ],
+      "output": "unet_conv_uparm_7_1_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_7_1",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_uparm_7_1_conv"
+      ],
+      "output": "unet_conv_uparm_7_1",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_bn_up_2",
+      "op": "BatchNormalization",
+      "inputs": [
+        "unet_conv_uparm_7_1",
+        "unet_bn_up_2_0",
+        "unet_bn_up_2_1",
+        "unet_bn_up_2_2",
+        "unet_bn_up_2_3"
+      ],
+      "output": "unet_bn_up_2",
+      "attrs": {
+        "epsilon": 0.0010000000474974513
+      }
+    },
+    {
+      "name": "unet_up_8",
+      "op": "Resize",
+      "inputs": [
+        "unet_bn_up_2",
+        "",
+        "unet_up_8_scales"
+      ],
+      "output": "unet_up_8",
+      "attrs": {
+        "coordinate_transformation_mode": "asymmetric",
+        "mode": "nearest",
+        "nearest_mode": "floor"
+      }
+    },
+    {
+      "name": "unet_conv_uparm_8_0_conv_part0",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_downarm_0_1",
+        "unet_conv_uparm_8_0_conv_part0_W",
+        "unet_conv_uparm_8_0_B"
+      ],
+      "output": "unet_conv_uparm_8_0_conv_part0",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_8_0_conv_part1",
+      "op": "Conv",
+      "inputs": [
+        "unet_up_8",
+        "unet_conv_uparm_8_0_conv_part1_W"
+      ],
+      "output": "unet_conv_uparm_8_0_conv_part1",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_8_0_conv_sum",
+      "op": "Add",
+      "inputs": [
+        "unet_conv_uparm_8_0_conv_part0",
+        "unet_conv_uparm_8_0_conv_part1"
+      ],
+      "output": "unet_conv_uparm_8_0_conv",
+      "attrs": {}
+    },
+    {
+      "name": "unet_conv_uparm_8_0",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_uparm_8_0_conv"
+      ],
+      "output": "unet_conv_uparm_8_0",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_conv_uparm_8_1_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_conv_uparm_8_0",
+        "unet_conv_uparm_8_1_W",
+        "unet_conv_uparm_8_1_B"
+      ],
+      "output": "unet_conv_uparm_8_1_conv",
+      "attrs": {
+        "kernel_shape": [
+          3,
+          3,
+          3
+        ],
+        "pads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_conv_uparm_8_1",
+      "op": "Elu",
+      "inputs": [
+        "unet_conv_uparm_8_1_conv"
+      ],
+      "output": "unet_conv_uparm_8_1",
+      "attrs": {
+        "alpha": 1.0
+      }
+    },
+    {
+      "name": "unet_bn_up_3",
+      "op": "BatchNormalization",
+      "inputs": [
+        "unet_conv_uparm_8_1",
+        "unet_bn_up_3_0",
+        "unet_bn_up_3_1",
+        "unet_bn_up_3_2",
+        "unet_bn_up_3_3"
+      ],
+      "output": "unet_bn_up_3",
+      "attrs": {
+        "epsilon": 0.0010000000474974513
+      }
+    },
+    {
+      "name": "unet_likelihood_conv",
+      "op": "Conv",
+      "inputs": [
+        "unet_bn_up_3",
+        "unet_likelihood_W",
+        "unet_likelihood_B"
+      ],
+      "output": "unet_likelihood_conv",
+      "attrs": {
+        "kernel_shape": [
+          1,
+          1,
+          1
+        ],
+        "pads": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "strides": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "unet_prediction",
+      "op": "Identity",
+      "inputs": [
+        "unet_likelihood_conv"
+      ],
+      "output": "unet_prediction",
+      "attrs": {}
+    },
+    {
+      "name": "output",
+      "op": "Identity",
+      "inputs": [
+        "unet_prediction"
+      ],
+      "output": "output",
+      "attrs": {}
+    }
+  ]
+}
