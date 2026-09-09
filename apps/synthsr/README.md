@@ -108,8 +108,12 @@ image for interpretation. No skull stripping or spatial normalization is perform
 ## GPU execution
 
 GPU processing uses the specialized `synthsr-blocked-fp32-v1` WebGPU executor in
-`../../packages/synthsr/src/gpu-session.js`. Its FP32 Conv3D kernel computes 16 spatial positions × 32
-output channels per workgroup, sharing input and weight tiles. All intermediate
+`../../packages/synthsr/src/gpu-session.js`. Its FP32 Conv3D kernel stages a reduction chunk of
+activations and weights in workgroup memory, then accumulates a register block of
+spatial positions by output channels per thread, so each staged value feeds several
+fused multiply-adds. The channel tile matches each layer's channel count, so no lane
+computes a discarded channel. Blocking constants are named at the top of
+`../../packages/synthsr/src/gpu-conv3d.js`. All intermediate
 activations stay channels-last on the GPU; eligible Conv/ELU and Add/ELU pairs
 are fused, and buffers are reused after their last graph consumer. This is
 execution tiling inside a convolution, not approximate image tiling: the full
@@ -208,6 +212,20 @@ inference. Its output differed from the native reference by one uint8 step at
 424 of 6,598,560 voxels, within the existing parity tolerance. See
 [`docs/optimized-gpu-2026-09-08.json`](docs/optimized-gpu-2026-09-08.json) for
 production-build timings, hardware details and validation scope.
+
+The Conv3D kernel was later re-blocked to accumulate a register block per thread
+and to size its channel tile to each layer, which removed the discarded lanes on
+the 24-channel convolutions. Output is **bit-identical** to the previous kernel on
+the full example, and parity against native CPU is unchanged at 420 of 6,598,560
+voxels differing by one uint8 step. Isolated convolutions improved 1.09–1.21× on
+Dawn and 1.52–1.79× on wgpu; the shared pipeline on Deno's WebGPU went from 7.52 s
+to 4.91 s of inference. In the browser the effect is the same order as this
+harness's run-to-run spread, so no end-to-end change is claimed there. Blocking
+constants are named at the top of `../../packages/synthsr/src/gpu-conv3d.js`;
+a sweep of ~190 configurations put them within 4% of Dawn's optimum, and both
+WebGPU implementations converge near 1.0 TFLOP/s against a measured WGSL FP32 FMA
+ceiling of 4.11 TFLOP/s on this GPU. See
+[`docs/reblocked-kernel-2026-09-09.json`](docs/reblocked-kernel-2026-09-09.json).
 
 ## Standalone
 

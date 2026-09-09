@@ -1,0 +1,68 @@
+{
+  "date": "2026-09-09",
+  "change": "Register-blocked FP32 Conv3D: per-thread accumulation of 2 positions x 8 channels, [reduction][position] workgroup staging with row-strided positions, and a channel tile matched to each layer's channel count.",
+  "implementation": "synthsr-blocked-fp32-v1",
+  "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+  "environment": {
+    "host": "Apple M1 Max, 10 CPU cores, 32 GPU cores, macOS 26.x",
+    "gpu": "apple metal-3, not a fallback adapter",
+    "browser": "Playwright Chromium, hardware WebGPU (Dawn)",
+    "deno": "2.9.6, --unstable-webgpu (wgpu)"
+  },
+  "numerics": {
+    "versusPreviousKernel": {
+      "input": "Public py_synthsr FLAIR.nii.gz, full volume, flip and sharpen enabled",
+      "voxels": 6598560,
+      "mismatches": 0,
+      "maxError": 0,
+      "maxAffineError": 0,
+      "note": "Bit-identical: the reduction order over k is unchanged, so only the execution schedule differs."
+    },
+    "versusNativeCpu": {
+      "reference": "onnxruntime-node 1.29.0 CPU, 8 threads, same host",
+      "voxels": 6598560,
+      "mismatches": 420,
+      "mismatchFraction": 0.0000637,
+      "maxError": 1,
+      "maxAffineError": 0,
+      "note": "Unchanged from the previous kernel's 420, and inside the existing thresholds (max 1, fraction below 0.001)."
+    },
+    "kernelUnitCases": "e2e/gpu-kernel.spec.js passes under Dawn against an independent scalar convolution: boundaries, channel and reduction tails, non-cubic dims, single-channel input layer, fused ELU.",
+    "hardwareSuite": "e2e/smoke.spec.js 5/5 passed on hardware WebGPU with real weights: full-volume webgpu and wasm regression against the native reference, TensorFlow fixture parity for both backends, and load/cancel."
+  },
+  "isolatedConvolutions": {
+    "method": "One convolution per measurement, GPU timestamp queries, minimum of three runs.",
+    "peakFmaCeiling": {
+      "note": "Memory-free FP32 FMA loop through WGSL on this GPU, for scale. The 10.4 TFLOP/s figure from core counts is not reachable through this stack.",
+      "tflopsByAccumulators": { "4": 2.36, "8": 3.66, "16": 4.11, "32": 1.17 }
+    },
+    "dawn": [
+      { "shape": "192x256x160 48->24", "previousMs": 589.5, "reblockedMs": 501.4, "speedup": 1.18, "reblockedTflops": 0.98 },
+      { "shape": "192x256x160 24->24", "previousMs": 302.3, "reblockedMs": 249.7, "speedup": 1.21, "reblockedTflops": 0.98 },
+      { "shape": "96x128x80 96->48", "previousMs": 285.5, "reblockedMs": 254.4, "speedup": 1.12, "reblockedTflops": 0.96 },
+      { "shape": "48x64x40 96->96", "previousMs": 53.2, "reblockedMs": 48.8, "speedup": 1.09, "reblockedTflops": 1.25 }
+    ],
+    "wgpu": [
+      { "shape": "192x256x160 48->24", "previousMs": 801.5, "reblockedMs": 476.1, "speedup": 1.68 },
+      { "shape": "192x256x160 24->24", "previousMs": 412.7, "reblockedMs": 230.7, "speedup": 1.79 },
+      { "shape": "96x128x80 96->48", "previousMs": 369.6, "reblockedMs": 241.7, "speedup": 1.53 },
+      { "shape": "48x64x40 96->96", "previousMs": 68.6, "reblockedMs": 45.1, "speedup": 1.52 }
+    ],
+    "tuning": "146 valid blocking configurations measured on wgpu and about 190 on Dawn. Dawn's ten best configurations span 240.9 to 250.4 ms on the 24->24 shape, so the shipped constants are within 4% of its optimum and no per-implementation tuning is warranted. Both implementations converge near 1.0 TFLOP/s, which reads as this kernel design's ceiling rather than a configuration artifact."
+  },
+  "endToEnd": {
+    "denoWgpuCli": {
+      "note": "Shared pipeline on Deno's WebGPU, warm shader cache, two runs each.",
+      "previous": { "inferenceSeconds": [7.52, 7.73], "wallSeconds": [10.35, 10.76] },
+      "reblocked": { "inferenceSeconds": [4.91, 4.96], "wallSeconds": [7.91, 7.98] },
+      "inferenceSpeedup": 1.53
+    },
+    "browserApp": {
+      "note": "Playwright full-volume webgpu regression test wall time on a quiet host, two runs each. The expected Dawn gain is the same order as this harness's run-to-run spread, so the end-to-end effect in Chrome is not resolvable here.",
+      "previousSeconds": [8.8, 7.8],
+      "reblockedSeconds": [8.4, 8.4],
+      "conclusion": "No measurable end-to-end change in the browser; the measurable gains are on wgpu hosts and in isolated convolution."
+    }
+  },
+  "scope": "One host and one GPU. Engineering parity and throughput evidence, not clinical validation or a cross-device performance guarantee. Historical measurements in performance-investigation.md were taken on a different date and build and are not directly comparable to the wall times here."
+}

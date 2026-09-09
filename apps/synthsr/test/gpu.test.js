@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import model from '../../../packages/synthsr/src/gpu-model.json' with { type: 'json' };
 import { planGpuGraph, createGpuSession } from '@neurodesk/synthsr/browser';
-import { conv3dDispatch, packConvWeights } from '../../../packages/synthsr/src/gpu-conv3d.js';
+import { conv3dDispatch, conv3dTile, packConvWeights } from '../../../packages/synthsr/src/gpu-conv3d.js';
 
 test('GPU graph is pinned to the same model as the browser',async()=>{
   const manifest=JSON.parse(await readFile(new URL('../../../models/synthsr.manifest.json',import.meta.url)));
@@ -51,10 +51,18 @@ test('GPU graph rejects unsupported changes instead of silently changing semanti
 });
 
 test('full-volume dispatch covers output without exceeding WebGPU per-axis limits',()=>{
-  const dims=[192,256,160],co=24,[x,y,z]=conv3dDispatch(dims,co);
+  const dims=[192,256,160],co=24,[x,y,z]=conv3dDispatch(dims,co),tile=conv3dTile(co);
   assert.ok(x<=65535 && y<=65535 && z<=65535);
-  assert.ok(x*y*16>=dims.reduce((a,b)=>a*b,1));
-  assert.ok(z*32>=co);
+  assert.ok(x*y*tile.positions>=dims.reduce((a,b)=>a*b,1));
+  assert.ok(z*tile.channels>=co && co%tile.channels===0);
+});
+
+test('convolution tiles stay inside baseline WebGPU workgroup limits',()=>{
+  for(const node of planGpuGraph([192,256,160]).nodes.filter(n=>n.op==='Conv'&&n.shape.channels>1)) {
+    const tile=conv3dTile(node.shape.channels);
+    assert.ok(tile.threads<=256,`${node.name} uses ${tile.threads} invocations`);
+    assert.ok(tile.sharedBytes<=16384,`${node.name} uses ${tile.sharedBytes} bytes of workgroup storage`);
+  }
 });
 
 test('weight packing preserves ONNX output/input/spatial ordering',()=>{
