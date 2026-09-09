@@ -349,10 +349,18 @@ impl Session {
         let queue = device.new_command_queue();
         let opts = CompileOptions::new();
         opts.set_fast_math_enabled(false); // keep IEEE FP32 like the WGSL executor
+                                           // Metal buffers need at least 16 bytes; never read past a shorter slice.
         let upload = |v: &[f32]| {
+            let padded;
+            let v = if v.len() < 4 {
+                padded = [v, &[0.0; 4][..4 - v.len()]].concat();
+                &padded[..]
+            } else {
+                v
+            };
             device.new_buffer_with_data(
                 v.as_ptr().cast(),
-                (v.len() * 4).max(16) as u64,
+                (v.len() * 4) as u64,
                 MTLResourceOptions::StorageModeShared,
             )
         };
