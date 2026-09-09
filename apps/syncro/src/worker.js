@@ -30,8 +30,8 @@ self.onmessage=async({data:job})=>{
   let engine;
   const result=await runSyncro({input:await job.input.arrayBuffer(),ct:job.ct,template,
    additional:await Promise.all(job.additional.map(async item=>({name:item.file.name,type:item.type,buffer:await item.file.arrayBuffer()}))),
-   synthesize:args=>infer({stage:'synthsr',buffer:args.buffer,ct:job.ct,backend:job.synthsrBackend??'webgpu',file:job.localSr,modelBase:job.modelBase},args.onProgress),
-   extractBrain:args=>infer({stage:'synthstrip',volume:args.volume,file:job.localStrip,modelBase:job.modelBase},args.onProgress),
+   synthesize:args=>infer({stage:'synthsr',buffer:args.buffer,ct:job.ct,backend:job.synthsrBackend??'webgpu',modelBase:job.modelBase},args.onProgress),
+   extractBrain:args=>infer({stage:'synthstrip',volume:args.volume,modelBase:job.modelBase},args.onProgress),
    registration:{async register(args){
     const {default:createModule}=await import(/* @vite-ignore */ job.registrationURL);
     engine=await createRegistration({createModule,onLog:message=>self.postMessage({type:'log',message})});return engine.register(args);

@@ -37,7 +37,7 @@ export function thresholdBinary(volume) {
 
 // Inference and filesystem/runtime ownership stay in injected adapters.
 export async function runSyncro({input,additional=[],template,synthesize,extractBrain,registration,ct=false,onProgress=()=>{},onStage=()=>{}}) {
-  const start=performance.now(),timings={},outputs={},provenance={version:'0.1.0',ct,stages:{}};
+  const start=performance.now(),timings={},outputs={},provenance={version:'0.1.1',ct,stages:{}};
   const volume=readVolume(asBuffer(input)),fixed=readVolume(asBuffer(template));
   const accompanying=additional.map((item,i)=>{
     const v=readAdditional(item.buffer,item.type||'image');

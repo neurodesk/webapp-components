@@ -8,21 +8,20 @@ import {assets,browserSynthstrip} from '../../../packages/syncro/src/assets.js';
 ort.env.wasm.wasmPaths={wasm:wasmURL,mjs:wasmModuleURL};
 ort.env.wasm.numThreads=self.crossOriginIsolated?Math.min(4,navigator.hardwareConcurrency||1):1;
 const sha=async b=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',b)),v=>v.toString(16).padStart(2,'0')).join('');
-async function model(name,file,base) {
+async function model(name,base) {
  const asset=name==='synthstrip'?browserSynthstrip:assets[name];
  const url=name==='synthstrip'?asset.url:base?new URL('synthsr-v2.onnx',base).href:asset.url;
  let cache;try{cache=await caches.open(name==='synthsr'?'neurodesk-synthsr-v1':'neurodesk-models-v1');}catch{}
  let bytes;
- if(file)bytes=await file.arrayBuffer();
- else {const response=await cache?.match(url)||await fetch(url);if(!response.ok)throw new Error(`Unable to download ${name}. Select its validated local model in Processing settings.`);bytes=await response.arrayBuffer();}
+ const response=await cache?.match(url)||await fetch(url);if(!response.ok)throw new Error(`Unable to download the ${name} model. Check your connection and try again.`);bytes=await response.arrayBuffer();
  if(bytes.byteLength!==asset.bytes||await sha(bytes)!==asset.sha256){await cache?.delete(url);throw new Error(`${name} model checksum mismatch.`);}
- if(!file)try{await cache?.put(url,new Response(bytes));}catch{}
+ try{await cache?.put(url,new Response(bytes));}catch{}
  return {bytes,hash:asset.sha256};
 }
 self.onmessage=async({data:job})=>{
  try {
   const runtime={app:'SYNcro',...browserRuntime(job.backend??'webgpu'),threads:ort.env.wasm.numThreads};
-  const common={loadModel:()=>model(job.stage,job.file,job.modelBase),
+  const common={loadModel:()=>model(job.stage,job.modelBase),
    createSession:job.stage==='synthsr'
     ? (bytes,backend,shape)=>{Object.assign(runtime,browserRuntime(backend,shape));return createBrowserSession(ort,bytes,backend,shape);}
     : bytes=>ort.InferenceSession.create(bytes,{executionProviders:['wasm'],graphOptimizationLevel:'all'}),

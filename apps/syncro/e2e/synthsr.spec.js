@@ -8,13 +8,12 @@ import {readVolume} from '@neurodesk/synthsr';
 for (const backend of ['wasm','webgpu']) test(`shared SynthSR stage: ${backend} matches the reference`,async({page})=>{
  test.skip(!process.env.SYNTHSR_MODEL,'Set SYNTHSR_MODEL to the checksum-pinned ONNX model.');
  test.setTimeout(300000);
+ await page.route('**/test-model/synthsr-v2.onnx',route=>route.fulfill({path:process.env.SYNTHSR_MODEL}));
  await page.goto('./');
  if(backend==='webgpu')expect(await page.evaluate(async()=>!!await navigator.gpu?.requestAdapter())).toBe(true);
  const fixture=new URL('../../synthsr/test/fixtures/validation.nii.gz',import.meta.url);
  await page.locator('#input').setInputFiles(fileURLToPath(fixture));
  await expect(page.locator('#statusText')).toContainText('Ready to normalize',{timeout:30000});
- await page.getByText('Processing settings',{exact:true}).click();
- await page.locator('#localSr').setInputFiles(process.env.SYNTHSR_MODEL);
  const name=(await readdir(new URL('../dist/assets/',import.meta.url))).find(n=>/^inference-worker-.*\.js$/.test(n));
  expect(name).toBeTruthy();
  const result=await page.evaluate(async({name,backend})=>{
@@ -26,7 +25,7 @@ for (const backend of ['wasm','webgpu']) test(`shared SynthSR stage: ${backend} 
     if(data.type==='error')reject(new Error(data.message));
     if(data.type==='result')resolve({buffer:Array.from(new Uint8Array(data.result.buffer)),provenance:data.result.provenance});
    };
-   worker.postMessage({stage:'synthsr',backend,buffer,file:document.querySelector('#localSr').files[0]});
+   worker.postMessage({stage:'synthsr',backend,buffer,modelBase:new URL('test-model/',location.href).href});
   });}finally{worker.terminate();}
  },{name,backend});
  const output=readVolume(Uint8Array.from(result.buffer).buffer);

@@ -10,11 +10,9 @@ const errors=[];page.on('pageerror',e=>errors.push(e.message));
 try {
  await page.goto(url);
  await expect.poll(()=>page.evaluate(()=>crossOriginIsolated)).toBe(true);
+ await page.route('**/synthsr-v2.onnx',route=>route.fulfill({path:cache+'/276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3/synthsr.onnx'}));
  await page.locator('#input').setInputFiles(work+'/sub-01_T1w.nii.gz');
  await expect(page.locator('#runButton')).toBeEnabled();
- await page.getByText('Processing settings',{exact:true}).click();
- await page.locator('#localSr').setInputFiles(cache+'/276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3/synthsr.onnx');
- await page.getByText('Processing settings',{exact:true}).click();
  await page.locator('#additionalSection > summary').click();
  await page.locator('#additional').setInputFiles([work+'/binary.nii.gz',work+'/labels.nii.gz']);
  await page.locator('#type-0').selectOption('binary');await page.locator('#type-1').selectOption('labels');

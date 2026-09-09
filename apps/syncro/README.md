@@ -11,7 +11,7 @@ pnpm --filter syncro preview --host 127.0.0.1 --port 5175
 
 Open `/syncro/`. Use a desktop browser with cross-origin isolation and several GB of available memory. The bundled service worker supplies isolation on compatible static hosts. No input images are sent to a processing service. Hugging Face supplies pinned models, and the optional real example comes from OpenNeuro.
 
-The build emits registration assets, template licensing information and `downloads/neurodesk-syncro-0.1.0.tgz`. Standalone installation and SLURM instructions are also available inside the app. See `../../packages/syncro/README.md` and its `validation/` directory for scientific behavior, installation and measured comparisons.
+The build emits registration assets, template licensing information and `downloads/neurodesk-syncro-0.1.1.tgz`. The app's Standalone disclosure provides copyable download, installation and run commands. See `../../packages/syncro/README.md` and its `validation/` directory for scientific behavior, installation and measured comparisons.
 
 Run `pnpm --filter syncro test:e2e` for production workflow checks. The separately invoked `packages/syncro/validation/browser-run.mjs` runs the complete real scan and downloads its outputs. Repository-wide interface checks are required after a fresh site build.
 
@@ -32,5 +32,5 @@ the SynthSR backend and is covered separately by the inference-stage regression.
 
 Scan pickers accept NIfTI and complete DICOM series through the shared local
 converter. Choose one anatomical series at a time; accompanying series become
-individual images whose propagation type can be selected. Local ONNX model
-fields retain their model-specific format checks.
+individual images whose propagation type can be selected. ONNX models are
+downloaded from their checksum-pinned published locations.

@@ -329,7 +329,7 @@ apps:
   - id: syncro
     path: syncro
     title: SYNcro
-    description: Normalize brain scans and aligned lesion maps to MNI space locally.
+    description: Normalize brain scans and aligned lesion maps to MNI space.
     category: data-preparation
     keywords: [SYNcro, SynthSR, SynthStrip, ANTs, MNI, registration]
     legacy_domain: null

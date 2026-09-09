@@ -55,3 +55,39 @@ test('cancellation restores input controls and invalid input cannot reuse an old
  await page.locator('#input').setInputFiles({name:'broken.nii',mimeType:'application/octet-stream',buffer:Buffer.from('not a NIfTI')});
  await expect(page.locator('#runButton')).toBeDisabled();
 });
+
+test('compact help, standalone commands and result switching remain reachable',async({page})=>{
+ await page.addInitScript(()=>{
+  Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async value=>{window.copiedText=value;}}});
+  const NativeWorker=window.Worker;
+  window.Worker=function(url,options){
+   if(!/\/assets\/worker-[^/]+\.js/.test(String(url)))return new NativeWorker(url,options);
+   return {
+    onmessage:null,onerror:null,
+    postMessage(job){job.input.arrayBuffer().then(buffer=>{const bytes=new Uint8Array(buffer);this.onmessage?.({data:{type:'result',outputs:{'synthetic-t1.nii':bytes.slice(),'warped-original.nii.gz':bytes.slice()}}});});},
+    terminate(){}
+   };
+  };
+ });
+ await page.goto('./');
+ await expect(page.locator('#technicalLog')).not.toHaveAttribute('open','');
+ await expect(page.locator('#localSr, #localStrip, #browserModelLink')).toHaveCount(0);
+ await page.locator('.info-icon').first().focus();
+ await expect(page.locator('.info-tooltip').first()).toBeVisible();
+ await page.locator('#standalone > summary').click();
+ await expect(page.locator('#downloadCommand')).toContainText('curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-0.1.1.tgz');
+ await page.locator('[data-copy-target="downloadCommand"]').click();
+ expect(await page.evaluate(()=>window.copiedText)).toContain('curl -LO');
+
+ await page.locator('#input').setInputFiles(scan('anatomical.nii'));
+ await expect(page.locator('#resultSelect')).toHaveValue('original');
+ await expect(page.locator('#resultSelect option')).toHaveText(['Original acquired image']);
+ await page.locator('#runButton').click();
+ await expect(page.locator('#statusText')).toContainText('Normalization complete');
+ await expect(page.locator('#resultSelect')).toHaveValue('warped-original.nii.gz');
+ await expect(page.locator('#resultSelect option')).toHaveText(['Original acquired image','Synthetic T1','Warped acquired image']);
+ await page.locator('#resultSelect').selectOption('original');
+ await expect(page.locator('#viewLabel')).toHaveText('anatomical.nii');
+ await page.locator('#resultSelect').selectOption('warped-original.nii.gz');
+ await expect(page.locator('#viewLabel')).toHaveText('MNI template + warped-original.nii.gz');
+});
