@@ -38,9 +38,9 @@ for (const id of [
   assert.match(html, new RegExp(`id=["']${id}["']`), `index.html must expose ${id}`);
 }
 
-assert.match(html, /DWI\/TRACE \(\.nii \/ \.nii\.gz\)/,
+assert.match(html, /DWI\/TRACE \(NIfTI \/ DICOM\)/,
   'input section must expose a compact DWI/TRACE picker');
-assert.match(html, /ADC \(\.nii \/ \.nii\.gz\)/,
+assert.match(html, /ADC \(NIfTI \/ DICOM\)/,
   'input section must expose a compact ADC picker');
 assert.match(html, /DeepISLES DWI\/ADC seed/,
   'advanced lesion source controls must expose the opt-in DeepISLES seed button');

@@ -81,8 +81,10 @@ async function rewriteFile(file, runtimeRoot, app, relativePath) {
     source = source.replace(/(['"])(?:\.\.?\/)*wasm\/\1/g, (_match, quote) =>
       `${quote}${moduleReference(file, ortDir)}/${quote}`);
   }
-  source = source.replace(/(['"])(?:\.\.?\/)*dcm2niix\/index\.js\1/g, (_match, quote) =>
-    `${quote}${moduleReference(file, dcm2niix)}${quote}`);
+  if (!app?.app_scoped_runtime_families?.includes('dcm2niix')) {
+    source = source.replace(/(['"])(?:\.\.?\/)*dcm2niix\/index\.js\1/g, (_match, quote) =>
+      `${quote}${moduleReference(file, dcm2niix)}${quote}`);
+  }
   source = source.replace(/(['"])(?:\.\.?\/)*nifti-js\/index\.js\1/g, (_match, quote) =>
     `${quote}${moduleReference(file, niftiReader)}${quote}`);
   source = source.replace(
@@ -96,7 +98,9 @@ async function rewriteFile(file, runtimeRoot, app, relativePath) {
 async function removeAppCopies(siteDist, registry) {
   for (const app of registry.apps) {
     const appDist = join(siteDist, app.path);
-    await rm(join(appDist, 'dcm2niix'), { recursive: true, force: true });
+    if (!app.app_scoped_runtime_families?.includes('dcm2niix')) {
+      await rm(join(appDist, 'dcm2niix'), { recursive: true, force: true });
+    }
     await rm(join(appDist, 'nifti-js'), { recursive: true, force: true });
     await rm(join(appDist, 'vendor', 'webapp-components'), { recursive: true, force: true });
     if (app.app_scoped_runtime_families?.includes('ort-web')) continue;
@@ -119,6 +123,11 @@ export async function assembleRuntimeAssetStore({ repoRoot, siteDist, registry }
 
   for (const family of manifest.families) {
     await copyVerifiedFamily({ family, repoRoot, siteDist, registry });
+    if (family.id === 'dcm2niix') {
+      for (const app of registry.apps.filter(app => app.app_scoped_runtime_families.includes(family.id))) {
+        await cp(join(runtimeRoot, family.target), join(siteDist, app.path, family.id), { recursive: true });
+      }
+    }
   }
 
   await cp(

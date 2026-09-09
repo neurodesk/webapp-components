@@ -109,7 +109,7 @@ const DropZone: React.FC<DropZoneProps> = ({
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
             <input
-              type="file"
+              type="file" data-neurodesk-input="protocol"
               multiple
               webkitdirectory=""
               accept={acceptedFiles}

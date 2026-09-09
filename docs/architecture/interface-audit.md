@@ -24,6 +24,12 @@ All 14 registered apps were reviewed on 8 September 2026, starting from `c514f87
 
 ## Rules and enforcement
 
+Scan fields now accept NIfTI and DICOM through the same multi-file picker, including extensionless DICOM instances. SynthSR converts locally, provides a series selector, and supports cancellation and retry. NiiMath, Deface, and BrowserQC share the bundled image importer. Easy MP2RAGE routes its main picker through its existing DICOM parser and rejects mixed series instead of assembling unrelated scans. CALMaR's structural, lesion, DWI, ADC, and manual-mask fields and QSMbly's mask field support conversion. SeedSeg and QSMbly no longer filter out DICOM filename variants.
+
+Static apps retain a checksum-verified DICOM runtime inside each app's service-worker scope. GitHub Pages does not supply isolation headers for workers outside that scope. The DICOM browser suite serves the site without isolation headers and waits for the service-worker reload, reproducing the deployed environment instead of masking this requirement with local-server headers.
+
+Every file input declares its scientific purpose. Scan fields are checked by `audit:interfaces` for multi-file selection and unrestricted filenames. Surface and per-vertex overlays in SurfAnnotate, acquisition protocols in dicompare, and OME-Zarr datasets in ZARRo retain their specialized inputs. Model weights, BIDS directories, schemas, and gradient tables remain separate input types.
+
 Root `AGENTS.md` requires [the interface standard](interface-standard.md) for existing and new apps. The standard defines navigation ownership, disclosure defaults, state preservation, touch controls, and completion checks.
 
 The shared shell hides registered duplicate information triggers while retaining their handlers and standalone fallbacks. Shared native disclosures and `bindSectionDisclosures` preserve control identity, synchronize workflow expansion, and remove closed content from keyboard navigation. The new-app template uses these components and a collapsed technical log; its documentation mirror matches.
@@ -35,6 +41,9 @@ The shared shell hides registered duplicate information triggers while retaining
 Release verification includes SynthSR, added to production during this work. The catalog audit passes all 30 desktop and phone cases across the resulting 15 apps with zero legacy heading handlers. Repository and shared-component tests cover the registry, template, shell, native disclosures, and class-driven disclosure state. Mobile checks cover narrow phones, tablets, landscape layouts, navigation, dialogs, and imaging interaction.
 
 Data workflows exercised for this change include:
+
+- `pnpm test:image-uploads` imports a generated four-slice DICOM series through the main scan picker in SynthSR, NiiMath, CALMaR, VesselBoost, SCT, MuscleMap, SeedSeg, QSMbly, Easy MP2RAGE, and MRI2VID. It also checks CALMaR DWI/ADC inputs, QSMbly mask conversion, and Easy MP2RAGE mixed-series rejection. CI runs this suite alongside the interface audit.
+- SynthSR's browser suite checks extensionless and `.IMA` DICOM, multiple converted series, return to NIfTI, invalid-input state preservation, cancellation, and retry.
 
 - SynthSR compact input bounds, shared examples, failed-download state preservation, and real `chris_t1` loading at 188 × 256 × 190 voxels. All 19 shared example URLs returned HTTP 200.
 - Easy MP2RAGE parameter-family selection, tutorial targets, NIfTI denoising, downloads, and About.

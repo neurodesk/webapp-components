@@ -270,20 +270,20 @@
           <option value="b1only">SA2RAGE → B1 map</option>
           <option value="denoise">Denoise UNI → UNI-DEN</option>
         </select>
-      </div><div id="drop" tabindex="0" role="button" aria-label="Add files: activate to browse for NIfTI files, or drag and drop DICOM folders and NIfTI files here">
-      <b>Choose NIfTI files or drop images and DICOM folders here.</b><br><span class="note">JSON sidecars and DICOM headers fill in image roles and parameters.</span>
-      <input id="file" type="file" multiple accept=".nii,.nii.gz,.json" class="hidden">
+      </div><div id="drop" tabindex="0" role="button" aria-label="Add files: activate to browse for NIfTI or DICOM files, or drag and drop DICOM folders and NIfTI files here">
+      <b>Choose NIfTI / DICOM files or drop folders here.</b><br><span class="note">JSON sidecars and DICOM headers fill in image roles and parameters.</span>
+      <input id="file" type="file" data-neurodesk-input="image" multiple class="hidden">
     </div>
     <div class="row" id="dicomRow" style="justify-content:center;margin-top:12px">
       <button class="secondary" id="pickFolder" type="button">📁 Choose a DICOM folder…</button>
-      <input id="folder" type="file" webkitdirectory directory multiple class="hidden">
+      <input id="folder" type="file" data-neurodesk-input="image" webkitdirectory directory multiple class="hidden">
       <span class="note">Files stay in your browser. See About for input requirements.</span>
     </div>
     <div class="row" id="bidsRow" style="justify-content:center;margin-top:12px;display:none">
       <button class="secondary" id="pickBids" type="button">📂 Process a BIDS directory…
         <span class="i" data-tip="Point at a BIDS dataset root. The app lists every subject and session, matches the MP2RAGE (inv-1 / inv-2 / UNIT1) and fmap (TB1TFL / TB1SRGE / TB1map) files by their BIDS entities, and lets you run them one at a time. Missing or non-standard files are flagged with a reason, and you can assign them by hand.">i</span>
       </button>
-      <input id="bidsInput" type="file" webkitdirectory directory multiple class="hidden">
+      <input id="bidsInput" type="file" data-neurodesk-input="dataset" webkitdirectory directory multiple class="hidden">
       <span class="note">Batch mode: list a whole dataset and run subjects sequentially. All files stay in your browser.</span>
     </div>
     <table id="filetable" class="hidden">

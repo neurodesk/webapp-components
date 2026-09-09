@@ -3,7 +3,7 @@ import { stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { extname, join, normalize } from 'node:path';
 
-export async function serveSite(dist) {
+export async function serveSite(dist, { isolationHeaders = true } = {}) {
   const mimeTypes = new Map([
     ['.css', 'text/css; charset=utf-8'],
     ['.html', 'text/html; charset=utf-8'],
@@ -61,8 +61,10 @@ export async function serveSite(dist) {
       response.writeHead(200, {
         'content-length': metadata.size,
         'content-type': mimeTypes.get(extname(path)) ?? 'application/octet-stream',
-        'cross-origin-embedder-policy': 'credentialless',
-        'cross-origin-opener-policy': 'same-origin',
+        ...(isolationHeaders ? {
+          'cross-origin-embedder-policy': 'credentialless',
+          'cross-origin-opener-policy': 'same-origin',
+        } : {}),
         'x-content-type-options': 'nosniff',
       });
       if (request.method === 'HEAD') response.end();

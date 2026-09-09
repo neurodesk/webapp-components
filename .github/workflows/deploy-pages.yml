@@ -71,3 +71,7 @@ jobs:
         run: pnpm test:deployed
         env:
           BASE_URL: ${{ steps.deployment.outputs.page_url }}
+      - name: Verify deployed NIfTI and DICOM scan pickers
+        run: pnpm test:image-uploads
+        env:
+          BASE_URL: ${{ steps.deployment.outputs.page_url }}

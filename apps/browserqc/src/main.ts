@@ -17,7 +17,7 @@ import NiiVueGPU, {
 } from '@niivue/niivue'
 import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-imaging-workspace'
 import '@neurodesk/webapp-components/styles/imaging-workspace.css'
-import { runDcm2niix, traverseDataTransferItems } from '@neurodesk/runtime-support/dcm2niix-client'
+import { readImageFiles, traverseDataTransferItems } from '@neurodesk/runtime-support/dcm2niix-client'
 import { Niimath } from '@neurodesk/runtime-support/niimath'
 import { CSF_LABELS, WM_LABELS, parseQcTsv, renderQc } from './qc'
 
@@ -353,6 +353,8 @@ async function handleDrop(filesPromise: Promise<File[]>): Promise<void> {
       setStatus('Drop contained no readable files.')
       return
     }
+    dcmConverted = []
+    dicomPick.classList.add('hidden')
     // Fast-path a single obvious volume file straight to segmentation.
     if (files.length === 1 && DIRECT_VOLUME_RE.test(files[0].name)) {
       await runSegment(files[0])
@@ -360,7 +362,7 @@ async function handleDrop(filesPromise: Promise<File[]>): Promise<void> {
     }
     setStatus(`Converting ${files.length} file(s) with dcm2niix…`)
     const t0 = performance.now()
-    const niftiFiles = await runDcm2niix(files)
+    const niftiFiles = await readImageFiles(files, { directVolume: DIRECT_VOLUME_RE })
     const ms = Math.round(performance.now() - t0)
     if (niftiFiles.length === 0) {
       setStatus('No NIfTI output produced. Are these DICOM images?')

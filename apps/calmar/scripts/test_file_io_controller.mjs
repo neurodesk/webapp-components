@@ -71,19 +71,23 @@ function fakeFile(name) {
   assert.equal(fic.getActiveFile(), null);
 }
 
-// ---- Test 4: NIfTI mixed with non-NIfTI files - the NIfTI is picked ----
+// ---- Test 4: ambiguous scan selections preserve the previous image ----
 {
   let loaded = null;
+  const messages = [];
   const fic = new FileIOController({
+    updateOutput: message => messages.push(message),
     onFileLoaded: (f) => { loaded = f; }
   });
-  fic.handleFiles([
-    fakeFile('readme.txt'),
+  await fic.handleFiles([fakeFile('previous.nii')]);
+  await fic.handleFiles([
+    fakeFile('scan.dcm'),
     fakeFile('volume.nii.gz'),
     fakeFile('header.json')
   ]);
-  assert.equal(loaded.name, 'volume.nii.gz',
-    'mixed list must extract the NIfTI');
+  assert.equal(loaded.name, 'previous.nii');
+  assert.equal(fic.getActiveFile().name, 'previous.nii');
+  assert.match(messages.at(-1), /one NIfTI image or one DICOM series/);
 }
 
 // ---- Test 5: case-insensitive extension match ----

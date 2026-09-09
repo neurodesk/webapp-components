@@ -129,6 +129,8 @@ jobs:
           INTERFACE_ARTIFACTS: interface-artifacts
       - name: Check interface workflows with image data
         run: pnpm test:interface-workflows
+      - name: Check unified scan pickers with DICOM series
+        run: pnpm test:image-uploads
       - uses: actions/upload-artifact@v7
         if: always()
         with:

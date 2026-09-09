@@ -1297,7 +1297,7 @@ const UnifiedSchemaSelector: React.FC<UnifiedSchemaSelectorProps> = ({
                   onDrop={handleDrop}
                 >
                   <input
-                    type="file"
+                    type="file" data-neurodesk-input="metadata"
                     accept=".json"
                     onChange={handleFileInput}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"

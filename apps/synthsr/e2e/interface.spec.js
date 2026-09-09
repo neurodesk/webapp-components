@@ -1,4 +1,49 @@
 import { test, expect } from '@playwright/test';
+import { dicomSeries } from '../../../test-utils/dicom-fixture.mjs';
+
+test('cancelling DICOM import retains the prior scan and allows another upload', async ({ page }) => {
+  await page.goto('./');
+  const input = page.locator('#imageInput');
+  await input.setInputFiles(new URL('../test/fixtures/validation.nii.gz', import.meta.url).pathname);
+  await expect(page.locator('#processButton')).toBeEnabled();
+  let intercepted;
+  const request = new Promise(resolve => { intercepted = resolve; });
+  await page.route('**/*dcm2niix*.wasm', route => { intercepted(route); });
+  await input.setInputFiles(dicomSeries());
+  const held = await request;
+  await page.locator('#cancelBtn').click();
+  await held.abort();
+  await expect(page.locator('#fileInfo')).toContainText('validation.nii.gz');
+  await expect(page.locator('#processButton')).toBeEnabled();
+  await page.unroute('**/*dcm2niix*.wasm');
+  await input.setInputFiles(dicomSeries());
+  await expect(page.locator('#fileInfo')).toContainText('16 × 16 × 4', { timeout: 60000 });
+});
+
+test('one compact picker imports DICOM slices, selects series, and returns to NIfTI', async ({ page }) => {
+  await page.goto('./');
+  const input = page.locator('#imageInput');
+  await input.setInputFiles([...dicomSeries({ extension: '' }), ...dicomSeries({ series: 2, slices: 6, extension: '.IMA' })]);
+  await expect(page.locator('#seriesSelect')).toBeVisible({ timeout: 60000 });
+  await expect(page.locator('#seriesSelect option')).toHaveCount(2);
+  const names = await page.locator('#seriesSelect option').allTextContents();
+  await page.locator('#seriesSelect').selectOption({ label: names.find(name => name.includes('test_scan_1')) });
+  await expect(page.locator('#fileInfo')).toContainText('16 × 16 × 4');
+  await page.locator('#seriesSelect').selectOption({ label: names.find(name => name.includes('test_scan_2')) });
+  await expect(page.locator('#fileInfo')).toContainText('16 × 16 × 6');
+  await expect(page.locator('#processButton')).toBeEnabled();
+  await input.setInputFiles({ name: 'invalid.nii', mimeType: 'application/octet-stream', buffer: Buffer.from('invalid') });
+  await expect(page.locator('#statusText')).toHaveClass('error');
+  await expect(page.locator('#seriesSelect')).toBeVisible();
+  await expect(page.locator('#fileInfo')).toContainText('16 × 16 × 6');
+  await input.setInputFiles(new URL('../test/fixtures/validation.nii.gz', import.meta.url).pathname);
+  await expect(page.locator('#fileInfo')).toContainText('validation.nii.gz');
+  await expect(page.locator('#seriesSelect')).toBeHidden();
+  await input.setInputFiles({ name: 'invalid.dcm', mimeType: 'application/dicom', buffer: Buffer.from('invalid') });
+  await expect(page.locator('#statusText')).toContainText(/No images produced|failed/i, { timeout: 60000 });
+  await expect(page.locator('#fileInfo')).toContainText('validation.nii.gz');
+  await expect(page.locator('#processButton')).toBeEnabled();
+});
 
 for (const width of [390, 1440]) {
   test(`input stays compact at ${width}px`, async ({ page }) => {

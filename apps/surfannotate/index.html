@@ -130,7 +130,7 @@
                  names (lh.pial, lh.white, lh.pial.T1, surf.gii.gz), and an
                  accept list greys out exactly the files people want. The
                  loader validates instead. -->
-            <input type="file" id="surfaceInput" multiple />
+            <input type="file" data-neurodesk-input="surface" id="surfaceInput" multiple />
             <span class="upload-visual">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" />
@@ -158,7 +158,7 @@
             </div>
           </summary>
           <label class="file-field upload-field">
-            <input type="file" id="overlayInput" multiple disabled />
+            <input type="file" data-neurodesk-input="surface" id="overlayInput" multiple disabled />
             <span class="upload-visual">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" />
@@ -177,7 +177,7 @@
                is there data at all", which is a property of the subject. -->
           <div class="row mask-row">
             <label class="file-field mask-field">
-              <input type="file" id="maskInput" disabled />
+              <input type="file" data-neurodesk-input="surface" id="maskInput" disabled />
               <span class="mask-browse">Choose a mask</span>
             </label>
             <button type="button" id="maskClear" class="mini" disabled
