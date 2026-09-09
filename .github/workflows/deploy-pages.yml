@@ -66,7 +66,10 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
+      - name: Install browser
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/google-chrome.list
+          pnpm exec playwright install --with-deps chromium
       - name: Verify deployed cross-origin isolation
         run: pnpm test:deployed
         env:
