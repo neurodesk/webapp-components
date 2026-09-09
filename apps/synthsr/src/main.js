@@ -7,7 +7,7 @@ import { readVolume } from './volume.js';
 import manifest from '../../../models/synthsr.manifest.json';
 import './styles.css';
 
-mountImagingWorkspace({controls:'#controls',viewer:'#viewer',status:'#status',title:'SynthSR',subtitle:'Brain image synthesis, in your browser',mark:'S',controlsContract:{about:'#aboutBtn'}});
+mountImagingWorkspace({controls:'#controls',viewer:'#viewer',status:'#status',title:'SynthSR',subtitle:'Brain image synthesis, in your browser',mark:'S',controlsContract:{about:'#aboutBtn',standalone:'#standaloneBtn'}});
 const $ = (id) => document.getElementById(id);
 let source, output, provenance, worker, viewer, viewerReady, busy=false, timer, started, exampleAbort;
 let importAbort, importedImages = [], loadedExample = '';
