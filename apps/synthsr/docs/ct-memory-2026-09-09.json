@@ -1,0 +1,215 @@
+{
+  "date": "2026-09-09",
+  "inputURL": "https://niivue.github.io/niivue-demo-images/CT_Philips.nii.gz",
+  "paddedShape": [
+    192,
+    224,
+    256
+  ],
+  "baseline": {
+    "site": "https://webapps.neurodesk.org/synthsr/",
+    "app": "SynthSR web 0.1.1",
+    "backend": "wasm",
+    "ct": true,
+    "tiled": false,
+    "flip": true,
+    "sharpen": true,
+    "error": "failed to call OrtRun(). ERROR_CODE: 6, ERROR_MESSAGE: std::bad_alloc",
+    "workerWallSeconds": 84.33146000003815
+  },
+  "validation": {
+    "cpu": {
+      "comparison": {
+        "expectedShape": [
+          178,
+          224,
+          247
+        ],
+        "maxAffineError": 0,
+        "maxError": 1,
+        "mismatchFraction": 2.203407178274121e-05,
+        "mismatches": 217,
+        "shape": [
+          178,
+          224,
+          247
+        ],
+        "voxels": 9848384
+      },
+      "provenance": {
+        "app": "SynthSR web 0.1.1",
+        "backend": "wasm",
+        "ct": true,
+        "flip": true,
+        "inputShape": [
+          185,
+          232,
+          256
+        ],
+        "model": "synthsr_v20_230130",
+        "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+        "onnxRuntime": "1.29.0",
+        "outputAffine": [
+          [
+            1,
+            0,
+            0,
+            -82.30116394162178
+          ],
+          [
+            0,
+            1,
+            0,
+            -134.3460267484188
+          ],
+          [
+            0,
+            0,
+            1,
+            -153.7019824385643
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "outputShape": [
+          178,
+          224,
+          247
+        ],
+        "package": "@neurodesk/synthsr",
+        "seconds": 235.6932649999857,
+        "sharpen": true,
+        "spacingMm": [
+          1,
+          1,
+          1
+        ],
+        "synthetic": true,
+        "tiled": false,
+        "timings": {
+          "inference": 207.49910499989986,
+          "initialize": 7.290015000104904,
+          "model": 0.22039999997615814,
+          "postprocess": 2.542160000085831,
+          "preprocess": 16.576424999952316,
+          "read": 1.561164999961853,
+          "release": 0.0039750000238418575
+        },
+        "version": "0.1.0",
+        "wasmImplementation": "synthsr-streamed-fp32-v1"
+      }
+    },
+    "environment": {
+      "gpu": {
+        "architecture": "metal-3",
+        "vendor": "apple"
+      },
+      "hardwareConcurrency": 10,
+      "isolated": true,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) T3Code(Alpha)/0.0.40 Chrome/150.0.7871.224 Safari/537.36"
+    },
+    "gpu": {
+      "comparison": {
+        "maxError": 1,
+        "mismatches": 655,
+        "voxels": 9848384
+      },
+      "provenance": {
+        "app": "SynthSR web 0.1.1",
+        "backend": "webgpu",
+        "ct": true,
+        "flip": true,
+        "gpuImplementation": "synthsr-blocked-fp32-v1",
+        "inputShape": [
+          185,
+          232,
+          256
+        ],
+        "model": "synthsr_v20_230130",
+        "modelSha256": "276151128c666f81eba80a6afb7f307aa3c7d58825748029ba67cf170f1460a3",
+        "outputAffine": [
+          [
+            1,
+            0,
+            0,
+            -82.30116394162178
+          ],
+          [
+            0,
+            1,
+            0,
+            -134.3460267484188
+          ],
+          [
+            0,
+            0,
+            1,
+            -153.7019824385643
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "outputShape": [
+          178,
+          224,
+          247
+        ],
+        "package": "@neurodesk/synthsr",
+        "seconds": 14.11965499997139,
+        "sharpen": true,
+        "spacingMm": [
+          1,
+          1,
+          1
+        ],
+        "synthetic": true,
+        "tiled": false,
+        "timings": {
+          "inference": 8.552024999976158,
+          "initialize": 0.9679950000047683,
+          "model": 0.11029000008106232,
+          "postprocess": 2.49077999997139,
+          "preprocess": 1.4221599999666215,
+          "read": 0.5762599999904633,
+          "release": 0.00012000000476837159
+        },
+        "version": "0.1.0"
+      }
+    }
+  },
+  "notes": [
+    "Native reference generated with the installed standalone package, pinned model, full-volume CT, flip and sharpening, two CPU threads.",
+    "Browser outputs compared at every uint8 voxel; CPU geometry matched the native reference exactly.",
+    "CPU and GPU timings were sequential runs, with CPU first. These are correctness checks, not a controlled cold/warm performance comparison.",
+    "Small full-network validation forced 32,768-element slabs and measured maximum float32 difference 0.000002384185791015625 from native full-volume execution."
+  ],
+  "sourceSha256": "61a6ad34921893a7073ccf3217d647aeeb7a4bfd5617462e5e8b2b95cbb8f445",
+  "previewWorkerSha256": "8d0b48df3eeba15798193ff9092679c283bfe5d3e46ecb99a153f23c71f53307",
+  "nativeReferenceSha256": "5dbf78f2825dd2b956611a5689fee36274fb1416f8ad75040e071dad704dfb4a",
+  "validationChecks": {
+    "unitTestsIncludingNativeSlabs": 20,
+    "productionBrowserTestsPassed": 11,
+    "interfaceAudit": "all 15 apps, desktop and phone passed",
+    "mobileAudit": "all 15 apps plus catalog passed",
+    "interfaceWorkflows": "passed",
+    "imageUploads": "passed",
+    "artifactBudgets": "passed",
+    "standaloneCleanInstall": {
+      "node": "22.22.0",
+      "platform": "Linux x64",
+      "downloadedNodeAndPackageWithCurl": true,
+      "automaticallyDownloadedModel": true,
+      "fixtureVoxels": 32768,
+      "maxError": 1,
+      "mismatches": 2
+    }
+  }
+}

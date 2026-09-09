@@ -1,5 +1,6 @@
 import { runSynthsr } from '@neurodesk/synthsr';
 import { createGpuSession, GPU_IMPLEMENTATION } from './gpu-session.js';
+import { createStreamedWasmSession, needsStreamedWasm, WASM_IMPLEMENTATION } from './wasm-session.js';
 import * as ort from 'onnxruntime-web/webgpu';
 import wasmURL from 'onnxruntime-web/ort-wasm-simd-threaded.asyncify.wasm?url';
 import wasmModuleURL from 'onnxruntime-web/ort-wasm-simd-threaded.asyncify.mjs?url';
@@ -45,6 +46,10 @@ async function modelBytes(model) {
 
 async function createSession(bytes, backend, shape) {
   if (backend === 'webgpu') return createGpuSession(bytes, shape);
+  if (backend === 'wasm' && needsStreamedWasm(shape)) {
+    progress(.26,'Preparing bounded-memory CPU inference…');
+    return createStreamedWasmSession(bytes,shape,ort);
+  }
   return ort.InferenceSession.create(bytes, {
     executionProviders: [backend], graphOptimizationLevel: 'all',
   });
@@ -52,12 +57,15 @@ async function createSession(bytes, backend, shape) {
 
 self.onmessage = async ({ data: job }) => {
   try {
+    const runtime={app:'SynthSR web 0.1.2',...(job.options.backend==='webgpu'
+      ? {gpuImplementation:GPU_IMPLEMENTATION}
+      : {onnxRuntime:'1.29.0'})};
     const {buffer,provenance}=await runSynthsr({
       buffer:await job.file.arrayBuffer(),options:job.options,Tensor:ort.Tensor,
-      loadModel:()=>modelBytes(job.model),createSession,onProgress:progress,
-      runtime:{app:'SynthSR web 0.1.1',...(job.options.backend==='webgpu'
-        ? {gpuImplementation:GPU_IMPLEMENTATION}
-        : {onnxRuntime:'1.29.0'})},
+      loadModel:()=>modelBytes(job.model),createSession:(bytes,backend,shape)=>{
+        if(backend==='wasm')runtime.wasmImplementation=needsStreamedWasm(shape)?WASM_IMPLEMENTATION:'onnxruntime-full-volume';
+        return createSession(bytes,backend,shape);
+      },onProgress:progress,runtime,
     });
     self.postMessage({type:'result',buffer,provenance},[buffer]);
   } catch(error) { self.postMessage({type:'error',message:error.message || String(error)}); }
