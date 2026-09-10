@@ -1,9 +1,10 @@
 :root {
-  --bg: #303030;
-  --panel: #3a3a3a;
-  --border: #555;
-  --accent: #4a6dff;
-  --text: #f0f0f0;
+  /* Local role names resolve to the shared design tokens so the app shares the catalog palette. */
+  --bg: var(--nd-color-bg);
+  --panel: var(--nd-color-surface);
+  --border: var(--nd-color-border);
+  --accent: var(--nd-color-primary);
+  --text: var(--nd-color-text);
 }
 
 * {
@@ -88,29 +89,7 @@ main {
   line-height: 1.45;
 }
 
-.upload-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
 
-.upload-button {
-  display: grid;
-  min-height: 42px;
-  place-items: center;
-  padding: 8px;
-  border: 1px solid #6f8cff;
-  border-radius: 6px;
-  color: #fff;
-  background: rgba(74, 109, 255, 0.16);
-  cursor: pointer;
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-align: center;
-}
-
-.upload-button:hover { background: rgba(74, 109, 255, 0.28); }
-.drop-hint { margin-top: 7px !important; color: #838a9a !important; }
 .processing-summary strong { color: #dce3f5; }
 
 .qc-head {

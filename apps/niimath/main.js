@@ -1,6 +1,7 @@
 import './style.css'
 import '@neurodesk/webapp-components/styles/imaging-workspace.css'
 import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-imaging-workspace'
+import { bindFileDrop } from '@neurodesk/webapp-components/ui'
 import { readImageFiles } from '@neurodesk/runtime-support/dcm2niix-client'
 import { Niivue, SLICE_TYPE, SHOW_RENDER, MULTIPLANAR_TYPE } from '@niivue/niivue'
 import { Niimath } from "@niivue/niimath"
@@ -14,7 +15,6 @@ mountImagingWorkspace({
   title: 'NiiMath',
   subtitle: 'Interactive browser-native neuroimaging maths',
   mark: 'N',
-  controlsContract: { about: '#aboutButton' },
 })
 
 // create niivue instance but don't setup the scene just yet
@@ -308,10 +308,10 @@ async function main() {
     if (files.length > 0) await loadDicomFiles(files)
     dicomInput.value = ''
   }
-  aboutButton.onclick = function () {
-    const link = "https://github.com/rordenlab/niimath?tab=readme-ov-file#about"
-    window.open(link, '_blank');
-  }
+  bindFileDrop(document.getElementById('inputDropZone'), async (pending) => {
+    const files = await pending
+    if (files.length) await loadDicomFiles(files)
+  })
   helpButton.onclick = function () {
     // open link in new tab
     const link = "https://github.com/rordenlab/niimath/blob/9f3a301be72c331b90ef5baecb7a0232e9b47ba4/src/niimath.c#L259"

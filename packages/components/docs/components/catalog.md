@@ -48,6 +48,19 @@ and a collapsible list of unchecked fields — and generates a standalone printa
 `https://dicompare.neurodesk.org/embed/DicompareReportRenderer.js`; the two are kept
 byte-identical by a package test.
 
+### Workflow vocabulary builders
+
+The markup and metrics are defined once in `styles/imaging-workspace.css`
+(see `docs/architecture/design-system.md` in the monorepo). These builders emit
+that markup so apps never hand-write it:
+
+- `renderFileField({ id, text, kind, multiple, accept, directory })` — the shared `.nd-file` scan picker; `bindFileDrop(target, handler)` adds drag-and-drop with folder expansion to any element.
+- `renderViewerToolbar({ views, window, overlay, colormap, download, screenshot, actions })` — layout tabs plus optional window/level, overlay opacity, colormap, download and screenshot controls; every control is optional.
+- `renderConsole({ id, title, collapsed })` — the collapsed technical log with Copy and Clear, bound to a `ConsoleOutput`; errors reopen it.
+- `createInfoDialog({ id })` — one centered, viewport-bounded `dialog.nd-dialog` whose `open(title, content, { wide })` swaps About, Cite, Privacy or Standalone content; `renderCommand({ id, command })` renders a copyable terminal command.
+- `bindInfoTooltips(root)` / `renderInfoIcon(text)` — the small "i" help icons with positioned tooltips.
+- `bindSectionDisclosure(section)` — binds a single class-driven disclosure (used by `renderConsole`).
+
 ## File I/O
 
 ### `FileIOController`

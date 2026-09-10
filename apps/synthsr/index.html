@@ -1,60 +1,136 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Synthesize a 1 mm T1-weighted brain image locally with SynthSR."><title>SynthSR · Neurodesk</title></head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Synthesize a 1 mm T1-weighted brain image locally with SynthSR.">
+  <title>SynthSR · Neurodesk</title>
+</head>
 <body>
 <header id="controls">
-  <section class="control-section" id="inputSection">
-    <h2>Input image</h2>
-    <div id="dropZone">
-      <label class="file-picker" for="imageInput">Choose NIfTI / DICOM<input id="imageInput" type="file" data-neurodesk-input="image" multiple aria-label="Choose NIfTI or DICOM files"></label>
-      <p class="hint">or drop images or a DICOM folder here</p>
+  <details class="nd-sidebar-section" id="inputSection" open>
+    <summary class="nd-section-title">Input image</summary>
+    <div class="nd-section-content">
+      <label class="nd-file" id="dropZone">
+        <input id="imageInput" type="file" data-neurodesk-input="image" multiple aria-label="Choose NIfTI or DICOM files">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Drop NIfTI or DICOM files or folder</span>
+      </label>
+      <p id="fileInfo" class="nd-file-info" hidden></p>
+      <div class="nd-field" id="seriesField" hidden>
+        <label for="seriesSelect">DICOM series</label>
+        <select id="seriesSelect"></select>
+      </div>
+      <div class="nd-field">
+        <label for="exampleSelect">Example image</label>
+        <select id="exampleSelect"><option value="">Choose an example…</option></select>
+      </div>
     </div>
-    <div id="fileInfo" class="file-info" hidden></div>
-    <select id="seriesSelect" aria-label="Input image or DICOM series" hidden></select>
-    <details id="exampleImages">
-      <summary>Example images</summary>
-      <label class="sr-only" for="exampleSelect">Example image</label>
-      <select id="exampleSelect"><option value="">Choose an example…</option></select>
-      <p class="hint">For synthesis, choose a 3D human brain scan.</p>
-    </details>
-  </section>
-  <section class="control-section"><h2>Synthesis</h2>
-    <label for="modality">Input modality</label><select id="modality"><option value="mr">MRI</option><option value="ct">CT · Hounsfield units</option></select>
-    <details id="processingSettings"><summary>Processing settings</summary>
-    <label for="backend">Processing device</label><select id="backend"><option value="wasm">CPU · WebAssembly</option><option value="webgpu" selected>GPU · WebGPU</option></select>
-    <label for="mode">Processing mode</label><select id="mode"><option value="full">Full volume · reference method</option><option value="tiled">Tiled · lower memory, approximate</option></select>
-    <p id="modeHelp" class="hint">Full-volume synthesis can require several GB of memory.</p>
-    <label class="check"><input id="flip" type="checkbox" checked> Average left–right predictions</label>
-    <label class="check"><input id="sharpen" type="checkbox" checked> Sharpen synthetic image</label>
-    </details>
-    <button id="processButton" disabled>Synthesize T1 <span>→</span></button><button id="cancelBtn" hidden>Cancel processing</button>
-  </section>
-  <details class="control-section" id="outputSection"><summary>Output</summary><button id="saveBtn" disabled>Download synthetic T1</button><button id="reportBtn" class="text-button" disabled>Download processing details</button><p class="hint">Synthetic contrast may alter or fill lesions. Keep the original scan for interpretation.</p></details>
-  <details class="control-section"><summary>Model settings</summary><p class="hint">Weights download once and are cached. For offline use, select the validated model file.</p><label for="modelInput">Local synthsr-v2.onnx</label><input id="modelInput" type="file" data-neurodesk-input="model" accept=".onnx"><p id="modelInfo" class="hint">SynthSR v2 · original pretrained weights</p></details>
-  <button id="standaloneBtn" class="text-button">Run standalone / HPC</button>
-  <button id="aboutBtn" class="text-button">About &amp; citation</button>
-</header>
-<main id="viewer">
-  <div class="viewer-toolbar"><div class="tabs" aria-label="Displayed image"><button id="inputTab" class="active" disabled>Original</button><button id="outputTab" hidden disabled>Synthetic T1</button></div><span id="imageLabel">IMAGE WORKSPACE</span></div>
-  <div class="canvas-wrap"><canvas id="gl1" aria-label="Brain image viewer"></canvas><div id="emptyState"><div class="empty-symbol">S<span>R</span></div><h1>A new view of your data.</h1><p>Load a brain scan to explore the original image<br>and synthesize a standardized T1 contrast.</p><div class="capabilities"><span>1 mm isotropic</span><span>Local processing</span><span>NIfTI output</span></div></div><div id="viewerError" hidden></div></div>
-  <div class="viewer-caption"><span id="location">Scroll to change slices · drag to adjust the view</span><span id="resultBadge" hidden>SYNTHETIC IMAGE</span></div>
-</main>
-<footer id="status"><span id="statusText" role="status" aria-live="polite">Ready · choose an image to begin</span><progress id="progress" max="1" value="0" aria-label="Synthesis progress"></progress><span id="elapsed"></span></footer>
-<dialog id="aboutDialog"><h2>SynthSR</h2><p>A browser implementation of SynthSR, developed by Iglesias, Billot and colleagues. Uses the pretrained v2 model and reproduces its 1 mm resampling, normalization, flip averaging and sharpening workflow.</p><p><a href="https://github.com/neurolabusc/py_synthsr" target="_blank" rel="noopener">Reference implementation</a> · <a href="https://doi.org/10.1016/j.neuroimage.2021.118206" target="_blank" rel="noopener">Iglesias et al., NeuroImage (2021)</a></p><p>Full-volume mode follows the reference method. Tiled mode reduces memory use but changes context and may introduce boundary differences. Outputs are synthetic images for research; they are not acquired T1 scans.</p><p>CPU inference uses ONNX Runtime Web 1.29.0; GPU inference uses optimized FP32 kernels; visualization uses NiiVue 1.0 RC. Source and model attribution: Apache-2.0.</p><form method="dialog"><button>Close</button></form></dialog>
-<dialog id="standaloneDialog" aria-labelledby="standaloneTitle">
-  <div class="dialog-heading"><h2 id="standaloneTitle">Run SynthSR in a terminal</h2><form method="dialog"><button>Close</button></form></div>
-  <p>Download the native package for your system. The model is included, so these builds run offline without Python, Node.js or FreeSurfer.</p>
-  <div class="native-downloads">
-    <section><h3>macOS Apple Silicon</h3><p>Open the signed and notarized installer. Requires macOS 13.4 or later.</p><p><a id="nativeMacosDownload" class="standalone-download">Download for macOS</a> <a id="nativeMacosChecksum" class="checksum-link">SHA-256</a></p><pre><code id="nativeMacosCommands"></code></pre></section>
-    <section><h3>Windows x64</h3><p>Extract the zip in PowerShell. No administrator access is needed.</p><p><a id="nativeWindowsDownload" class="standalone-download">Download for Windows</a> <a id="nativeWindowsChecksum" class="checksum-link">SHA-256</a></p><pre><code id="nativeWindowsCommands"></code></pre></section>
-    <section><h3>Linux x64</h3><p>Requires glibc 2.38+ and GLIBCXX_3.4.32. Keep the included shared library beside the executable.</p><p><a id="nativeLinuxDownload" class="standalone-download">Download for Linux</a> <a id="nativeLinuxChecksum" class="checksum-link">SHA-256</a></p><pre><code id="nativeLinuxCommands"></code></pre></section>
-  </div>
-  <p>Replace <code>input.nii.gz</code> with your scan. Add <code>--ct</code> for CT. Output includes the synthetic image and a JSON report. CPU is the default on Windows and Linux. Use <code>--help</code> for all options.</p>
-  <details id="nodePackageDetails"><summary>Node.js package for other systems and HPC</summary>
-    <p><a id="standalonePackage" download>Download the Node.js package</a>. Install it with Node.js 22 or later. The first run downloads and verifies the model.</p>
-    <pre><code>npm install --prefix ./synthsr-cli ./neurodesk-synthsr-0.2.20260910.tgz
-./synthsr-cli/node_modules/.bin/synthsr input.nii.gz output_synthsr.nii.gz --threads 8</code></pre>
   </details>
-</dialog>
+
+  <details class="nd-sidebar-section" id="synthesisSection" open>
+    <summary class="nd-section-title">Synthesis</summary>
+    <div class="nd-section-content">
+      <div class="nd-field">
+        <label for="modality">Input modality</label>
+        <select id="modality"><option value="mr">MRI</option><option value="ct">CT · Hounsfield units</option></select>
+      </div>
+      <details class="nd-sidebar-section" id="processingSettings">
+        <summary class="nd-section-title">Processing settings</summary>
+        <div class="nd-section-content">
+          <div class="nd-field">
+            <label for="backend">Processing device</label>
+            <select id="backend"><option value="wasm">CPU · WebAssembly</option><option value="webgpu" selected>GPU · WebGPU</option></select>
+          </div>
+          <div class="nd-field">
+            <label for="mode">Processing mode</label>
+            <select id="mode"><option value="full">Full volume · reference method</option><option value="tiled">Tiled · lower memory, approximate</option></select>
+            <p id="modeHelp" class="nd-hint">Full-volume synthesis can require several GB of memory.</p>
+          </div>
+          <label class="nd-check"><input id="flip" type="checkbox" checked> Average left–right predictions</label>
+          <label class="nd-check"><input id="sharpen" type="checkbox" checked> Sharpen synthetic image</label>
+          <div class="nd-field">
+            <label for="modelInput">Model weights <small>optional</small></label>
+            <label class="nd-file">
+              <input id="modelInput" type="file" data-neurodesk-input="model" accept=".onnx" aria-label="Local synthsr-v2.onnx model file">
+              <span id="modelInfo">SynthSR v2 · downloads once and is cached</span>
+            </label>
+          </div>
+        </div>
+      </details>
+      <button id="processButton" class="nd-btn nd-btn-primary" type="button" disabled>Synthesize T1</button>
+    </div>
+  </details>
+
+  <details class="nd-sidebar-section" id="outputSection">
+    <summary class="nd-section-title">Output</summary>
+    <div class="nd-section-content">
+      <div class="nd-volume-toggle">
+        <button id="inputTab" class="nd-view-btn active" type="button" disabled>View</button>
+        <span class="nd-stage-label">Original image</span>
+      </div>
+      <div class="nd-volume-toggle" id="outputResult" hidden>
+        <button id="outputTab" class="nd-view-btn" type="button" disabled>View</button>
+        <span class="nd-stage-label">Synthetic T1 · 1 mm</span>
+        <button id="saveBtn" class="nd-download-btn" type="button" disabled>Download</button>
+      </div>
+      <button id="reportBtn" class="nd-btn nd-btn-secondary nd-btn-sm" type="button" disabled>Download processing details</button>
+      <p class="nd-hint">Synthetic contrast may alter or fill lesions. Keep the original scan for interpretation.</p>
+    </div>
+  </details>
+
+  <button id="aboutBtn" type="button" hidden>About</button>
+  <button id="standaloneBtn" type="button" data-neurodesk-control="standalone" hidden>Standalone</button>
+  <button id="privacyBtn" type="button" hidden>Privacy</button>
+</header>
+
+<main id="viewer">
+  <div class="nd-viewer-canvas-wrapper">
+    <canvas id="gl1" aria-label="Brain image viewer"></canvas>
+    <p id="emptyState" class="nd-viewer-empty">Load a brain scan to begin.</p>
+    <p id="viewerError" class="nd-viewer-notice" hidden></p>
+  </div>
+  <div class="nd-viewer-info"><span id="location" class="nd-viewer-info-primary"></span><span id="imageLabel" class="nd-viewer-info-label"></span></div>
+</main>
+
+<footer id="status">
+  <span class="nd-status-label">Status</span>
+  <span id="statusText" class="nd-status-text" role="status" aria-live="polite">Ready · choose an image to begin</span>
+  <span id="elapsed" class="nd-status-elapsed"></span>
+  <progress id="progress" max="1" value="0" aria-label="Synthesis progress"></progress>
+  <button id="cancelBtn" class="nd-btn-cancel" type="button" title="Cancel processing" aria-label="Cancel processing" hidden>×</button>
+</footer>
+
+<template id="aboutContent">
+  <p>A browser implementation of SynthSR, developed by Iglesias, Billot and colleagues. Uses the pretrained v2 model and reproduces its 1 mm resampling, normalization, flip averaging and sharpening workflow.</p>
+  <p><a href="https://github.com/neurolabusc/py_synthsr" target="_blank" rel="noopener">Reference implementation</a> · <a href="https://doi.org/10.1016/j.neuroimage.2021.118206" target="_blank" rel="noopener">Iglesias et al., NeuroImage (2021)</a></p>
+  <p>Full-volume mode follows the reference method. Tiled mode reduces memory use but changes context and may introduce boundary differences. Outputs are synthetic images for research; they are not acquired T1 scans.</p>
+  <p>CPU inference uses ONNX Runtime Web 1.29.0; GPU inference uses optimized FP32 kernels; visualization uses NiiVue 1.0 RC. Source and model attribution: Apache-2.0.</p>
+</template>
+
+
+<template id="privacyContent">
+  <p>Your images are processed locally in this browser and are never uploaded. The model weights download once from the Neurodesk asset store and may be cached on this device. The optional example images download from public repositories.</p>
+</template>
+
+<template id="standaloneContent">
+  <div class="nd-dialog-highlight"><strong>Run SynthSR on your own computer</strong><p>Download the native package for your system. The model is included, so these builds run offline without Python, Node.js or FreeSurfer.</p></div>
+  <h3>macOS Apple Silicon</h3>
+  <p>Open the signed and notarized installer. Requires macOS 13.4 or later. <a id="nativeMacosDownload" class="standalone-download">Download for macOS</a> · <a id="nativeMacosChecksum" class="checksum-link">SHA-256</a></p>
+  <div class="nd-command"><code id="nativeMacosCommands"></code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="nativeMacosCommands" aria-label="Copy macOS commands">Copy</button></div>
+  <h3>Windows x64</h3>
+  <p>Extract the zip in PowerShell. No administrator access is needed. <a id="nativeWindowsDownload" class="standalone-download">Download for Windows</a> · <a id="nativeWindowsChecksum" class="checksum-link">SHA-256</a></p>
+  <div class="nd-command"><code id="nativeWindowsCommands"></code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="nativeWindowsCommands" aria-label="Copy Windows commands">Copy</button></div>
+  <h3>Linux x64</h3>
+  <p>Requires glibc 2.38+ and GLIBCXX_3.4.32. Keep the included shared library beside the executable. <a id="nativeLinuxDownload" class="standalone-download">Download for Linux</a> · <a id="nativeLinuxChecksum" class="checksum-link">SHA-256</a></p>
+  <div class="nd-command"><code id="nativeLinuxCommands"></code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="nativeLinuxCommands" aria-label="Copy Linux commands">Copy</button></div>
+  <p>Replace <code>input.nii.gz</code> with your scan. Add <code>--ct</code> for CT. Output includes the synthetic image and a JSON report. CPU is the default on Windows and Linux. Use <code>--help</code> for all options.</p>
+  <h3>Node.js package for other systems and HPC</h3>
+  <p><a id="standalonePackage" download>Download the Node.js package</a>. Install it with Node.js 22 or later. The first run downloads and verifies the model.</p>
+  <div class="nd-command"><code id="nodeCommands">npm install --prefix ./synthsr-cli ./neurodesk-synthsr-__PACKAGE_VERSION__.tgz
+./synthsr-cli/node_modules/.bin/synthsr input.nii.gz output_synthsr.nii.gz --threads 8</code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="nodeCommands" aria-label="Copy Node.js commands">Copy</button></div>
+</template>
+
 <script type="module" src="/src/main.js"></script>
-</body></html>
+</body>
+</html>

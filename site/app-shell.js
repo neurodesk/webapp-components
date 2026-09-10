@@ -13,8 +13,14 @@ import { resolveShellAdapter } from './shell-adapters/index.js';
     analyticsHref: shellScript.dataset.analyticsHref,
     moreAppsHref: shellScript.dataset.moreAppsHref,
     sourceHref: shellScript.dataset.sourceHref,
+    url: shellScript.dataset.appUrl,
     shell: shellScript.dataset.appShell,
   };
+
+  const informationScript = document.querySelector('script[data-neurodesk-app-information]');
+  let information = null;
+  try { information = informationScript ? JSON.parse(informationScript.textContent) : null; }
+  catch (error) { console.warn('Neurodesk app information could not be parsed:', error); }
 
   const analyticsUrl = new URL(metadata.analyticsHref, document.baseURI);
   import(analyticsUrl.href)
@@ -81,27 +87,94 @@ import { resolveShellAdapter } from './shell-adapters/index.js';
     return document.querySelector(`[data-neurodesk-control="${action}"]`);
   }
 
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+  }
+
+  function linkHtml(href, label) {
+    return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`;
+  }
+
+  // Shared About block: what runs under the hood, who builds the web app and
+  // the ecosystem the app belongs to. Rendered identically for every app.
+  function aboutInformationHtml() {
+    if (!information) return '';
+    const packages = information.packages.map((item) =>
+      `<li>${linkHtml(item.url, item.name)} · ${escapeHtml(item.role)}</li>`).join('');
+    const builders = information.builders ? `<p>${escapeHtml(information.builders)}</p>` : '';
+    return `<section class="nd-app-info" data-neurodesk-app-info="about">`
+      + `<h3>Under the hood</h3><ul>${packages}</ul>`
+      + `<h3>About this app</h3>${builders}<p>${escapeHtml(information.shared.builder)}</p>`
+      + `<p>${escapeHtml(information.shared.ecosystem).replace('lightning.org', linkHtml(information.shared.ecosystem_url, 'lightning.org'))}</p>`
+      + `</section>`;
+  }
+
+  function citationHtml(item) {
+    const code = item.code ? `<small>Code: ${linkHtml(item.code, item.code.replace(/^https?:\/\//, ''))}</small>` : '';
+    const link = item.doi
+      ? linkHtml(`https://doi.org/${item.doi}`, `DOI: ${item.doi}`)
+      : item.url ? linkHtml(item.url, item.url.replace(/^https?:\/\//, '')) : '';
+    return `<div class="nd-app-citation"><strong>${escapeHtml(item.title)}</strong>${code}<p>${escapeHtml(item.reference)}</p>${link}</div>`;
+  }
+
+  // Shared Cite dialog: the web application, every implemented method grouped
+  // as in the registry, then the Neurodesk platform paper.
+  function citeInformationHtml() {
+    if (!information) return '';
+    const version = document.querySelector('.nd-app-bar__version')?.textContent || versionLabel(metadata.version);
+    const self = citationHtml({
+      title: metadata.title,
+      reference: `Neurodesk (${new Date().getFullYear()}). ${metadata.title} (${version}) [Web application]. ${metadata.description}`,
+      url: metadata.url || new URL('.', document.baseURI).href,
+      code: metadata.sourceHref,
+    });
+    const groups = new Map();
+    for (const item of information.citations) {
+      if (!groups.has(item.group)) groups.set(item.group, []);
+      groups.get(item.group).push(item);
+    }
+    const methods = [...groups].map(([group, items]) => `<h3>${escapeHtml(group)}</h3>${items.map(citationHtml).join('')}`).join('');
+    return `<section class="nd-app-info" data-neurodesk-app-info="cite">`
+      + `<div class="nd-app-info__primary">${self}</div>`
+      + `<p>${escapeHtml(metadata.title)} implements the methods below. Please cite each paper when you use its results.</p>`
+      + methods
+      + `<h3>Platform</h3>${citationHtml(information.shared.platform_citation)}`
+      + `</section>`;
+  }
+
+  function fallbackBodyHtml(kind) {
+    const displayedVersion = document.querySelector('.nd-app-bar__version')?.textContent || versionLabel(metadata.version);
+    if (kind === 'about') {
+      const paragraphs = information?.about?.length ? information.about : [metadata.description];
+      return `<p>${paragraphs.map(escapeHtml).join('</p><p>')}</p><p>This page is running ${escapeHtml(displayedVersion)}.</p>${aboutInformationHtml()}`;
+    }
+    if (kind === 'cite') {
+      return citeInformationHtml()
+        || `<p>Please cite the scientific software, methods, and models used in your analysis. App-specific citation details are available in the documentation and source repository.</p>`;
+    }
+    return `<p>Imaging files are processed in your browser unless the app clearly states otherwise. The Neurodesk hosting layer records page views only and sends no custom events. It makes no analytics request when Do Not Track or Global Privacy Control is enabled, and never sends your loaded imaging data to Google Analytics.</p>`;
+  }
+
   function openFallbackDialog(kind) {
     let dialog = document.querySelector(`.nd-app-dialog[data-dialog="${kind}"]`);
     if (!dialog) {
       dialog = element('dialog', { className: 'nd-app-dialog' });
       dialog.dataset.dialog = kind;
       const headings = { about: `About ${metadata.title}`, cite: `Cite ${metadata.title}`, privacy: 'Privacy' };
-      const displayedVersion = document.querySelector('.nd-app-bar__version')?.textContent || versionLabel(metadata.version);
-      const messages = {
-        about: `${metadata.description} This page is running ${displayedVersion}.`,
-        cite: `Please cite the scientific software, methods, and models used in your analysis. App-specific citation details are available in the documentation and source repository.`,
-        privacy: `Imaging files are processed in your browser unless the app clearly states otherwise. The Neurodesk hosting layer records page views only and sends no custom events. It makes no analytics request when Do Not Track or Global Privacy Control is enabled, and never sends your loaded imaging data to Google Analytics.`,
-      };
       const panel = element('div', { className: 'nd-app-dialog__panel' });
+      const header = element('div', { className: 'nd-app-dialog__header' });
       const heading = element('h2', { text: headings[kind] });
-      const copy = element('p', { text: messages[kind] });
+      const close = element('button', { className: 'nd-app-dialog__close', text: '×', title: 'Close' });
+      close.type = 'button';
+      close.setAttribute('aria-label', 'Close');
+      close.addEventListener('click', () => dialog.close());
+      header.append(heading, close);
+      const body = element('div', { className: 'nd-app-dialog__body', html: fallbackBodyHtml(kind) });
       const source = createLink('View source on GitHub', 'github', metadata.sourceHref, 'View source on GitHub');
       source.classList.add('nd-app-dialog__source');
-      const close = element('button', { className: 'nd-app-dialog__close', text: 'Close' });
-      close.type = 'button';
-      close.addEventListener('click', () => dialog.close());
-      panel.append(heading, copy, source, close);
+      body.append(source);
+      panel.append(header, body);
       dialog.append(panel);
       dialog.addEventListener('click', (event) => {
         if (event.target === dialog) dialog.close();
@@ -110,11 +183,32 @@ import { resolveShellAdapter } from './shell-adapters/index.js';
     }
     if (typeof dialog.showModal === 'function') dialog.showModal();
     else dialog.setAttribute('open', '');
+    dialog.querySelector('.nd-app-dialog__body')?.scrollTo?.(0, 0);
+  }
+
+  const openDialogSelector = 'dialog[open], .modal-overlay.active .modal, .nd-modal-overlay.active .nd-modal, [role="dialog"]:not([hidden])';
+
+  // After an app opens its own About dialog, append the shared block so the
+  // packages, builder and ecosystem statements appear in every app.
+  function decorateAppDialog(kind, attempt = 0) {
+    if (kind !== 'about' || !information) return;
+    const dialogs = [...document.querySelectorAll(openDialogSelector)]
+      .filter((node) => !node.classList.contains('nd-app-dialog') && node.checkVisibility?.() !== false);
+    const dialog = dialogs.at(-1);
+    if (!dialog) { if (attempt < 10) requestAnimationFrame(() => decorateAppDialog(kind, attempt + 1)); return; }
+    if (dialog.querySelector('[data-neurodesk-app-info="about"]')) return;
+    const body = dialog.querySelector('.modal-body, .nd-dialog-body, .nd-modal-body, .dialog-body, [data-dialog-body]') || dialog;
+    const section = document.createElement('div');
+    section.innerHTML = aboutInformationHtml();
+    body.append(section.firstElementChild);
   }
 
   function openAppInformation(kind) {
+    // Cite is always the shared, registry-driven list so every app cites the
+    // same way; About keeps app-owned content and gains the shared block.
+    if (kind === 'cite' && information) { openFallbackDialog(kind); return; }
     const legacyControl = findLegacyControl(kind);
-    if (legacyControl) legacyControl.click();
+    if (legacyControl) { legacyControl.click(); decorateAppDialog(kind); }
     else openFallbackDialog(kind);
   }
 

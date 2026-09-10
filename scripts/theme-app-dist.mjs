@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { findApp, loadAppsRegistry, repoRoot } from './lib/apps-registry.mjs';
 import { applyAppTheme } from './lib/app-theme-dist.mjs';
+import { appInformationPayload, loadAppInformation } from './lib/app-information.mjs';
 
 function option(name) {
   const index = process.argv.indexOf(name);
@@ -13,11 +14,13 @@ const appId = option('--app');
 if (!appId) throw new Error('Usage: node scripts/theme-app-dist.mjs --app <app-id>');
 
 const registry = await loadAppsRegistry();
+const information = appInformationPayload(await loadAppInformation(registry), appId);
 const app = findApp(registry, appId);
 const appPackage = JSON.parse(await readFile(join(repoRoot, 'apps', appId, 'package.json'), 'utf8'));
 
 await applyAppTheme({
   app,
+  information,
   version: appPackage.version,
   measurementId: registry.site.analytics.measurement_id,
   distDir: join(repoRoot, 'apps', appId, 'dist'),

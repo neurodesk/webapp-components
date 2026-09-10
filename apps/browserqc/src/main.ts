@@ -16,6 +16,7 @@ import NiiVueGPU, {
   SLICE_TYPE,
 } from '@niivue/niivue'
 import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-imaging-workspace'
+import { bindFileDrop } from '@neurodesk/webapp-components/ui'
 import '@neurodesk/webapp-components/styles/imaging-workspace.css'
 import { readImageFiles, traverseDataTransferItems } from '@neurodesk/runtime-support/dcm2niix-client'
 import { Niimath } from '@neurodesk/runtime-support/niimath'
@@ -454,6 +455,7 @@ dicomInput.addEventListener('change', () => {
   if (files.length > 0) enqueue(() => handleDrop(Promise.resolve(files)))
   dicomInput.value = ''
 }, ac)
+bindFileDrop($('inputDropZone'), (files) => enqueue(() => handleDrop(files)))
 // Overlay opacity — drives the segmentation overlay (last volume) when present.
 ovlSlider.addEventListener(
   'input',

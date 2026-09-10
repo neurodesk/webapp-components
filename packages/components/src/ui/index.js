@@ -11,3 +11,7 @@ export * from './renderSidebarSection.js';
 export * from './bindSectionDisclosures.js';
 export * from './renderViewerToolbar.js';
 export * from './WindowControls.js';
+export * from './renderConsole.js';
+export * from './renderInfoDialog.js';
+export * from './renderFileField.js';
+export * from './bindInfoTooltips.js';

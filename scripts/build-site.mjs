@@ -3,12 +3,14 @@ import { existsSync } from 'node:fs';
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { loadAppsRegistry, repoRoot } from './lib/apps-registry.mjs';
+import { appInformationPayload, loadAppInformation } from './lib/app-information.mjs';
 import { injectCompositeTheme } from './lib/composite-theme.mjs';
 import { renderLandingPage } from './lib/landing-page.mjs';
 import { assembleRuntimeAssetStore } from './lib/runtime-assets.mjs';
 import { headersFile } from './lib/vite-app-config.mjs';
 
 const registry = await loadAppsRegistry();
+const information = await loadAppInformation(registry);
 const siteDist = join(repoRoot, 'dist');
 const siteOrigin = `https://${registry.site.domain}`;
 
@@ -47,6 +49,7 @@ for (const app of registry.apps) {
     version: appPackage.version,
     measurementId: registry.site.analytics.measurement_id,
     url: `${siteOrigin}/${app.path}/`,
+    information: appInformationPayload(information, app.id),
   }));
 }
 

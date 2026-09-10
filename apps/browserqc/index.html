@@ -14,14 +14,12 @@
   <aside id="qcPanel" aria-label="Image quality metrics">
     <section class="control-section" aria-labelledby="inputHeading">
       <h2 id="inputHeading">1. Input image</h2>
-      <p>Choose NIfTI or DICOM files, or a DICOM folder. Files stay in this browser.</p>
-      <div class="upload-actions">
-        <label class="upload-button" for="niftiInput">Choose NIfTI / DICOM</label>
-        <input id="niftiInput" type="file" data-neurodesk-input="image" multiple hidden />
-        <label class="upload-button" for="dicomInput">Choose DICOM folder</label>
-        <input id="dicomInput" type="file" data-neurodesk-input="image" webkitdirectory multiple hidden />
-      </div>
-      <p class="drop-hint">You can also drop either format onto the viewer.</p>
+      <label class="nd-file" id="inputDropZone">
+        <input id="niftiInput" type="file" data-neurodesk-input="image" multiple aria-label="Choose NIfTI or DICOM files" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Drop NIfTI or DICOM files or folder</span>
+      </label>
+      <label class="nd-btn nd-btn-secondary nd-btn-sm nd-btn-block">Choose DICOM folder<input id="dicomInput" type="file" data-neurodesk-input="image" webkitdirectory multiple hidden /></label>
       <select id="dicomPick" class="hidden" aria-label="Pick a converted NIfTI series"></select>
     </section>
     <section class="control-section processing-summary" aria-labelledby="processingHeading">

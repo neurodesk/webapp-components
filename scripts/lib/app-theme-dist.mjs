@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { injectCompositeTheme } from './composite-theme.mjs';
 
 export async function applyAppTheme({
-  app, version, measurementId, distDir, themeFile, themeScriptFile, shellFile, shellAdaptersDir, analyticsFile, iconFile,
+  app, information, version, measurementId, distDir, themeFile, themeScriptFile, shellFile, shellAdaptersDir, analyticsFile, iconFile,
 }) {
   const indexPath = join(distDir, 'index.html');
   const html = await readFile(indexPath, 'utf8');
@@ -21,6 +21,7 @@ export async function applyAppTheme({
     analyticsHref: './analytics.js',
     moreAppsHref: '../',
     iconHref: './neurodesk-logo.svg',
+    information,
   });
   await writeFile(indexPath, themed);
   await cp(themeFile, join(distDir, 'app-theme.css'));

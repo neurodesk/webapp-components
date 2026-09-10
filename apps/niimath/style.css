@@ -1,7 +1,6 @@
 .control-section {
   width: 100%;
   padding: 0;
-  border-bottom: 1px solid var(--nd-color-border);
 }
 
 .control-section p {
@@ -11,7 +10,7 @@
   line-height: 1.45;
 }
 
-.control-section label:not(.upload-button) {
+.control-section label:not(.nd-file):not(.nd-btn) {
   display: block;
   margin-top: 8px;
   color: var(--nd-color-text-muted) !important;
@@ -19,29 +18,7 @@
   font-weight: 600;
 }
 
-.upload-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  width: 100%;
-}
 
-.upload-button {
-  display: grid;
-  min-height: 42px;
-  place-items: center;
-  padding: 8px;
-  border: 1px solid var(--nd-color-primary);
-  border-radius: var(--nd-radius-sm);
-  color: #fff !important;
-  background: var(--nd-color-primary-glow);
-  cursor: pointer;
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-align: center;
-}
-
-.upload-button:hover { background: var(--nd-color-primary); }
 .control-section select,
 .control-section input[type='text'],
 .control-section #command { width: 100%; }
@@ -58,5 +35,3 @@
 
 .sidebar-actions { width: 100%; }
 .control-section .checkbox-option { display: flex !important; align-items: center; gap: 8px; }
-.control-section .nd-section-title { padding: 10px 0; }
-.control-section .nd-section-content { padding: 0 0 10px; }

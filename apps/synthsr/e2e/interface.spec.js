@@ -33,7 +33,7 @@ test('one compact picker imports DICOM slices, selects series, and returns to NI
   await expect(page.locator('#fileInfo')).toContainText('16 × 16 × 6');
   await expect(page.locator('#processButton')).toBeEnabled();
   await input.setInputFiles({ name: 'invalid.nii', mimeType: 'application/octet-stream', buffer: Buffer.from('invalid') });
-  await expect(page.locator('#statusText')).toHaveClass('error');
+  await expect(page.locator('#statusText')).toHaveClass(/\berror\b/);
   await expect(page.locator('#seriesSelect')).toBeVisible();
   await expect(page.locator('#fileInfo')).toContainText('16 × 16 × 6');
   await input.setInputFiles(new URL('../test/fixtures/validation.nii.gz', import.meta.url).pathname);
@@ -53,10 +53,10 @@ for (const width of [390, 1440]) {
     await expect(picker).toBeVisible();
     expect((await picker.boundingBox()).height).toBeLessThanOrEqual(48);
     expect((await page.locator('#inputSection').boundingBox()).height).toBeLessThanOrEqual(220);
-    await expect(page.locator('#exampleImages')).not.toHaveAttribute('open', '');
+    await expect(page.locator('#exampleSelect')).toBeVisible();
+    await expect(page.locator('#outputSection')).not.toHaveAttribute('open', '');
     if(width===390) {
-      await page.locator('#exampleImages > summary').click();
-      for(const selector of ['#modality','#exampleSelect','#inputTab']) {
+      for(const selector of ['#modality','#exampleSelect','#processButton']) {
         const field=page.locator(selector);
         expect((await field.boundingBox()).height).toBeGreaterThanOrEqual(44);
       }
@@ -70,9 +70,6 @@ test('shared examples load through the image workflow and preserve input on fail
   const fixture = fileURLToPath(new URL('../test/fixtures/validation.nii.gz', import.meta.url));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('./');
-  const summary = page.locator('#exampleImages > summary');
-  await summary.focus();
-  await page.keyboard.press('Enter');
   await expect(page.locator('#exampleSelect option')).toHaveText(['Choose an example…', 'FLAIR', ...NIFTI_EXAMPLES.filter(example => !['CT_Abdo','CT_Electrodes','Iguana','spmMotor'].includes(example.id)).map(example => example.id)]);
   await expect(page.locator('#exampleBtn')).toHaveCount(0);
   for (const id of ['chris_t1', 'CT_Philips']) {
@@ -84,9 +81,9 @@ test('shared examples load through the image workflow and preserve input on fail
     await expect(page.locator('#modality')).toHaveValue('mr'); // Both responses contain the same positive fixture, regardless of filename.
     await expect(page.locator('#outputTab')).toBeHidden();
   }
-  await summary.click();
-  await expect(page.locator('#exampleSelect')).toBeHidden();
-  await summary.click();
+  await page.locator('#synthesisSection > summary').click();
+  await expect(page.locator('#modality')).toBeHidden();
+  await page.locator('#synthesisSection > summary').click();
   await expect(page.locator('#exampleSelect')).toHaveValue('CT_Philips');
   const failedExample = NIFTI_EXAMPLES.find(example => example.id === 'mni152');
   await page.route(failedExample.url, route => route.fulfill({ status: 503, body: 'Unavailable' }));

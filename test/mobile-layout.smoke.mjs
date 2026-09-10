@@ -108,7 +108,7 @@ try {
           expect(bounds.y).toBeGreaterThanOrEqual(0);
           expect(bounds.y + bounds.height).toBeLessThanOrEqual(viewport.height + 1);
           await checkLayout(page, `${app.id}/privacy/${viewport.width}`);
-          await dialog.locator('.modal-close, .nd-modal-close, .nd-app-dialog__close, [aria-label="Close privacy"]').first().tap();
+          await dialog.locator('.modal-close, .nd-modal-close, .nd-dialog-close, .nd-app-dialog__close, [aria-label="Close privacy"]').first().tap();
           await expect(dialog).toBeHidden();
         }
       }
