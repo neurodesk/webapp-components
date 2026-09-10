@@ -5,6 +5,7 @@ from pathlib import Path
 import tarfile
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 
 SCRIPT = Path(__file__).with_name("portable_release.py")
@@ -67,6 +68,21 @@ class PortableReleaseTests(unittest.TestCase):
                 sorted(archive.namelist()),
                 sorted(["synthsr.exe", "webgpu_dawn.dll", *portable_release.DOCUMENTS]),
             )
+
+    def test_windows_checksum_manifest_uses_portable_lf_line_endings(self):
+        self.payload("windows-x64")
+        write_text = Path.write_text
+
+        def windows_write_text(path, text, *args, **kwargs):
+            return write_text(path, text.replace("\n", "\r\n"), *args, **kwargs)
+
+        with patch.object(Path, "write_text", windows_write_text):
+            archive_path = portable_release.build_archive(
+                "windows-x64", "1.2.3", self.target, self.docs, self.dist
+            )
+        checksum = archive_path.with_name(archive_path.name + ".sha256").read_bytes()
+        self.assertTrue(checksum.endswith(b"\n"))
+        self.assertNotIn(b"\r", checksum)
 
     def test_version_and_archive_names_reject_unsafe_values(self):
         self.assertEqual(
