@@ -95,7 +95,7 @@ The benchmark volumes themselves live outside the repository
 
 ```sh
 make macos-notary-profile APPLE_ID='you@example.com' TEAM_ID='ABCDE12345'   # once; password prompted, stored in Keychain
-make macos-release VERSION=0.2.20260909   # identities default to the Developer ID certificates in your Keychain
+EXPECTED_TEAM_ID=ABCDE12345 make macos-release VERSION=0.2.20260909   # identities default to the Developer ID certificates in your Keychain
 ```
 
 `MACOS_SIGN_IDENTITY` / `MACOS_INSTALLER_IDENTITY` default to the first
@@ -110,6 +110,42 @@ package to re-verify signature/dependencies/execution, and runs `spctl
 `make macos-pkg-adhoc` writes `dist/synthsr-VERSION-macos-arm64-adhoc.pkg`
 (never the release name) for local testing. No secret is passed as a Make
 variable.
+
+Signed package verification requires `EXPECTED_TEAM_ID` and checks both the
+installer certificate and executable team before execution. To verify a trusted
+local ad-hoc build, use `scripts/verify_macos_pkg.sh FILE.pkg --allow-adhoc`.
+
+## GitHub Actions macOS builds
+
+The `synthsr-macos` workflow builds and tests on Apple Silicon for pull requests
+and pushes to main. It uploads an ad-hoc installer as a workflow artifact.
+These test packages are not notarized releases.
+
+For a signed release, create a draft or prerelease named `synthsr-vVERSION`.
+Create its Git tag at the commit you intend to release. Select that tag when
+manually running `synthsr-macos` and enable `sign_release`. The workflow checks
+that the tag, source commit and Cargo version agree, signs and notarizes the
+installer, then attaches the package, checksum and verification log to that
+release. It leaves the release's draft/prerelease status unchanged.
+
+Configure these repository Actions secrets, following neurodesk-app's signing
+setup:
+
+| Secret | Value |
+| --- | --- |
+| `APPLEID` | Apple Developer account email |
+| `APPLEIDPASS` | Apple app-specific password for notarization |
+| `APPLE_TEAM_ID` | Apple Developer Team ID |
+| `CSC_LINK` | Base64-encoded Developer ID Application `.p12`, including its private key |
+| `CSC_KEY_PASSWORD` | Application `.p12` export password |
+| `CSC_INSTALLER_LINK` | Base64-encoded Developer ID Installer `.p12`, including its private key |
+| `CSC_INSTALLER_KEY_PASSWORD` | Installer `.p12` export password |
+
+Export both identities from Keychain Access on the signing Mac. For each file,
+`base64 -i identity.p12 | pbcopy` copies the value for the corresponding secret.
+GitHub cannot reveal existing secret values from another repository. Signing
+uses a temporary keychain, removed after the job, and runs only on an explicit
+manual release request. Pull requests do not use signing credentials.
 
 ## Citation
 

@@ -20,10 +20,17 @@ test.beforeEach(async ({ page }) => {
   await page.locator('#enterAppButton').click();
 });
 
+async function openOutputPanels(page) {
+  for (const id of ['roiPanel', 'exportPanel']) {
+    const panel = page.locator(`#${id}`);
+    if (!await panel.evaluate(node => node.open)) await panel.locator(':scope > summary').click();
+  }
+}
+
 async function loadSurface(page) {
   await page.setInputFiles('#surfaceInput', join(FIXTURES, 'lh.pial'));
   await expect(page.locator('#statusText')).toContainText('163,842 vertices', { timeout: 90_000 });
-  for (const id of ['roiPanel', 'exportPanel']) await page.locator(`#${id} > summary`).click();
+  await openOutputPanels(page);
 }
 
 test('the shell mounts with the shared workspace and a link back to the catalog', async ({ page }) => {
@@ -926,6 +933,7 @@ test('the surface renders visibly', async ({ page }) => {
 async function loadFlatPatch(page) {
   await page.setInputFiles('#surfaceInput', join(FIXTURES, 'lh.flat.surf.gii'));
   await expect(page.locator('#statusText')).toContainText('1,681 vertices', { timeout: 90_000 });
+  await openOutputPanels(page);
 }
 
 test('the edge-closure control appears only for a cut surface', async ({ page }) => {
@@ -1328,6 +1336,7 @@ const roiRows = (page) => page.locator('#roiList li');
 async function loadFlat(page) {
   await page.setInputFiles('#surfaceInput', join(FIXTURES, 'lh.flat.surf.gii'));
   await expect(page.locator('#statusText')).toContainText('1,681 vertices', { timeout: 60_000 });
+  await openOutputPanels(page);
 }
 
 /** Define an ROI by a line across the flat patch at row `j`, and save it. */
@@ -1619,7 +1628,7 @@ test('an ROI keeps its colour when it is edited', async ({ page }) => {
 test('the ROI name is entered where the ROI is made', async ({ page }) => {
   await loadFlat(page);
   // The field used to live in the Export panel, below the Save button that uses it.
-  const areasPanel = page.locator('section.panel', { hasText: 'ROIs' }).first();
+  const areasPanel = page.locator('#roiPanel');
   await expect(areasPanel.locator('#roiName')).toHaveCount(1);
   await expect(areasPanel.locator('#saveRoi')).toHaveCount(1);
 

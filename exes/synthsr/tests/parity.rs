@@ -57,8 +57,10 @@ fn python_parity_geometry_intensities_output() {
         assert_eq!(prep.padded, [32, 32, 32], "{name}");
         let expected: Vec<f32> = fs::read(fixture(&format!("{name}-input.bin")))
             .unwrap()
-            .chunks_exact(4)
-            .map(|c| f32::from_le_bytes(c.try_into().unwrap()))
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .map(|&c| f32::from_le_bytes(c))
             .collect();
         let max = expected
             .iter()
@@ -256,14 +258,19 @@ fn real_volumes() {
             .replace("_node.nii.gz", "")
             .replace("_fs.nii.gz", "");
         let out = out_dir.join(format!("{stem}_{device}.nii.gz"));
-        if !out.exists() {
-            let mut args = vec![input, out.to_str().unwrap(), "--quiet", "--device", device];
-            if entry["ct"] == true {
-                args.push("--ct");
-            }
-            let r = run(&args);
-            assert!(r.status.success(), "{}", String::from_utf8_lossy(&r.stderr));
+        let mut args = vec![
+            input,
+            out.to_str().unwrap(),
+            "--quiet",
+            "--force",
+            "--device",
+            device,
+        ];
+        if entry["ct"] == true {
+            args.push("--ct");
         }
+        let r = run(&args);
+        assert!(r.status.success(), "{}", String::from_utf8_lossy(&r.stderr));
         let d = compare(&load(&out), &load(Path::new(reference)));
         let fraction = d.mismatched as f64 / d.total as f64;
         let limit = 1e-3; // the repository-wide tolerance (packages/synthsr tests)

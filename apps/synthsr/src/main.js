@@ -45,6 +45,7 @@ async function show(file,isOutput=false){
 }
 async function load(file,exampleId=''){
   if(busy||!file)return;
+  setBusy(true);
   try{
     if(!/\.nii(\.gz)?$/i.test(file.name))throw new Error('Choose a .nii or .nii.gz image.');
     status('Reading image…');const volume=readVolume(await file.arrayBuffer());
@@ -54,10 +55,10 @@ async function load(file,exampleId=''){
     $('inputTab').disabled=false;$('outputTab').hidden=true;$('outputTab').disabled=true;$('saveBtn').disabled=true;$('reportBtn').disabled=true;
     $('progress').value=0;$('elapsed').textContent='';$('fileInfo').hidden=false;
     $('fileInfo').textContent=`${file.name} · ${volume.dims.join(' × ')} voxels`;
-    $('processButton').disabled=false;
     await show(source);status('Image loaded · ready to synthesize');
     return true;
   }catch(error){status(error.message,true);return false;}
+  finally{setBusy(false);}
 }
 async function importImages(filesPromise) {
   if (busy) return;

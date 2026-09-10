@@ -351,16 +351,16 @@ impl Session {
         opts.set_fast_math_enabled(false); // keep IEEE FP32 like the WGSL executor
                                            // Metal buffers need at least 16 bytes; never read past a shorter slice.
         let upload = |v: &[f32]| {
-            let padded;
-            let v = if v.len() < 4 {
-                padded = [v, &[0.0; 4][..4 - v.len()]].concat();
-                &padded[..]
+            let mut padding = [0.0f32; 4];
+            let data = if v.len() < padding.len() {
+                padding[..v.len()].copy_from_slice(v);
+                &padding[..]
             } else {
                 v
             };
             device.new_buffer_with_data(
-                v.as_ptr().cast(),
-                (v.len() * 4) as u64,
+                data.as_ptr().cast(),
+                std::mem::size_of_val(data) as u64,
                 MTLResourceOptions::StorageModeShared,
             )
         };
@@ -371,8 +371,10 @@ impl Session {
                 t["bytes"].as_u64().unwrap() as usize,
             );
             model[off..off + len]
-                .chunks_exact(4)
-                .map(|c| f32::from_le_bytes(c.try_into().unwrap()))
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .map(|&c| f32::from_le_bytes(c))
                 .collect()
         };
         let slots: Vec<Buffer> = slot_bytes

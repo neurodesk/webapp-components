@@ -7,6 +7,7 @@ set -o pipefail
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 pkg=${1:?usage: notarize_macos.sh FILE.pkg [KEYCHAIN_PROFILE]}
 profile=${2:-synthsr-notary}
+: "${EXPECTED_TEAM_ID:?set EXPECTED_TEAM_ID to the release signing team}"
 [ -f "$pkg" ] || { echo "notarize_macos.sh: file not found: $pkg" >&2; exit 2; }
 # pkgutil exits successfully for an unsigned package, so inspect its status too.
 signature=$(pkgutil --check-signature "$pkg" 2>&1) || {

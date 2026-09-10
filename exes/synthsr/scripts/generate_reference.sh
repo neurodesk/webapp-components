@@ -6,10 +6,10 @@
 # Writes OUTDIR/<stem>_node.nii.gz, <stem>_fs.nii.gz and appends one JSON line
 # per run to OUTDIR/manifest.jsonl. Inputs are never modified.
 set -eu
+mkdir -p "${1:?usage: generate_reference.sh OUTDIR INPUT.nii.gz [--ct]}"
 out=$(cd "$1" && pwd); in=$(cd "$(dirname "$2")" && pwd)/$(basename "$2"); ct=${3:-}
 root=$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)
 stem=$(basename "$in" .gz); stem=${stem%.nii}
-mkdir -p "$out"
 threads=${SYNTHSR_THREADS:-$(sysctl -n hw.perflevel0.physicalcpu 2>/dev/null || nproc)}
 
 run() { # name command...

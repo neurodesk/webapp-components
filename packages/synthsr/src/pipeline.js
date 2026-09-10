@@ -53,7 +53,7 @@ export async function runSynthsr({ buffer, options = {}, loadModel, createSessio
     await session.release();session=null;mark('release');
     onProgress(.92,'Restoring orientation and saving synthetic T1…');
     const output=finish(result,prep,settings), resultBuffer=writeVolume(output);mark('postprocess');
-  const provenance={package:'@neurodesk/synthsr',version:'0.2.20260909',model:'synthsr_v20_230130',modelSha256:model.hash,
+    const provenance={package:'@neurodesk/synthsr',version:'0.2.20260909',model:'synthsr_v20_230130',modelSha256:model.hash,
       ...runtime,...settings,inputShape:volume.dims,outputShape:output.dims,outputAffine:output.affine,
       spacingMm:[1,1,1],seconds:(performance.now()-started)/1000,timings,synthetic:true};
     return {buffer:resultBuffer,provenance};

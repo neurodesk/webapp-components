@@ -51,7 +51,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Validate the app catalog and generated plans
-        run: pnpm test:registry && node --test test/app-plan.test.mjs
+        run: pnpm test:registry && node --test test/app-plan.test.mjs test/independent-workflows.test.mjs
       - name: Lint every workspace package
         run: pnpm lint
 
@@ -85,7 +85,10 @@ jobs:
         if: matrix.python_reference
         run: pip install -r apps/${{ matrix.app }}/requirements.txt nibabel
       - name: Test ${{ matrix.app }}
-        run: pnpm --filter ${{ matrix.app }} test
+        env:
+          APP: ${{ matrix.app }}
+          TEST_SCRIPT: ${{ matrix.release_test }}
+        run: pnpm --filter "$APP" run "$TEST_SCRIPT"
       - name: Build ${{ matrix.app }}
         run: pnpm --filter ${{ matrix.app }} build
 
