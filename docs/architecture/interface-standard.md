@@ -36,7 +36,7 @@ At phone widths, stack controls or use clearly labeled tabs. Keep the viewer and
 ## Completion check
 
 1. Build the changed apps and assemble the site with `pnpm build`. The audit reads `dist`, so stale bundles invalidate the result.
-2. Run `INTERFACE_ARTIFACTS=/tmp/interface-audit pnpm audit:interfaces`. It derives all apps from the canonical registry, enters their workspaces, saves screenshots and JSON, and checks desktop and phone navigation plus native and class-driven disclosure keyboard behavior.
+2. Run `INTERFACE_ARTIFACTS="$TMPDIR/interface-audit" pnpm audit:interfaces`. It derives all apps from the canonical registry, enters their workspaces, saves screenshots and JSON, and checks desktop and phone navigation plus native and class-driven disclosure keyboard behavior.
 3. Run `pnpm test:mobile` for narrow phones, tablets and landscape layouts. This also checks touch navigation and representative imaging interactions.
 4. Inspect the screenshots. Check what appears before import, how far users scroll to the first input and primary action, and whether optional controls deserve their default space. Check light and dark themes for the changed controls.
 5. Run `pnpm test:interface-workflows` for the shared workflow checks and `pnpm test:image-uploads` when changing scan inputs. Drive the changed workflow with data. Collapse and reopen an edited section, verify its values remain, and check that errors and results are discoverable. Record the action and outcome in the change description.

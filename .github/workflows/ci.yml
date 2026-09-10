@@ -52,6 +52,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Validate the app catalog and generated plans
         run: pnpm test:registry && node --test test/app-plan.test.mjs test/independent-workflows.test.mjs
+      - name: Validate date releases and app scaffolding
+        run: node --test test/app-versions.test.mjs test/new-app.test.mjs
       - name: Lint every workspace package
         run: pnpm lint
 

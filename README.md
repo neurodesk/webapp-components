@@ -75,8 +75,10 @@ capacity thresholds and migration trigger.
 Apps are versioned `MAJOR.MINOR.YYYYMMDD`; the patch is the UTC release date.
 Describe a change with `pnpm changeset`, then run `pnpm release` to set the date
 versions, write changelog entries and synchronise embedded version strings
-(`pnpm release:dry-run` previews the plan; `--same-day` republishes a version
-already dated today). After the change is merged, the manual `release-apps`
+(`pnpm release:dry-run` previews the plan; `--same-day` updates a version
+already dated today). The plan includes dependent apps and keeps SynthSR and
+SYNcro packages in sync with their apps. Shared packages retain semantic versions.
+After the change is merged, the manual `release-apps`
 workflow accepts selected or Git-affected catalog apps, then tests, builds, and
 publishes an independent standalone bundle for each app. Tags use
 `<app>-v<version>` and all point to the same validated monorepo commit. Each

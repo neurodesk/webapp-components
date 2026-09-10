@@ -62,6 +62,7 @@ test('default invocation (pnpm new-app <name>) scaffolds and validates', async (
 
   const packageJson = JSON.parse(await readFile(join(root, 'apps', 'demo-app', 'package.json'), 'utf8'));
   assert.equal(packageJson.name, 'demo-app');
+  assert.match(packageJson.version, /^0\.0\.\d{8}$/);
   const { loadAppInformation } = await import('../scripts/lib/app-information.mjs');
   const information = await loadAppInformation(registry, join(root, 'registry', 'app-information.yml'));
   assert.ok(information.apps['demo-app'], 'scaffold seeds an app-information entry');

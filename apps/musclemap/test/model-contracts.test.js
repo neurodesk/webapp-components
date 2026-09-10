@@ -20,7 +20,6 @@ test('generated contracts are current', () => {
 test('catalog application version matches package.json', async () => {
   const packageJson = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
   assert.equal(APP_VERSION, packageJson.version);
-  assert.equal(APP_VERSION, JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8')).version);
 });
 
 test('upstream reference cases pin source chunk semantics and artifact digests', async () => {

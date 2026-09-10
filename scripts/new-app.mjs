@@ -24,6 +24,7 @@ import {
   addAppToRegistryText,
   loadAppsRegistry,
 } from './lib/apps-registry.mjs';
+import { nextVersion, releaseDate } from './lib/app-versions.mjs';
 
 const ID = /^[a-z][a-z0-9-]*$/;
 const DEFAULTS = {
@@ -201,6 +202,10 @@ async function stamp(dir) {
   }
 }
 await stamp(dest);
+const manifestPath = join(dest, 'package.json');
+const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+manifest.version = nextVersion(manifest.version, 'patch', releaseDate());
+await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 
 // Register the app so deploy + statistics workflows pick it up.
 await writeFile(registry, nextText);
