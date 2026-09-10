@@ -61,6 +61,20 @@ test('default invocation (pnpm new-app <name>) scaffolds and validates', async (
 
   const packageJson = JSON.parse(await readFile(join(root, 'apps', 'demo-app', 'package.json'), 'utf8'));
   assert.equal(packageJson.name, 'demo-app');
+  assert.equal(
+    packageJson.scripts.build,
+    'vite build && node ../../scripts/theme-app-dist.mjs --app demo-app',
+  );
+
+  const viteConfig = await readFile(join(root, 'apps', 'demo-app', 'vite.config.js'), 'utf8');
+  const main = await readFile(join(root, 'apps', 'demo-app', 'src', 'main.js'), 'utf8');
+  const html = await readFile(join(root, 'apps', 'demo-app', 'index.html'), 'utf8');
+  assert.match(viteConfig, /neurodeskViteConfig/);
+  assert.match(viteConfig, /appId:\s*["']demo-app["']/);
+  assert.match(main, /controlsContract/);
+  for (const id of ['aboutBtn', 'citeBtn', 'privacyBtn', 'copyLogBtn', 'clearLogBtn']) {
+    assert.match(html, new RegExp(`id=["']${id}["']`), id);
+  }
 });
 
 test('flags select runtime, shell, category, and catalog text', async (t) => {

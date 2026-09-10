@@ -90,7 +90,7 @@ test('QSM uses the shared worker plumbing without exposing a raw worker', async 
   assert.doesNotMatch(app, /getWorker\(\)\.postMessage|\.pipelineRunning\s*=/);
 });
 
-test('typed imaging runtimes have one owner in runtime-support', async () => {
+test('typed imaging runtimes use their declared shared or pinned owner', async () => {
   const runtimePackage = JSON.parse(await source('packages', 'runtime-support', 'package.json'));
   assert.equal(runtimePackage.exports['./dcm2niix-client'], './src/dcm2niix-client/index.ts');
   assert.equal(runtimePackage.exports['./niimath'].default, './src/niimath/index.js');
@@ -100,10 +100,17 @@ test('typed imaging runtimes have one owner in runtime-support', async () => {
     assert.equal(packageJson.dependencies['@neurodesk/runtime-support'], 'workspace:*');
     const main = await source('apps', app, 'src', 'main.ts');
     assert.match(main, /@neurodesk\/runtime-support\/dcm2niix-client/);
-    assert.match(main, /@neurodesk\/runtime-support\/niimath/);
     assert.equal(await exists('apps', app, 'src', 'dcm2niix'), false);
     assert.equal(await exists('apps', app, 'src', 'niimath'), false);
   }
+
+  const browserPackage = JSON.parse(await source('apps', 'browserqc', 'package.json'));
+  const browserMain = await source('apps', 'browserqc', 'src', 'main.ts');
+  assert.equal(browserPackage.dependencies['@niivue/niimath'], '1.4.20260909');
+  assert.match(browserMain, /from ['"]@niivue\/niimath['"]/);
+
+  const defaceMain = await source('apps', 'deface', 'src', 'main.ts');
+  assert.match(defaceMain, /@neurodesk\/runtime-support\/niimath/);
 });
 
 test('the reusable convergence audit is wired into the repository test suite', async () => {

@@ -8,9 +8,21 @@ test("app boots", async ({ page }) => {
   await expect(page.locator("#app")).toBeVisible();
 });
 
+test("shared app bar owns information actions and theme", async ({ page }) => {
+  await page.goto("/");
+  const bar = page.locator(".nd-app-bar:visible");
+  await expect(bar).toHaveCount(1);
+  await expect(page.locator("#controls > #aboutBtn")).toBeHidden();
+  await bar.getByRole("button", { name: "About", exact: true }).click();
+  await expect(page.locator("#aboutDialog")).toBeVisible();
+  await page.locator("#aboutDialog").getByRole("button", { name: "Close" }).click();
+  await bar.getByRole("button", { name: "Light", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-neurodesk-theme", "light");
+});
+
 test("page is cross-origin isolated (COOP/COEP active)", async ({ page }) => {
   await page.goto("/");
-  // Threaded ONNX Runtime needs this; asserts _headers (or the COI service worker) worked.
+  // Threaded ONNX Runtime needs this; asserts the shared isolation policy worked.
   const isolated = await page.evaluate(() => self.crossOriginIsolated === true);
   expect(isolated).toBe(true);
 });

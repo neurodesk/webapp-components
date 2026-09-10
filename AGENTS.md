@@ -16,17 +16,17 @@ For catalog-wide work, use [the interface audit](docs/architecture/interface-aud
 
 ## Reference app and minimal implementations
 
-New apps are built to look familiar and read familiar. Start from the reference
-app rather than from an empty page:
+New apps are built to look familiar and read familiar. Start with the generator,
+not an empty page or a copied app:
 
-- Reference app: `apps/dwi2trx` (structure, shell wiring, dev setup, tests).
-  Visual reference for workflow grouping stays QSMbly, per the interface standard.
-- Copy its skeleton: `index.html` with `#controls`, `#viewer`, `#status` and the
-  About/Cite/Privacy buttons; `src/main.*` calling `mountImagingWorkspace` with a
-  `controlsContract`; `vite.config.*` calling the shared `neurodeskViteConfig`
-  so `pnpm --filter <app> dev` renders the same bar and theme as production;
-  `e2e/smoke.spec.js` asserting that bar; the same
-  `scripts`, `lint` and `test` entries in `package.json`.
+- Run `pnpm new-app <id>`. The canonical `templates/app-template` wires
+  `#controls`, `#viewer`, `#status`, About/Cite/Privacy, the shared imaging
+  workspace, the technical console, and the shell smoke test.
+- Keep `neurodeskViteConfig` in `vite.config.*` and `theme-app-dist.mjs` in the
+  build script. Together they make `pnpm --filter <app> dev`, standalone preview,
+  and the deployed site use the same shell and theme.
+- Use `apps/dwi2trx` only as the richer workflow reference. Visual workflow
+  grouping follows QSMbly, per the interface standard.
 - Do not draw your own bar, theme toggle, dialogs, download helper, NIfTI header
   parser or DICOM import. They exist in `@neurodesk/webapp-components` and
   `@neurodesk/runtime-support`; an app-local copy is a defect, not a convenience.
@@ -34,7 +34,8 @@ app rather than from an empty page:
   pipeline, its controls, its About/Cite text. Aim for the reference app's size
   or smaller. When a new app needs something general, add it to the shared
   package and use it from there.
-- If `dev` and `build` look different, fix the dev shell before touching styles.
+- If `dev` and `build` look different, fix the shared shell path before touching
+  app styles.
 
 ## Test browser apps through the public reverse proxy
 

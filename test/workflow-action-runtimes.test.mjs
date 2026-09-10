@@ -24,13 +24,13 @@ test('active workflows use Node 24 action runtimes', async () => {
 
   for (const workflowName of workflowNames) {
     const workflow = await readFile(new URL(workflowName, workflowsDirectory), 'utf8');
-    for (const match of workflow.matchAll(/uses:\s+([^\s@]+)@([^\s#]+)/g)) {
-      const [, action, version] = match;
+    for (const match of workflow.matchAll(/uses:\s+([^\s@]+)@([^\s#]+)(?:\s+#\s*(v\d+))?/g)) {
+      const [, action, revision, pinnedVersion] = match;
       const expectedVersion = node24Actions.get(action);
       if (!expectedVersion) continue;
       seen.add(action);
       assert.equal(
-        version,
+        pinnedVersion || revision,
         expectedVersion,
         `${workflowName} must use ${action}@${expectedVersion}`,
       );

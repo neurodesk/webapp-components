@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // scripts/new-app.mjs
-// Scaffold a SELF-CONTAINED app into apps/<name> from templates/app-template and
-// register it in registry/apps.yml (the deploy/statistics source of truth).
+// Scaffold an app wired to the repository's shared shell and components into
+// apps/<name>, then register it in registry/apps.yml (the deployment source of truth).
 //
 //   pnpm new-app <name> [--runtime <runtime>] [--shell <shell>] [--category <id>]
 //                       [--title <title>] [--description <text>] [--keywords a,b,c]
@@ -115,7 +115,6 @@ const REQUIRED = [
   'eslint.config.js',
   'playwright.config.js',
   'index.html',
-  'public/_headers',
   'src/main.js',
   'src/config.js',
   'test/config.test.js',

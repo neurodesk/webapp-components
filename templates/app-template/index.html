@@ -8,6 +8,9 @@
   <body>
     <header id="controls">
       <button id="runButton" type="button">Run</button>
+      <button id="aboutBtn" type="button" hidden>About</button>
+      <button id="citeBtn" type="button" hidden>Cite</button>
+      <button id="privacyBtn" type="button" hidden>Privacy</button>
     </header>
     <main id="viewer">
       <div id="app">APP_NAME workspace</div>
@@ -15,11 +18,38 @@
     <footer id="status">
       <span id="statusText">Ready</span>
       <div aria-label="Progress"><div id="progressBar"></div></div>
-      <details class="nd-sidebar-section">
+      <details class="nd-sidebar-section console-container">
         <summary class="nd-section-title">Technical log</summary>
-        <div id="consoleOutput" class="nd-section-content"></div>
+        <div class="nd-section-content">
+          <div class="nd-console-header" aria-label="Technical log actions">
+            <button id="copyLogBtn" class="nd-console-clear" type="button">Copy</button>
+            <button id="clearLogBtn" class="nd-console-clear" type="button">Clear</button>
+          </div>
+          <div id="consoleOutput" class="nd-console-output" aria-live="polite"></div>
+        </div>
       </details>
     </footer>
+    <dialog id="aboutDialog" class="nd-app-dialog">
+      <div class="nd-app-dialog__panel">
+        <h2>About APP_NAME</h2>
+        <p>APP_NAME is a browser-native Neurodesk webapp. Describe its scientific method and limitations here.</p>
+        <form method="dialog"><button class="nd-app-dialog__close" type="submit">Close</button></form>
+      </div>
+    </dialog>
+    <dialog id="citeDialog" class="nd-app-dialog">
+      <div class="nd-app-dialog__panel">
+        <h2>Cite APP_NAME</h2>
+        <p>Add the primary method, model, and software citations before release.</p>
+        <form method="dialog"><button class="nd-app-dialog__close" type="submit">Close</button></form>
+      </div>
+    </dialog>
+    <dialog id="privacyDialog" class="nd-app-dialog">
+      <div class="nd-app-dialog__panel">
+        <h2>Privacy</h2>
+        <p>APP_NAME processes selected data locally in your browser unless explicitly stated otherwise.</p>
+        <form method="dialog"><button class="nd-app-dialog__close" type="submit">Close</button></form>
+      </div>
+    </dialog>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

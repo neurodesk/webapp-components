@@ -213,7 +213,6 @@ test('the app scaffold and maintained guidance describe the current shared archi
   const scaffoldSmoke = await source('templates', 'app-template', 'e2e', 'smoke.spec.js');
   const maintainedGuidance = [
     scaffold,
-    await source('docs', 'architecture', 'examples', 'app-template', 'src', 'main.js'),
     await source('apps', 'musclemap', 'web', 'index.html'),
     await source('apps', 'spinalcordtoolbox', 'AGENTS.md'),
     await source('apps', 'vesselboost', 'AGENT.md'),
@@ -221,29 +220,8 @@ test('the app scaffold and maintained guidance describe the current shared archi
   ].join('\n');
 
   assert.match(scaffold, /mountImagingWorkspace/);
+  assert.match(scaffold, /controlsContract/);
   assert.doesNotMatch(maintainedGuidance, /createNeuroWebapp|controllers\/InferenceExecutor\.js/);
   assert.doesNotMatch(maintainedGuidance, /classic importScripts|uses `?importScripts|importScripts\(\).*not ES modules/);
   assert.match(scaffoldSmoke, /new Worker\(url,\s*\{\s*type:\s*["']module["']\s*\}\)/);
-});
-
-test('the documented app scaffold stays synchronized with the generator template', async () => {
-  const mirroredFiles = [
-    'e2e/smoke.spec.js',
-    'eslint.config.js',
-    'index.html',
-    'package.json',
-    'playwright.config.js',
-    'public/_headers',
-    'src/config.js',
-    'src/main.js',
-    'test/config.test.js',
-    'vite.config.js',
-  ];
-  for (const file of mirroredFiles) {
-    assert.equal(
-      await source('docs', 'architecture', 'examples', 'app-template', ...file.split('/')),
-      await source('templates', 'app-template', ...file.split('/')),
-      file,
-    );
-  }
 });

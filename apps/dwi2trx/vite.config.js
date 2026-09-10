@@ -1,5 +1,5 @@
-// Keep dwi2trx on the same Vite and isolation policy as Syncro and the other
-// bundled Neurodesk apps. The local app shell is installed from src/dev-shell.ts.
+// Keep dwi2trx on the shared Vite, shell, theme, and isolation policy used by
+// the other bundled Neurodesk apps.
 import { neurodeskViteConfig } from '../../scripts/lib/vite-app-config.mjs'
 
 export default neurodeskViteConfig({

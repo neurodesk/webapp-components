@@ -58,6 +58,10 @@ hot reload, for example dwi2trx:
 npx pnpm@11.7.0 --filter dwi2trx dev
 ```
 
+The shared Vite configuration injects the same application bar and theme used by
+standalone and deployed builds. A visual difference between `dev` and `build` is
+a shared-shell bug, not something to compensate for with app-local CSS.
+
 ## Deployment
 
 `.github/workflows/deploy-pages.yml` builds and deploys the single artifact to
@@ -85,9 +89,11 @@ on Hugging Face and are fetched at runtime.
 
 ## Adding an app
 
-Use `pnpm new-app <id>`, then add its runtime adapter and complete its catalog entry.
-CI requires every catalog app to have a workspace package and any declared scientific
-asset manifest to exist.
+Use `pnpm new-app <id>`, then replace the generated scientific placeholders and
+complete its catalog entry. The scaffold already owns the shared shell, theme,
+information dialogs, technical console, and their browser smoke test; keep that
+wiring instead of copying another app's chrome. CI requires every catalog app to
+have a workspace package and any declared scientific asset manifest to exist.
 
 ## Licensing
 

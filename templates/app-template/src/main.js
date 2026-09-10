@@ -9,6 +9,7 @@ const workspace = mountImagingWorkspace({
   status: "#status",
   title: APP.id,
   subtitle: "Browser-native Neurodesk webapp",
+  controlsContract: { about: "#aboutBtn", cite: "#citeBtn", privacy: "#privacyBtn" },
 });
 const controls = document.getElementById("controls");
 controls.append(
@@ -20,6 +21,13 @@ const progress = new ProgressManager({
   textElement: document.getElementById("statusText"),
 });
 const output = new ConsoleOutput({ element: document.getElementById("consoleOutput") });
+for (const kind of ["about", "cite", "privacy"]) {
+  document.getElementById(`${kind}Btn`).addEventListener("click", () => {
+    document.getElementById(`${kind}Dialog`).showModal();
+  });
+}
+document.getElementById("copyLogBtn").addEventListener("click", () => void output.copyToClipboard());
+document.getElementById("clearLogBtn").addEventListener("click", () => output.clear());
 progress.reset();
 output.log(`${APP.id} ready`);
 

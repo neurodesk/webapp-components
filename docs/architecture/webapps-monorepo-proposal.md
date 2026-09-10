@@ -97,7 +97,7 @@ neurodesk-webapps/                     (one repo, one main branch)
 │   ├── calmar/                        keeps its pipelines/atlas/spatial guards
 │   └── qsmbly/                        Rust/WASM build contract
 ├── templates/
-│   └── app-template/                  SELF-CONTAINED scaffold (imports @neurodesk/webapp-components/*)
+│   └── app-template/                  canonical scaffold wired to shared components and shell
 ├── registry/apps.yml                  SOURCE OF TRUTH: app id, domain, CF project, GA4 id, manifest
 ├── models/                            manifests only — NO checked-in .onnx (§8)
 ├── scripts/new-app.mjs                pnpm new-app <name> (also registers the app in registry/apps.yml)
@@ -113,7 +113,7 @@ neurodesk-webapps/                     (one repo, one main branch)
   and contracts**, not scientific internals: workers, metric renderers (IMF/Dixon/CSV), settings,
   and pipeline definitions **stay in each app**. Extraction proceeds byte-identical-first, behind
   parity tests (§5).
-- **Easy to add an app** — `pnpm new-app <name>` copies the **self-contained** `templates/app-template`
+- **Easy to add an app** — `pnpm new-app <name>` copies the shared `templates/app-template`
   and registers the app in `registry/apps.yml`. A CI **generator-contract** job scaffolds a throwaway
   app and proves it installs, lints, unit-tests, and **builds**; a **browser** job runs the app's
   Playwright test (app boot + `crossOriginIsolated` + worker load).
@@ -224,12 +224,11 @@ project**, deployed by CI via **Direct Upload** (`wrangler pages deploy`):
   staging**; a per-app tag `foo-v*` triggers a **production** Direct Upload with `--branch=production`.
   So `main` is always staging and production is tag-gated, per app.
 - See [`examples/deploy.cloudflare.yml`](./examples/deploy.cloudflare.yml) (the CI workflow),
-  [`examples/deploy.cloudflare.md`](./examples/deploy.cloudflare.md) (project + secrets setup), and
-  [`examples/app-template/public/_headers`](./examples/app-template/public/_headers) (production
-  COOP/COEP served at the edge — shipped inside every scaffolded app so it actually reaches `dist/`).
+  [`examples/deploy.cloudflare.md`](./examples/deploy.cloudflare.md) (project + secrets setup).
+  The live `neurodeskViteConfig` emits the production COOP/COEP policy into each Vite build.
 
 Required repo secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` (plus `TURBO_TOKEN`/`TURBO_TEAM`
-for remote cache). Each app ships a `wrangler.toml` naming its Pages project.
+for remote cache). Registry metadata names each app's deployment target.
 
 ### Cross-origin isolation in production (not just dev)
 Vite's `server.headers` COOP/COEP apply only to the **dev** server. Production must serve COOP/COEP
@@ -252,9 +251,9 @@ JSON and YAML all parse, the analytics unit tests pass, and the generator has be
 - `deploy.cloudflare.yml` — Turbo build + `wrangler pages deploy` per app; affected-with-dependents
   discovery intersected with the registry; staging/prod split; `workflow_dispatch` + tag both validated
 - `deploy.cloudflare.md` — project/secrets setup
-- `new-app.mjs` + `app-template/` — **self-contained** scaffold (imports `@neurodesk/webapp-components/*`;
-  analytics is injected centrally by the hosted shell); ships `wrangler.toml`, `public/_headers`, a Node unit test and a
-  Playwright browser test; registers the app in `registry/apps.yml`
+- The live `scripts/new-app.mjs` + `templates/app-template/` are the canonical scaffold: they import
+  `@neurodesk/webapp-components/*`, use the shared shell and Vite policy, include Node and
+  Playwright tests, and register the app in `registry/apps.yml`.
 - `packages/analytics/` — shared page-view-only bootstrap with DNT/GPC gating + tests
 - `changeset-config.json` — independent versioning incl. private packages
 - `models.manifest.json` — externalized model contract (MuscleMap's real 2D, native-z contract)
@@ -296,7 +295,7 @@ workspace tolerates heterogeneous stacks — sharing contracts/telemetry, not va
 
 ### Adding a new app afterwards
 ```
-pnpm new-app cerebellum        # self-contained scaffold, wired to the lib + analytics allow-list
+pnpm new-app cerebellum        # shared scaffold, wired to the shell, library, and registry
 pnpm --filter cerebellum dev
 # open a PR — CI installs, builds, tests, and browser-smoke-tests the scaffold; deploy adds a project
 ```
