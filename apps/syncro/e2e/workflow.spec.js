@@ -138,7 +138,7 @@ test('compact help, standalone commands and result switching remain reachable',a
  await expect(cite.locator('h2')).toHaveText('Cite SYNcro');
  await expect(cite.locator('h3').first()).toHaveText('Image synthesis');
  await expect(cite.locator('h3').last()).toHaveText('Platform');
- await expect(cite).toContainText('Alzheimer');
+ await expect(cite).toContainText('Iglesias JE, Billot B');
  await expect(cite).toContainText('NeuroImage. 2011;54(3):2033');
  await expect(cite.locator('a[href="https://doi.org/10.1016/j.neuroimage.2021.118206"]')).toHaveCount(1);
  await expect(cite.locator('a[href="https://doi.org/10.1038/s41592-023-02145-x"]')).toHaveCount(1);
