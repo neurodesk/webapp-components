@@ -230,14 +230,15 @@ core counts. See
 
 ## Standalone
 
-**Run standalone / HPC** contains a short copy-and-paste setup for an internet-connected
-Linux x64 machine, including curl downloads of Node.js and the standalone package.
-The first run downloads the verified model automatically. No npm registry publication
-or administrator access is needed. See the [standalone README](../../../packages/synthsr/README.md).
+**Run standalone / HPC** links to native macOS Apple Silicon, Windows x64 and
+Linux x64 packages on the matching `synthsr-vVERSION` GitHub release. It includes
+the extraction and run commands for each package. Native packages embed the model
+and run offline. See the [native executable README](../../exes/synthsr/README.md).
 
-Every app build includes `downloads/neurodesk-synthsr-0.2.20260909.tgz`. It uses the shared
-processing pipeline with native CPU ONNX Runtime, independently of this repository.
-Build the tarball directly with `npm pack` in `packages/synthsr`.
+Every app build includes `downloads/neurodesk-synthsr-0.2.20260910.tgz`. It uses the shared
+processing pipeline with native CPU ONNX Runtime and remains available in the dialog
+for Node.js and HPC use. The native packages stay out of the web build to preserve its
+artifact budget. Build the Node.js tarball directly with `npm pack` in `packages/synthsr`.
 
 ## Attribution
 

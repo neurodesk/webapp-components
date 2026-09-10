@@ -3,3 +3,6 @@ MACOSX_DEPLOYMENT_TARGET = { value = "13.4", force = true }
 
 [target.aarch64-apple-darwin]
 rustflags = ["-C", "link-arg=-Wl,-rpath,@executable_path", "-C", "link-arg=-Wl,-rpath,@executable_path/../lib/synthsr"]
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "link-arg=-Wl,-rpath,$ORIGIN"]

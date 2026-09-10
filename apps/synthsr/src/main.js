@@ -5,6 +5,7 @@ import { NIFTI_EXAMPLES } from '@neurodesk/webapp-components/example-images';
 import { filesFromDataTransferItems } from '@neurodesk/webapp-components/file-io';
 import { readImageFiles } from '@neurodesk/runtime-support/dcm2niix-client';
 import { readVolume } from './volume.js';
+import { configureNativeDownloads, nativeDownloads } from './native-release.js';
 import manifest from '../../../models/synthsr.manifest.json';
 import './styles.css';
 
@@ -135,6 +136,7 @@ $('privacyBtn').onclick=()=>$('privacyDialog').showModal();
 $('standaloneBtn').onclick=()=>$('standaloneDialog').showModal();
 $('copyLogBtn').onclick=()=>void technicalLog.copyToClipboard();
 $('clearLogBtn').onclick=()=>technicalLog.clear();
-$('standalonePackage').href=`${import.meta.env.BASE_URL}downloads/neurodesk-synthsr-0.2.20260909.tgz`;
+configureNativeDownloads(nativeDownloads(__SYNTHSR_NATIVE_VERSION__),document);
+$('standalonePackage').href=`${import.meta.env.BASE_URL}downloads/neurodesk-synthsr-0.2.20260910.tgz`;
 if(!navigator.gpu){$('backend').value='wasm';status('Ready · WebGPU unavailable; CPU processing selected');}
 window.addEventListener('pagehide',()=>{exampleAbort?.abort();importAbort?.abort();worker?.terminate();clearInterval(timer);});

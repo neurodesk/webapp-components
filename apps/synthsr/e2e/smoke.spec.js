@@ -24,8 +24,14 @@ test('load, invalid input, and cancellation preserve the original',async({page})
   await expect(page.locator('#standaloneDialog')).toBeVisible();
   await expect(page.locator('#standaloneDialog')).toContainText('curl -fLO');
   await expect(page.locator('#standaloneDialog')).not.toContainText('Slurm');
+  for(const [id,asset] of Object.entries({nativeMacosDownload:'synthsr-0.2.20260910-macos-arm64.pkg',nativeWindowsDownload:'synthsr-0.2.20260910-windows-x64.zip',nativeLinuxDownload:'synthsr-0.2.20260910-linux-x64.tar.gz'})) {
+    await expect(page.locator(`#${id}`)).toHaveAttribute('href',`https://github.com/neurodesk/webapps/releases/download/synthsr-v0.2.20260910/${asset}`);
+  }
+  await expect(page.locator('#nativeWindowsCommands')).toContainText('.\\synthsr.exe input.nii.gz output_synthsr.nii.gz');
+  await expect(page.locator('#nativeLinuxCommands')).toContainText('./synthsr input.nii.gz output_synthsr.nii.gz');
+  await page.locator('#nodePackageDetails > summary').click();
   const packageDownload=page.waitForEvent('download');await page.locator('#standalonePackage').click();
-  expect((await packageDownload).suggestedFilename()).toBe('neurodesk-synthsr-0.2.20260909.tgz');
+  expect((await packageDownload).suggestedFilename()).toBe('neurodesk-synthsr-0.2.20260910.tgz');
   await page.locator('#standaloneDialog').getByRole('button',{name:'Close',exact:true}).click();
 });
 

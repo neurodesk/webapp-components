@@ -28,12 +28,21 @@ test('routine CI uses the lightweight SCT gate and full inference runs independe
   }
 });
 
-test('macOS signing is manual, tested and separate from pull-request packages', async () => {
-  const flow = await workflow('synthsr-macos');
+test('native packages share one gated publisher while signing stays isolated', async () => {
+  const flow = await workflow('synthsr-native');
   assert.deepEqual(flow.permissions, {contents: 'read'});
   assert.equal(flow.jobs.release.if, "github.event_name == 'workflow_dispatch' && inputs.sign_release");
-  assert.equal(flow.jobs.release.needs, 'package');
-  assert.ok(!JSON.stringify(flow.jobs.package).includes('secrets.'));
+  assert.deepEqual(flow.jobs.release.needs, ['portable', 'macos']);
+  assert.deepEqual(
+    flow.jobs.portable.strategy.matrix.include.map(entry => entry.platform).sort(),
+    ['linux-x64', 'windows-x64'],
+  );
+  const linux = flow.jobs.portable.strategy.matrix.include.find(entry => entry.platform === 'linux-x64');
+  assert.equal(linux.os, 'ubuntu-24.04');
+  assert.ok(!JSON.stringify(flow.jobs.portable).includes('secrets.'));
+  assert.ok(!JSON.stringify(flow.jobs.macos).includes('secrets.'));
+  assert.match(JSON.stringify(flow.jobs.portable), /portable_release\.py package/);
+  assert.match(JSON.stringify(flow.jobs.portable), /portable_release\.py verify/);
   const steps = flow.jobs.release.steps;
   const target = steps.findIndex(step => step.name === 'Check release target');
   const sign = steps.findIndex(step => step.name === 'Sign and notarize installer');
@@ -42,10 +51,11 @@ test('macOS signing is manual, tested and separate from pull-request packages', 
   assert.match(steps[target].run, /isDraft or .isPrerelease/);
   assert.match(steps[target].run, /git rev-parse/);
   assert.match(steps[target].run, /GITHUB_SHA/);
+  assert.ok(steps.some(step => step.uses?.startsWith('actions/download-artifact@')));
 });
 
 test('native and independent test workflows pin actions and discard checkout credentials', async () => {
-  for (const name of ['synthsr-native', 'synthsr-macos', 'sct-full-tests']) {
+  for (const name of ['synthsr-native', 'sct-full-tests']) {
     const flow = await workflow(name);
     for (const job of Object.values(flow.jobs)) {
       for (const step of job.steps) {

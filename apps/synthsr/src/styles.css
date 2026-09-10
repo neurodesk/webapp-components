@@ -169,6 +169,45 @@ progress { width: min(180px, 30vw); height: .45rem; accent-color: var(--accent);
 .console-actions { display: inline-flex; gap: var(--nd-space-xs); }
 .console-actions button { min-height: 28px; padding: .2rem .5rem; color: var(--text); background: var(--panel); border: 1px solid var(--border); border-radius: var(--nd-radius-sm); font: inherit; }
 
+#standaloneDialog {
+  width: min(760px, calc(100vw - 32px));
+  max-width: 760px;
+}
+#standaloneDialog pre {
+  overflow: auto;
+  padding: var(--nd-space-sm);
+  background: var(--nd-color-surface-elevated);
+  border-radius: var(--nd-radius-sm);
+  font-size: .75rem;
+  line-height: 1.5;
+}
+#standaloneDialog h3 { margin: 0 0 var(--nd-space-xs); font-size: .95rem; }
+.dialog-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--nd-space-md); }
+.dialog-heading h2 { margin: 0; }
+.native-downloads {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--nd-space-sm);
+  margin: var(--nd-space-md) 0;
+}
+.native-downloads section {
+  min-width: 0;
+  padding: var(--nd-space-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--nd-radius-sm);
+}
+.native-downloads section p { margin: var(--nd-space-xs) 0; }
+.native-downloads pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.standalone-download,
+#standalonePackage {
+  display: inline-block;
+  padding: var(--nd-space-sm);
+  border: 1px solid var(--accent);
+  border-radius: var(--nd-radius-sm);
+}
+.checksum-link { display: inline-flex; min-height: 44px; align-items: center; padding: 0 var(--nd-space-xs); }
+#nodePackageDetails { margin-top: var(--nd-space-md); }
+
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 [hidden] { display: none !important; }
 

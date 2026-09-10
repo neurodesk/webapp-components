@@ -130,17 +130,23 @@
 </dialog>
 <dialog id="standaloneDialog" class="nd-app-dialog" aria-labelledby="standaloneTitle">
   <form method="dialog" class="nd-app-dialog__panel">
-    <h2 id="standaloneTitle">Run SynthSR in a terminal</h2>
-    <p>Linux x64 · paste these commands to download Node.js and SynthSR, install locally, and run on CPU. No administrator access needed.</p>
-    <pre><code>curl -fLO https://nodejs.org/dist/v22.22.0/node-v22.22.0-linux-x64.tar.xz
-tar -xf node-v22.22.0-linux-x64.tar.xz
-export PATH="$PWD/node-v22.22.0-linux-x64/bin:$PATH"
-curl -fLO https://webapps.neurodesk.org/synthsr/downloads/neurodesk-synthsr-0.2.20260909.tgz
-ONNXRUNTIME_NODE_INSTALL=skip npm install --prefix ./synthsr-cli ./neurodesk-synthsr-0.2.20260909.tgz
+    <div class="dialog-heading">
+      <h2 id="standaloneTitle">Run SynthSR in a terminal</h2>
+      <button class="nd-app-dialog__close">Close</button>
+    </div>
+    <p>Download the native package for your system. The model is included, so these builds run offline without Python, Node.js or FreeSurfer.</p>
+    <div class="native-downloads">
+      <section><h3>macOS Apple Silicon</h3><p>Open the signed and notarized installer. Requires macOS 13.4 or later.</p><p><a id="nativeMacosDownload" class="standalone-download">Download for macOS</a> <a id="nativeMacosChecksum" class="checksum-link">SHA-256</a></p><pre><code id="nativeMacosCommands"></code></pre></section>
+      <section><h3>Windows x64</h3><p>Extract the zip in PowerShell. No administrator access is needed.</p><p><a id="nativeWindowsDownload" class="standalone-download">Download for Windows</a> <a id="nativeWindowsChecksum" class="checksum-link">SHA-256</a></p><pre><code id="nativeWindowsCommands"></code></pre></section>
+      <section><h3>Linux x64</h3><p>Requires glibc 2.38+ and GLIBCXX_3.4.32. Keep the included shared library beside the executable.</p><p><a id="nativeLinuxDownload" class="standalone-download">Download for Linux</a> <a id="nativeLinuxChecksum" class="checksum-link">SHA-256</a></p><pre><code id="nativeLinuxCommands"></code></pre></section>
+    </div>
+    <p>Replace <code>input.nii.gz</code> with your scan. Add <code>--ct</code> for CT. Output includes the synthetic image and a JSON report. CPU is the default on Windows and Linux. Use <code>--help</code> for all options.</p>
+    <details id="nodePackageDetails">
+      <summary>Node.js package for other systems and HPC</summary>
+      <p><a id="standalonePackage" download>Download the Node.js package</a>. Install it with Node.js 22 or later. The first run downloads and verifies the model.</p>
+      <pre><code>npm install --prefix ./synthsr-cli ./neurodesk-synthsr-0.2.20260910.tgz
 ./synthsr-cli/node_modules/.bin/synthsr input.nii.gz output_synthsr.nii.gz --threads 8</code></pre>
-    <p>Replace <code>input.nii.gz</code> with your scan. The first run downloads and verifies the model. Add <code>--ct</code> for CT.</p>
-    <p><a id="standalonePackage" download>Download the package</a> · use <code>--help</code> for options.</p>
-    <button class="nd-app-dialog__close">Close</button>
+    </details>
   </form>
 </dialog>
 <script type="module" src="/src/main.js"></script>

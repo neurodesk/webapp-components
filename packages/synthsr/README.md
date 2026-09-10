@@ -14,8 +14,8 @@ Node.js and SynthSR and install into the current folder without administrator ac
 curl -fLO https://nodejs.org/dist/v22.22.0/node-v22.22.0-linux-x64.tar.xz
 tar -xf node-v22.22.0-linux-x64.tar.xz
 export PATH="$PWD/node-v22.22.0-linux-x64/bin:$PATH"
-curl -fLO https://webapps.neurodesk.org/synthsr/downloads/neurodesk-synthsr-0.2.20260909.tgz
-ONNXRUNTIME_NODE_INSTALL=skip npm install --prefix ./synthsr-cli ./neurodesk-synthsr-0.2.20260909.tgz
+curl -fLO https://webapps.neurodesk.org/synthsr/downloads/neurodesk-synthsr-0.2.20260910.tgz
+ONNXRUNTIME_NODE_INSTALL=skip npm install --prefix ./synthsr-cli ./neurodesk-synthsr-0.2.20260910.tgz
 ./synthsr-cli/node_modules/.bin/synthsr input.nii.gz output_synthsr.nii.gz --threads 8
 ```
 
@@ -52,7 +52,7 @@ interpretation. No skull stripping or spatial normalization is performed.
 
 ## JavaScript API
 
-Install the tarball as a project dependency with `npm install ./neurodesk-synthsr-0.2.20260909.tgz`.
+Install the tarball as a project dependency with `npm install ./neurodesk-synthsr-0.2.20260910.tgz`.
 
 ```js
 import { synthesize } from '@neurodesk/synthsr/node';
@@ -77,7 +77,7 @@ pnpm --filter synthsr test
 pnpm --filter synthsr build
 ```
 
-The app build creates `apps/synthsr/dist/downloads/neurodesk-synthsr-0.2.20260909.tgz`.
+The app build creates `apps/synthsr/dist/downloads/neurodesk-synthsr-0.2.20260910.tgz`.
 To package just this library, run `npm pack` inside `packages/synthsr`. The tarball
 contains its own pinned model manifest, source, CLI and attribution. It has no
 workspace dependencies and excludes model weights, test images and web assets.
