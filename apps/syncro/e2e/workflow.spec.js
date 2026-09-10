@@ -99,9 +99,14 @@ test('compact help, standalone commands and result switching remain reachable',a
  await expect(page.locator('#info')).toBeVisible();
  await expect(page.locator('#infoTitle')).toHaveText('Standalone');
  await expectCentered(page,page.locator('#info'));
- await expect(page.locator('#downloadCommand')).toContainText(`curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-${PACKAGE_VERSION}.tgz`);
- await page.locator('[data-copy-target="downloadCommand"]').click();
- expect(await page.evaluate(()=>window.copiedText)).toContain('curl -LO');
+ await expect(page.locator('#nativeWindowsDownload')).toHaveAttribute('href',`https://github.com/neurodesk/webapps/releases/download/syncro-v${PACKAGE_VERSION}/syncro-${PACKAGE_VERSION}-windows-x64.zip`);
+ await expect(page.locator('#nativeLinuxDownload')).toHaveAttribute('href',`https://github.com/neurodesk/webapps/releases/download/syncro-v${PACKAGE_VERSION}/syncro-${PACKAGE_VERSION}-linux-x64.tar.gz`);
+ await expect(page.locator('#nativeWindowsCommands')).toContainText(`.\\syncro-${PACKAGE_VERSION}-windows-x64\\syncro.exe self-check`);
+ await expect(page.locator('#nativeLinuxCommands')).toContainText(`./syncro-${PACKAGE_VERSION}-linux-x64/syncro input.nii.gz results --threads 4`);
+ await page.locator('[data-copy-target="nativeLinuxCommands"]').click();
+ expect(await page.evaluate(()=>window.copiedText)).toContain('sha256sum -c');
+ await page.locator('#nodePackageDetails > summary').click();
+ await expect(page.locator('#packageLink')).toHaveAttribute('href',`downloads/neurodesk-syncro-${PACKAGE_VERSION}.tgz`);
  await page.locator('#info').getByRole('button',{name:'Close'}).click();
  for(const label of ['About','Privacy']){
   await page.locator('.nd-app-bar').getByRole('button',{name:label,exact:true}).click();

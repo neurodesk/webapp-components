@@ -1,0 +1,16 @@
+{
+  "repository": "neurodesk/webapps",
+  "tagPrefix": "syncro-v",
+  "targets": {
+    "windows-x64": {
+      "label": "Windows x64",
+      "archive": "zip",
+      "executable": "syncro.exe"
+    },
+    "linux-x64": {
+      "label": "Linux x64",
+      "archive": "tar.gz",
+      "executable": "syncro"
+    }
+  }
+}

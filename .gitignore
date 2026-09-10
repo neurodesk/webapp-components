@@ -5,6 +5,7 @@ dist/
 # Build output
 dist/
 **/dist/
+**/target/
 .turbo/
 playwright-report/
 test-results/

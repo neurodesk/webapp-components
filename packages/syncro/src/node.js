@@ -9,6 +9,31 @@ import {runSynthstrip} from '../../synthstrip/src/index.js';
 import {createRegistration} from '../../registration/src/index.js';
 const hash=b=>createHash('sha256').update(b).digest('hex');
 export const defaultCacheDir=()=>join(process.env.XDG_CACHE_HOME||join(homedir(),'.cache'),'neurodesk','syncro');
+const templateURL=new URL('../data/MNI152_T1_1mm_brain.nii.gz',import.meta.url);
+const templateSha256='32d5be33460f995a5d305507053c8862c823d9ca6bfb543381308df14590f212';
+const registrationWasmSha256='23cb91e0a9363cce16581d459ee52dabbf35538a2ad4ed565d2d83cd4a116348';
+export async function checkInstallation({
+  registrationModule=new URL('./registration/syncro-registration.mjs',import.meta.url),
+  registrationWasm=new URL('./registration/syncro-registration.wasm',import.meta.url),
+}={}) {
+  const template=await readFile(templateURL),wasm=await readFile(registrationWasm);
+  if(hash(template)!==templateSha256)throw new Error('Template checksum mismatch.');
+  if(hash(wasm)!==registrationWasmSha256)throw new Error('Registration WebAssembly checksum mismatch.');
+  if(wasm.subarray(0,4).toString('hex')!=='0061736d')throw new Error('Registration asset is not WebAssembly.');
+  const [{default:createModule},ort]=await Promise.all([import(registrationModule),import('onnxruntime-node')]);
+  if(typeof createModule!=='function')throw new Error('Registration module did not load.');
+  const tensor=new ort.Tensor('float32',Float32Array.of(0),[1]);
+  if(tensor.size!==1)throw new Error('ONNX Runtime tensor check failed.');
+  return {
+    platform:process.platform,
+    arch:process.arch,
+    node:process.version,
+    executable:process.execPath,
+    onnxRuntime:ort.env.versions.node,
+    templateSha256,
+    registrationWasmSha256,
+  };
+}
 export async function downloadModels({cacheDir=defaultCacheDir(),offline=false,onProgress=()=>{}}={}) {
   const result={};
   for(const [name,asset]of Object.entries(assets)) {
@@ -32,8 +57,8 @@ export async function normalize({input,output,additional=[],ct=false,threads=Num
   if(!input||!output)throw new Error('Input image and output directory are required.');
   if(!Number.isSafeInteger(threads)||threads<1)throw new Error('Threads must be a positive integer.');
   const inputBytes=await readFile(input),out=resolve(output),checkpoint=join(out,'.checkpoints');
-  const template=await readFile(new URL('../data/MNI152_T1_1mm_brain.nii.gz',import.meta.url));
-  if(hash(template)!=='32d5be33460f995a5d305507053c8862c823d9ca6bfb543381308df14590f212')throw new Error('Template checksum mismatch.');
+  const template=await readFile(templateURL);
+  if(hash(template)!==templateSha256)throw new Error('Template checksum mismatch.');
   const registrationURL=new URL('./registration/syncro-registration.mjs',import.meta.url);
   const wasm=await readFile(new URL('./registration/syncro-registration.wasm',import.meta.url));
   const fingerprint=hash(JSON.stringify({input:hash(inputBytes),ct,code:hash(await readFile(new URL(import.meta.url))),wasm:hash(wasm),template:hash(template),models:Object.values(assets).map(a=>a.sha256)}));

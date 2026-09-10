@@ -11,7 +11,7 @@ pnpm --filter syncro preview --host 127.0.0.1 --port 5175
 
 Open `/syncro/`. Use a desktop browser with cross-origin isolation and several GB of available memory. The bundled service worker supplies isolation on compatible static hosts. No input images are sent to a processing service. Hugging Face supplies pinned models, and the optional real example comes from OpenNeuro.
 
-The build emits registration assets, template licensing information and `downloads/neurodesk-syncro-0.1.4.tgz`. The app bar's Standalone action opens copyable download, installation and run commands. See `../../packages/syncro/README.md` and its `validation/` directory for scientific behavior, installation and measured comparisons.
+The build emits registration assets, template licensing information, and `downloads/neurodesk-syncro-0.1.20260910.tgz`. The app bar's **Standalone** action links to GitHub-built Windows x64 and Linux x64 executables, their checksums, and copyable commands. The dialog keeps the npm package for managed Node and HPC systems. Models download on first use and are not part of the native archives. See `../../packages/syncro/README.md` for installation and the `validation/` directory for measured comparisons.
 
 Run `pnpm --filter syncro test:e2e` for production workflow checks. The separately invoked `packages/syncro/validation/browser-run.mjs` runs the complete real scan and downloads its outputs. Repository-wide interface checks are required after a fresh site build.
 

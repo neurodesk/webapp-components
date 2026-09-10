@@ -2,20 +2,51 @@
 
 Normalize an anatomical NIfTI scan to the MNI152 1 mm brain template. The shared pipeline runs SynthSR, SynthStrip and ANTs SyN, then applies the transformation to the acquired scan and optional aligned images. It does not fill lesions or exclude them from registration.
 
-## Standalone installation
+## Portable Windows and Linux builds
 
-Download `neurodesk-syncro-0.1.4.tgz` from the SYNcro webapp's **Standalone** dialog in the application bar. The artifact is built from `packages/syncro`; the website carries a tarball, not an npm registry publication. It includes the shared pipeline, ANTs WebAssembly kernel and MNI template. Neural-network models are downloaded separately, using pinned revisions and SHA-256 verification.
+Download the Windows x64 or Linux x64 archive from the webapp's **Standalone** dialog. Each archive contains `syncro` or `syncro.exe`, a private Node runtime, native ONNX Runtime, the ANTs WebAssembly kernel, and the MNI template. You do not need to install Node.js, Python, FreeSurfer, or a display server.
 
-Node.js 22 or newer is required. No browser, display, Python or FreeSurfer installation is needed. ONNX Runtime's CPU binaries are installed through npm; `ONNXRUNTIME_NODE_INSTALL=skip` skips optional CUDA downloads, while retaining the package's CPU backend.
+On Linux, download, verify, extract, and check the current release:
 
 ```bash
-ONNXRUNTIME_NODE_INSTALL=skip npm install -g --prefix "$HOME/.local" ./neurodesk-syncro-0.1.4.tgz
+version=0.1.20260910
+curl -fLO "https://github.com/neurodesk/webapps/releases/download/syncro-v${version}/syncro-${version}-linux-x64.tar.gz"
+curl -fLO "https://github.com/neurodesk/webapps/releases/download/syncro-v${version}/syncro-${version}-linux-x64.tar.gz.sha256"
+sha256sum -c "syncro-${version}-linux-x64.tar.gz.sha256"
+tar -xzf "syncro-${version}-linux-x64.tar.gz"
+"./syncro-${version}-linux-x64/syncro" self-check
+"./syncro-${version}-linux-x64/syncro" input.nii.gz results --threads 4
+```
+
+On Windows, run these commands in PowerShell:
+
+```powershell
+$Version = '0.1.20260910'
+$Archive = "syncro-$Version-windows-x64.zip"
+$Base = "https://github.com/neurodesk/webapps/releases/download/syncro-v$Version"
+Invoke-WebRequest "$Base/$Archive" -OutFile $Archive
+Invoke-WebRequest "$Base/$Archive.sha256" -OutFile "$Archive.sha256"
+$Expected = (Get-Content "$Archive.sha256").Split()[0]
+if ((Get-FileHash $Archive -Algorithm SHA256).Hash.ToLower() -ne $Expected) { throw 'Checksum mismatch' }
+Expand-Archive -Path $Archive -DestinationPath .
+& ".\syncro-$Version-windows-x64\syncro.exe" self-check
+& ".\syncro-$Version-windows-x64\syncro.exe" input.nii.gz results --threads 4
+```
+
+Keep the extracted directory intact. The first analysis downloads the checksum-pinned SynthSR and SynthStrip models. Run `syncro download-models` first to prepare an offline cache.
+
+Use `--ct` for a CT image in Hounsfield units. Modality is explicit; there is no intensity-based CT autodetection. CT has not yet been validated against the reference container in this port.
+
+## Node.js package for HPC
+
+Download `neurodesk-syncro-0.1.20260910.tgz` from the same **Standalone** dialog. The website carries a tarball built from `packages/syncro`, not an npm registry publication. Node.js 22 or newer is required. `ONNXRUNTIME_NODE_INSTALL=skip` skips optional CUDA downloads and retains the CPU backend.
+
+```bash
+ONNXRUNTIME_NODE_INSTALL=skip npm install -g --prefix "$HOME/.local" ./neurodesk-syncro-0.1.20260910.tgz
 export PATH="$HOME/.local/bin:$PATH"
 syncro input.nii.gz results --threads 4
 syncro input.nii.gz results-with-lesion --lesion lesion.nii.gz --labels labels.nii.gz
 ```
-
-Use `--ct` for a CT image in Hounsfield units. Modality is explicit; there is no intensity-based CT autodetection. CT has not yet been validated against the reference container in this port.
 
 ## Offline HPC jobs
 
