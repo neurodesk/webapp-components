@@ -346,7 +346,7 @@ apps:
       toolchains: [node]
       shared_runtime: false
       browser_test: true
-      release: false
+      release: true
   - id: syncro
     path: syncro
     title: SYNcro
@@ -386,4 +386,5 @@ apps:
     ci:
       toolchains: [node]
       shared_runtime: false
-      release: false
+      browser_test: true
+      release: true
