@@ -326,6 +326,27 @@ apps:
       browser_test: true
       release: true
     artifact_budget_bytes: 65000000
+  - id: synthseg
+    path: synthseg
+    title: SynthSeg
+    description: Segment brain MRI into FreeSurfer labels locally in your browser.
+    category: segmentation-analysis
+    keywords: [SynthSeg, MRI, CT, segmentation, FreeSurfer, WebGPU]
+    legacy_domain: null
+    runtime: vite-webgpu
+    model_manifest: models/synthseg.manifest.json
+    asset_manifest_schema: scientific-assets-v1
+    source: neurodesk/webapps@local
+    license: Apache-2.0
+    maintainers: [neurodesk]
+    support_status: experimental
+    shell: imaging-workspace
+    app_scoped_runtime_families: []
+    ci:
+      toolchains: [node]
+      shared_runtime: false
+      browser_test: true
+      release: false
   - id: syncro
     path: syncro
     title: SYNcro
