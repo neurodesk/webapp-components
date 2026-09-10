@@ -125,20 +125,20 @@
     <p><strong>Show vectors</strong> plots the diffusion gradient scheme (bvec/bval) in 3D — each direction as a ball at its b-vector, sized by how many samples repeat it and coloured by b-value. Inspecting it reveals the sampling distribution: whole- vs half-sphere coverage and single- vs multi-shell acquisitions. For why this matters, see the
       <a href="https://fsl.fmrib.ox.ac.uk/fsl/docs/diffusion/eddy/index.html" target="_blank" rel="noopener">FSL eddy documentation</a> and Winkler's
       <a href="https://brainder.org/2025/05/05/15656/" target="_blank" rel="noopener">Uniform directions for multi-shell diffusion MRI</a>.</p>
-    <form method="dialog"><button type="submit">Close</button></form>
+    <form method="dialog"><button class="nd-app-dialog__close" type="submit">Close</button></form>
   </dialog>
 
   <dialog id="citeDlg" class="message-dialog">
     <h2>How to cite dwi2trx</h2>
     <p>Cite the methods and scientific software used in your analysis, including NiiVue, dcm2niix, niimath, mindgrab, and GPUStreamlines.</p>
     <p>See the <a href="https://github.com/neurodesk/webapps/tree/main/apps/dwi2trx" target="_blank" rel="noopener">source and documentation</a> for current dependency and version details.</p>
-    <form method="dialog"><button type="submit">Close</button></form>
+    <form method="dialog"><button class="nd-app-dialog__close" type="submit">Close</button></form>
   </dialog>
 
   <dialog id="privacyDlg" class="message-dialog">
     <h2>Privacy</h2>
     <p>dwi2trx processes your imaging data locally in your browser. The app does not upload your DWI, gradients, tensor maps, or tractograms.</p>
-    <form method="dialog"><button type="submit">Close</button></form>
+    <form method="dialog"><button class="nd-app-dialog__close" type="submit">Close</button></form>
   </dialog>
 
   <dialog id="largeInputDlg" class="message-dialog" aria-labelledby="largeInputTitle">

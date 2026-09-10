@@ -90,7 +90,7 @@ canvas:focus { outline: 0; }
 
 #status { padding: 0 !important; }
 .status-row { display: flex; align-items: center; justify-content: space-between; gap: var(--nd-space-md); min-height: 34px; padding: var(--nd-space-xs) var(--nd-space-lg); font-size: .8rem; }
-.status-row > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status-row > span { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #statusMsg { color: var(--muted); }
 .loading-circle { display: inline-block; width: 14px; height: 14px; margin-right: var(--nd-space-xs); border: 2px solid color-mix(in srgb, var(--text) 25%, transparent); border-top-color: var(--text); border-radius: 50%; vertical-align: -2px; visibility: hidden; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }

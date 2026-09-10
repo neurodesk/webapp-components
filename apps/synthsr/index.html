@@ -109,7 +109,7 @@
     <h2>SynthSR</h2>
     <p>A browser implementation of SynthSR, developed by Iglesias, Billot and colleagues. It uses the pretrained v2 model and reproduces its 1 mm resampling, normalization, flip averaging and sharpening workflow.</p>
     <p>Full-volume mode follows the reference method. Tiled mode reduces memory use but changes context and may introduce boundary differences. Outputs are synthetic images for research; they are not acquired T1 scans.</p>
-    <button>Close</button>
+    <button class="nd-app-dialog__close">Close</button>
   </form>
 </dialog>
 <dialog id="citeDialog" class="nd-app-dialog">
@@ -118,14 +118,14 @@
     <p><strong>Primary reference</strong></p>
     <p>Iglesias JE, Billot B, Balbastre Y, et al. Joint super-resolution and synthesis of 1 mm isotropic MP-RAGE volumes from clinical MRI exams with scans of different orientation, resolution and contrast. <em>NeuroImage</em>. 2021;237:118206. <a href="https://pubmed.ncbi.nlm.nih.gov/34048902/" target="_blank" rel="noreferrer">PMID 34048902</a>. DOI: 10.1016/j.neuroimage.2021.118206.</p>
     <p>Please also cite NiiVue and ONNX Runtime when they are material to your analysis.</p>
-    <button>Close</button>
+    <button class="nd-app-dialog__close">Close</button>
   </form>
 </dialog>
 <dialog id="privacyDialog" class="nd-app-dialog">
   <form method="dialog" class="nd-app-dialog__panel">
     <h2>Privacy</h2>
     <p>SynthSR processes scans locally in your browser. It does not upload your input image, model selection, synthetic output, or processing report.</p>
-    <button>Close</button>
+    <button class="nd-app-dialog__close">Close</button>
   </form>
 </dialog>
 <dialog id="standaloneDialog" class="nd-app-dialog" aria-labelledby="standaloneTitle">
@@ -140,7 +140,7 @@ ONNXRUNTIME_NODE_INSTALL=skip npm install --prefix ./synthsr-cli ./neurodesk-syn
 ./synthsr-cli/node_modules/.bin/synthsr input.nii.gz output_synthsr.nii.gz --threads 8</code></pre>
     <p>Replace <code>input.nii.gz</code> with your scan. The first run downloads and verifies the model. Add <code>--ct</code> for CT.</p>
     <p><a id="standalonePackage" download>Download the package</a> · use <code>--help</code> for options.</p>
-    <button>Close</button>
+    <button class="nd-app-dialog__close">Close</button>
   </form>
 </dialog>
 <script type="module" src="/src/main.js"></script>

@@ -90,12 +90,12 @@
         <a href="https://pubmed.ncbi.nlm.nih.gov/28945803/" target="_blank" rel="noopener">PMID: 28945803</a>.
         Values are an MRIQC-style approximation, not MRIQC normative values.</small></p>
       <p><small>Licensed <strong>BSD-2-Clause</strong>. Requires a recent WebGPU-capable desktop browser.</small></p>
-      <button autofocus id="closeAboutBtn" value="default">Close</button>
+      <button class="nd-app-dialog__close" autofocus id="closeAboutBtn" value="default">Close</button>
     </form>
   </dialog>
 
-  <dialog id="citeDialog" class="nd-app-dialog"><form method="dialog" class="nd-app-dialog__panel"><h2>How to cite BrowserQC</h2><p>Cite the MRIQC methods paper (Esteban et al., 2017) and the NiiVue, niimath, dcm2niix, and MindGrab software used in your analysis.</p><button>Close</button></form></dialog>
-  <dialog id="privacyDialog" class="nd-app-dialog"><form method="dialog" class="nd-app-dialog__panel"><h2>Privacy</h2><p>BrowserQC processes scans locally in your browser. It does not upload your images, segmentations, or quality reports.</p><button>Close</button></form></dialog>
+  <dialog id="citeDialog" class="nd-app-dialog"><form method="dialog" class="nd-app-dialog__panel"><h2>How to cite BrowserQC</h2><p>Cite the MRIQC methods paper (Esteban et al., 2017) and the NiiVue, niimath, dcm2niix, and MindGrab software used in your analysis.</p><button class="nd-app-dialog__close">Close</button></form></dialog>
+  <dialog id="privacyDialog" class="nd-app-dialog"><form method="dialog" class="nd-app-dialog__panel"><h2>Privacy</h2><p>BrowserQC processes scans locally in your browser. It does not upload your images, segmentations, or quality reports.</p><button class="nd-app-dialog__close">Close</button></form></dialog>
 
   <script type="module" src="/src/main.ts"></script>
 </body>

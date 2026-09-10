@@ -28,6 +28,20 @@ await runVitePreviewSmoke({
     if (await page.locator('#resultsSection').evaluate(el => el.open)) await fail('Empty results should start collapsed', page)
     if (!/Metrics appear/.test(await qcText())) await fail('QC panel not empty on load', page)
 
+    await page.setViewportSize({ width: 320, height: 568 })
+    const locationFits = await page.locator('#location').evaluate(
+      el => el.getBoundingClientRect().right <= document.documentElement.clientWidth + 1,
+    )
+    if (!locationFits) await fail('Status text overflows a 320px viewport', page)
+    await page.click('[data-neurodesk-shell-control="about"]')
+    if (!(await page.isVisible('#aboutDialog'))) await fail('About dialog did not open', page)
+    await page.click('#closeAboutBtn')
+    await page.click('[data-neurodesk-shell-control="cite"]')
+    await page.click('#citeDialog .nd-app-dialog__close')
+    await page.click('[data-neurodesk-shell-control="privacy"]')
+    await page.click('#privacyDialog .nd-app-dialog__close')
+    await page.setViewportSize({ width: 1280, height: 960 })
+
     // GitHub's Linux runners do not expose a usable WebGPU adapter. Verify that the
     // production app reaches its intended, actionable fallback instead of hanging or
     // crashing. The one NiiVue console error is the underlying adapter failure that
@@ -40,10 +54,7 @@ await runVitePreviewSmoke({
       ).catch(() => fail('unsupported-WebGPU message did not appear', page))
       allowConsoleError('Failed to get WebGPU adapter')
       allowConsoleError('Unable to initialize WebGL2')
-      await page.click('[data-neurodesk-shell-control="about"]')
-      if (!(await page.isVisible('#aboutDialog'))) await fail('About dialog did not open', page)
-      await page.click('#closeAboutBtn')
-      console.log('✓ unsupported-WebGPU guidance shown, About dialog opens')
+      console.log('✓ unsupported-WebGPU guidance shown; shared dialogs and mobile status fit work')
       return
     }
 
@@ -79,16 +90,7 @@ await runVitePreviewSmoke({
       el.value = '64'
       el.dispatchEvent(new Event('input', { bubbles: true }))
     })
-    // 4. About dialog opens and closes.
-    await page.click('[data-neurodesk-shell-control="about"]')
-    if (!(await page.isVisible('#aboutDialog'))) await fail('About dialog did not open', page)
-    await page.click('#closeAboutBtn')
-    await page.getByRole('button', { name: 'Cite' }).click()
-    if (!(await page.isVisible('#citeDialog'))) await fail('Cite dialog did not open from shared app bar', page)
-    await page.locator('#citeDialog button').click()
-    await page.getByRole('button', { name: 'Privacy' }).click()
-    if (!(await page.isVisible('#privacyDialog'))) await fail('Privacy dialog did not open from shared app bar', page)
-    await page.locator('#privacyDialog button').click()
+    // 4. Save the completed QC report.
     const [download] = await Promise.all([
       page.waitForEvent('download'),
       page.click('#saveBtn'),
