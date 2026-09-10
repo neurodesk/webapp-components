@@ -47,8 +47,8 @@
   <pre><code>curl -fLO https://nodejs.org/dist/v22.22.0/node-v22.22.0-linux-x64.tar.xz
 tar -xf node-v22.22.0-linux-x64.tar.xz
 export PATH="$PWD/node-v22.22.0-linux-x64/bin:$PATH"
-curl -fLO https://webapps.neurodesk.org/synthsr/downloads/neurodesk-synthsr-0.1.0.tgz
-ONNXRUNTIME_NODE_INSTALL=skip npm install --prefix ./synthsr-cli ./neurodesk-synthsr-0.1.0.tgz
+curl -fLO https://webapps.neurodesk.org/synthsr/downloads/neurodesk-synthsr-0.2.20260909.tgz
+ONNXRUNTIME_NODE_INSTALL=skip npm install --prefix ./synthsr-cli ./neurodesk-synthsr-0.2.20260909.tgz
 ./synthsr-cli/node_modules/.bin/synthsr input.nii.gz output_synthsr.nii.gz --threads 8</code></pre>
   <p>Replace <code>input.nii.gz</code> with your scan. The first run downloads and verifies the model. Add <code>--ct</code> for CT. Output includes the synthetic image and a JSON report.</p>
   <p>Already have Node.js 22+? Skip the first three lines. <a id="standalonePackage" download>Download the package</a> · use <code>--help</code> for options.</p>

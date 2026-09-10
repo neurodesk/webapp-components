@@ -1,0 +1,16 @@
+synthsr
+Copyright 2026 Neurodesk contributors
+
+Native port of the SynthSR web application's spatial preprocessing,
+postprocessing and inference contract (packages/synthsr, Apache-2.0), itself
+derived from https://github.com/neurolabusc/py_synthsr
+(commit 04ab5548f4609c2b44ca51b3f4bc319b585dafa7) and
+https://github.com/BBillot/SynthSR. Model checkpoint: synthsr_v20_230130.h5,
+converted to ONNX without retraining.
+
+Iglesias JE, Billot B, Balbastre Y, et al. (2021). Joint super-resolution and
+synthesis of 1 mm isotropic MP-RAGE volumes from clinical MRI exams with scans
+of different orientation, resolution and contrast. NeuroImage 237:118206.
+https://doi.org/10.1016/j.neuroimage.2021.118206
+
+See THIRD_PARTY_NOTICES.md for redistributed binaries.

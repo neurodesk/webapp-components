@@ -137,7 +137,7 @@ export function prepare(volume, { ct = false } = {}) {
   const paddedDims = alignedDims.map((s) => Math.ceil(s/32)*32);
   const offsets = paddedDims.map((s,a) => Math.floor((s-alignedDims[a])/2));
   const input = new Float32Array(product(paddedDims));
-  let min = input.length > resampled.data.length ? 0 : Infinity, max = input.length > resampled.data.length ? 0 : -Infinity;
+  let min = Infinity, max = -Infinity;
   for (let x=0;x<alignedDims[0];x++) for (let y=0;y<alignedDims[1];y++) for (let z=0;z<alignedDims[2];z++) {
     const src = [0,0,0];
     [x,y,z].forEach((p,a) => { src[axes[a]]=flips[a]?alignedDims[a]-1-p:p; });
@@ -147,6 +147,7 @@ export function prepare(volume, { ct = false } = {}) {
     input[j]=v; min=Math.min(min,v); max=Math.max(max,v);
   }
   if (max <= min) throw new Error('The input has no intensity variation after preprocessing.');
+  if (input.length > resampled.data.length) { min=Math.min(min,0); max=Math.max(max,0); }
   for(let i=0;i<input.length;i++) input[i]=(input[i]-min)/(max-min);
   return { input, paddedDims, alignedDims, offsets, axes, flips, dims:resampled.dims, affine:resampled.affine };
 }

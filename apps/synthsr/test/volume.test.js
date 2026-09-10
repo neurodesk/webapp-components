@@ -32,3 +32,13 @@ test('NIfTI scaling and meter units are applied once',()=>{
  const v=new DataView(b);v.setUint8(123,1);v.setFloat32(112,2,true);v.setFloat32(116,-4,true);
  const r=readVolume(b);assert.equal(r.data[3],2);assert.ok(Math.abs(r.affine[0][0]-1)<1e-6);assert.ok(Math.abs(r.affine[0][3]-10)<1e-6);
 });
+test('reject constant intensities before padding, including CT clipping',()=>{
+  const affine=[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]];
+  for(const size of [2,32]) for(const value of [-5,0,5]) {
+    const volume={dims:[size,size,size],data:new Float32Array(size**3).fill(value),affine};
+    assert.throws(()=>prepare(volume),/variation/);
+  }
+  const volume={dims:[2,2,2],data:Float32Array.from({length:8},(_,i)=>100+i),affine};
+  assert.throws(()=>prepare(volume,{ct:true}),/variation/);
+  assert.doesNotThrow(()=>prepare(volume));
+});
