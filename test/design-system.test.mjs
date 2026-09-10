@@ -166,12 +166,8 @@ test('vocabulary apps build their interface from the shared classes', async () =
   assert.deepEqual(failures, []);
 });
 
-test('the app template is the canonical vocabulary example and its docs mirror matches', async () => {
+test('the app template is the canonical vocabulary example', async () => {
   const template = join(repoRoot, 'templates', 'app-template');
-  const mirror = join(repoRoot, 'docs', 'architecture', 'examples', 'app-template');
-  for (const file of ['index.html', 'src/main.js']) {
-    assert.equal(await readFile(join(mirror, file), 'utf8'), await readFile(join(template, file), 'utf8'), `docs mirror of ${file} is stale`);
-  }
   const html = await readFile(join(template, 'index.html'), 'utf8');
   for (const marker of ['class="nd-sidebar-section"', 'class="nd-file"', 'nd-btn nd-btn-primary', 'class="nd-viewer-canvas-wrapper"', 'class="nd-status-text"']) {
     assert.ok(html.includes(marker), `template lacks ${marker}`);

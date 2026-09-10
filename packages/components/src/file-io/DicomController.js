@@ -53,7 +53,7 @@ export class DicomController {
   }
 
   async _createInstance() {
-    if (!this.dcm2niixModule) this.dcm2niixModule = await import(this.moduleUrl);
+    if (!this.dcm2niixModule) this.dcm2niixModule = await import(/* @vite-ignore */ this.moduleUrl);
     const dcm2niix = new this.dcm2niixModule.Dcm2niix();
     await dcm2niix.init();
     return dcm2niix;

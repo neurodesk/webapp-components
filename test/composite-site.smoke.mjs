@@ -170,7 +170,11 @@ try {
 
   await landing.locator('#app-search').fill('DICOM');
   const dicomMatches = await landing.locator('[data-app-card]:not([hidden])').count();
-  if (dicomMatches !== 2) failures.push(`landing search found ${dicomMatches} DICOM apps, expected 2`);
+  const expectedDicomMatches = registry.apps.filter((app) =>
+    [app.title, app.description, ...app.keywords].some((value) => /dicom/i.test(value))).length;
+  if (dicomMatches !== expectedDicomMatches) {
+    failures.push(`landing search found ${dicomMatches} DICOM apps, expected ${expectedDicomMatches}`);
+  }
 
   await landing.locator('#clear-search').click();
   await landing.locator('[data-category-filter="quality-annotation"]').click();

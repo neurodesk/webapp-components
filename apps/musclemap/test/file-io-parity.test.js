@@ -39,9 +39,11 @@ test("shared downloadBlob/downloadFile reproduce the original anchor-download si
   const dom = new JSDOM("<!doctype html><body></body>");
   const prevDoc = globalThis.document;
   const prevURL = globalThis.URL;
+  const prevSetTimeout = globalThis.setTimeout;
   const created = [];
   const revoked = [];
   const clicks = [];
+  const timers = [];
   try {
     globalThis.document = dom.window.document;
     globalThis.URL = dom.window.URL;
@@ -50,6 +52,10 @@ test("shared downloadBlob/downloadFile reproduce the original anchor-download si
       return `blob:mock/${created.length}`;
     };
     globalThis.URL.revokeObjectURL = (u) => revoked.push(u);
+    globalThis.setTimeout = (callback, delay) => {
+      timers.push({ callback, delay });
+      return 0;
+    };
     // Avoid jsdom's "navigation not implemented" and capture the click intent.
     dom.window.HTMLAnchorElement.prototype.click = function () {
       clicks.push({ href: this.href, download: this.download });
@@ -63,7 +69,10 @@ test("shared downloadBlob/downloadFile reproduce the original anchor-download si
     assert.equal(clicks.length, 1, "anchor clicked once");
     assert.equal(clicks[0].download, "musclemap_metrics.csv", "download filename set");
     assert.match(clicks[0].href, /^blob:mock\//, "href is the object URL");
-    assert.equal(revoked.length, 1, "object URL revoked");
+    assert.equal(revoked.length, 0, "object URL remains valid until the download starts");
+    assert.equal(timers[0].delay, 1000, "object URL revocation is deferred for WebKit");
+    timers[0].callback();
+    assert.equal(revoked.length, 1, "object URL revoked after the delay");
     assert.equal(dom.window.document.querySelector("a"), null, "anchor removed from DOM");
 
     // downloadFile(file) downloads under file.name.
@@ -73,8 +82,12 @@ test("shared downloadBlob/downloadFile reproduce the original anchor-download si
     downloadFile(file);
     assert.equal(clicks.length, 2);
     assert.equal(clicks[1].download, "segmentation.nii.gz");
+    assert.equal(timers.length, 2);
+    timers[1].callback();
+    assert.equal(revoked.length, 2);
   } finally {
     globalThis.document = prevDoc;
     globalThis.URL = prevURL;
+    globalThis.setTimeout = prevSetTimeout;
   }
 });

@@ -1,9 +1,8 @@
 /**
  * BrowserQC — browser-only MRI quality control. No data leaves the machine.
  *
- * Drop a NIfTI (or a DICOM folder → dcm2niix) and it runs automatically: conform to
- * the model's canonical space, run the brainchop "Subcortical + GWM" parcellation
- * (TensorFlow.js), back-project the labels onto the native scan as a colour overlay,
+ * Drop a NIfTI (or a DICOM folder → dcm2niix) and it runs automatically: run the
+ * MindGrab "Subcortical + GWM" parcellation on the native grid as a colour overlay,
  * then compute niimath MRIQC-style quality metrics into the side panel. Everything
  * runs in WebAssembly + WebGPU/WebGL2 locally.
  */
@@ -19,12 +18,13 @@ import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-i
 import { bindFileDrop } from '@neurodesk/webapp-components/ui'
 import '@neurodesk/webapp-components/styles/imaging-workspace.css'
 import { readImageFiles, traverseDataTransferItems } from '@neurodesk/runtime-support/dcm2niix-client'
-import { Niimath } from '@neurodesk/runtime-support/niimath'
-import { CSF_LABELS, WM_LABELS, parseQcTsv, renderQc } from './qc'
+import { Niimath } from '@niivue/niimath'
+import { CSF_LABELS, WM_LABELS, bindSidecar, renderQc } from './qc'
+import type { QcMetrics, QcReport } from './qc'
 
-const ASSET_BASE_URL =
-  'https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/3fac5b45eb5cd38190a49ad3a1dc422b016bc938/browserqc/'
+const ASSET_BASE_URL = 'https://huggingface.co/datasets/neurodeskorg/webapps/resolve/12eb1069c34097b7c0881b22e1f7e4ed953aa5cc/browserqc/'
 const T1_URL = `${ASSET_BASE_URL}t1_crop.nii.gz`
+const TEMPLATE_URL = `${ASSET_BASE_URL}avg152T1.nii.gz`
 
 mountImagingWorkspace({
   controls: '#qcPanel',
@@ -33,7 +33,7 @@ mountImagingWorkspace({
   title: 'BrowserQC',
   subtitle: 'Automated MRI quality control in your browser',
   mark: 'Q',
-  controlsContract: { about: '#aboutBtn' },
+  controlsContract: { about: '#aboutBtn', cite: '#citeBtn', privacy: '#privacyBtn' },
 })
 
 function $<T extends HTMLElement>(id: string): T {
@@ -48,11 +48,17 @@ const loadingCircle = $('loadingCircle')
 const statusMsg = $<HTMLLabelElement>('statusMsg')
 const aboutBtn = $<HTMLButtonElement>('aboutBtn')
 const aboutDialog = $<HTMLDialogElement>('aboutDialog')
+const citeBtn = $<HTMLButtonElement>('citeBtn')
+const citeDialog = $<HTMLDialogElement>('citeDialog')
+const privacyBtn = $<HTMLButtonElement>('privacyBtn')
+const privacyDialog = $<HTMLDialogElement>('privacyDialog')
+const saveBtn = $<HTMLButtonElement>('saveBtn')
 const dicomPick = $<HTMLSelectElement>('dicomPick')
 const niftiInput = $<HTMLInputElement>('niftiInput')
 const dicomInput = $<HTMLInputElement>('dicomInput')
 const ovlSlider = $<HTMLInputElement>('ovlSlider')
 const qcBody = $('qcBody')
+const consoleOutput = $('consoleOutput')
 
 // --- NiiVue setup ---
 // The NiiVue constructor is GPU-free; attachTo() acquires the WebGPU device and
@@ -82,6 +88,10 @@ let isCleanedUp = false
 // addVolume → setColormapLabel). The opacity slider must not re-enter NiiVue during
 // that window, so its handler no-ops while busy — see the #ovlSlider listener.
 let busy = false
+let lastReport: QcReport | null = null
+let lastName = 'image'
+let bidsMeta: unknown = null
+let stagedSidecar: unknown = null
 
 // niimath is used only for the QC metrics (`--qc`); lazily initialised on first QC.
 const niimath = new Niimath()
@@ -113,21 +123,18 @@ function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
 function niimathWorker(): Worker | null {
   return (niimath as unknown as { worker?: Worker | null }).worker ?? null
 }
-function killNiimathWorker(): void {
-  try {
-    niimathWorker()?.terminate()
-    ;(niimath as unknown as { worker: Worker | null }).worker = null
-  } catch {
-    // worker may already be gone
-  }
-}
-
 // --- Status helpers ---
 function setStatus(msg: string): void {
   statusMsg.textContent = msg
   // The footer cell ellipsizes; expose the full text (esp. long failures) on hover.
   statusMsg.title = msg
   statusMsg.classList.toggle('hidden', msg === '')
+  if (msg) {
+    const line = document.createElement('div')
+    line.textContent = `${new Date().toLocaleTimeString()} ${msg}`
+    consoleOutput.append(line)
+    consoleOutput.scrollTop = consoleOutput.scrollHeight
+  }
 }
 function spin(on: boolean): void {
   // Toggle visibility (not display) so the spinner's box stays reserved and the
@@ -154,16 +161,14 @@ async function ensureNiimath(): Promise<void> {
   if (!niimathReady)
     niimathReady = niimath.init().then(() => {
       if (!(niimathWorker() instanceof Worker))
-        throw new Error('niimath worker handle missing after init (vendored wrapper changed?)')
+        throw new Error('niimath worker handle missing after init (wrapper changed?)')
     })
   await withTimeout(niimathReady, WORKER_TIMEOUT_MS, 'niimath init')
 }
 
 // If a niimath run fails, its worker + init promise may be in a bad state; tear both
-// down so the next QC spins up a fresh worker. (The vendored wrapper exposes no public
-// terminate — killNiimathWorker reaches the private field for us.)
 function resetNiimathWorker(): void {
-  killNiimathWorker()
+  niimath.dispose('niimath worker reset')
   niimathReady = null
 }
 
@@ -173,34 +178,20 @@ async function fetchFile(url: string, name: string): Promise<File> {
   return new File([await res.blob()], name)
 }
 
-// --- Segmentation ("Subcortical + GWM", brainchop tfjs) ---
-// Runs automatically on every loaded image. Conforms a copy to 256³ 1 mm, runs the
-// deep-learning parcellation, back-projects the labels onto the native input grid
-// (so the overlay sits on the ORIGINAL scan), colours them, then runs QC. tfjs + the
-// model chunk are dynamically import()ed on first use.
-let conformRegistered = false
-
-async function ensureConformTransform(): Promise<void> {
-  if (conformRegistered) return
-  // FastSurfer-style conform (256³ 1 mm) as a NiiVue volume transform — our rc.9
-  // NiiVue has no nv.conform(), so we register the ext's worker-backed transform.
-  const { conform } = await import('@niivue/nv-ext-image-processing')
-  nv.registerVolumeTransform(conform)
-  conformRegistered = true
+async function fetchJson(url: string): Promise<unknown | null> {
+  const res = await fetch(url)
+  return res.ok ? res.json() : null
 }
 
-// colormap.json ({R,G,B,labels}) → NiiVue ColorMap. rc.9 also needs I (label value
-// per entry) and A (alpha) — background label 0 transparent, the rest opaque.
-function toColorMap(c: { R: number[]; G: number[]; B: number[]; labels?: string[] }): ColorMap {
-  const n = c.R.length
-  return {
-    R: c.R,
-    G: c.G,
-    B: c.B,
-    I: Array.from({ length: n }, (_, i) => i),
-    A: Array.from({ length: n }, (_, i) => (i === 0 ? 0 : 255)),
-    labels: c.labels,
-  }
+// MindGrab returns native-grid labels, so no conform/reslice implementation or model
+// files are shipped with this demo.
+const SEG_COLORMAP: ColorMap = {
+  R: [0, 245, 205, 120, 196, 220, 230, 0, 122, 236, 12, 204, 42, 119, 220, 103, 255, 165],
+  G: [0, 245, 62, 18, 58, 248, 148, 118, 186, 13, 48, 182, 204, 159, 216, 255, 165, 42],
+  B: [0, 245, 78, 134, 250, 164, 34, 14, 220, 176, 255, 142, 164, 176, 20, 255, 0, 42],
+  labels: ['Unknown', 'Cerebral-White-Matter', 'Cerebral-Cortex', 'Lateral-Ventricle', 'Inferior-Lateral-Ventricle', 'Cerebellum-White-Matter', 'Cerebellum-Cortex', 'Thalamus', 'Caudate', 'Putamen', 'Pallidum', '3rd-Ventricle', '4th-Ventricle', 'Brain-Stem', 'Hippocampus', 'Amygdala', 'Accumbens-area', 'VentralDC'],
+  I: [...Array(18).keys()],
+  A: [0, ...Array(17).fill(255)],
 }
 
 // Post a raw `--qc` job straight to the niimath worker. The wrapper's chain run()
@@ -208,30 +199,29 @@ function toColorMap(c: { R: number[]; G: number[]; B: number[]; labels?: string[
 // the worker directly (it stages `blob`+`extraFiles` into MEMFS, runs `cmd`, reads
 // `outName` back). The app's single-flight queue guarantees no niimath run overlaps
 // this one-shot handler swap.
-function runNiimathQc(t1: File, seg: File): Promise<string> {
+async function runNiimathQc(t1: File, seg: File): Promise<QcReport> {
+  const worker = niimathWorker()
+  if (!worker) throw new Error('niimath worker unavailable')
+  const template = await fetchFile(TEMPLATE_URL, 'avg152T1.nii.gz')
+  if (worker !== niimathWorker()) throw new Error('QC cancelled')
   return new Promise((resolve, reject) => {
-    const worker = niimathWorker()
-    if (!worker) {
-      reject(new Error('niimath worker unavailable'))
-      return
-    }
     worker.onmessage = (e: MessageEvent) => {
       const d = e.data
       if (d?.type === 'error') {
         reject(new Error(d.message))
         return
       }
-      if (d && 'blob' in d) void (d.blob as Blob).text().then(resolve, reject)
+      if (d && 'blob' in d) void (d.blob as Blob).text().then((text) => resolve(JSON.parse(text) as QcReport), reject)
     }
     worker.postMessage({
       blob: t1, // staged in MEMFS under t1.name
-      extraFiles: [{ name: seg.name, data: seg }],
+      extraFiles: [{ name: seg.name, data: seg }, { name: template.name, data: template }],
       cmd: [
         '--qc', t1.name, '--seg', seg.name,
         '--csf', CSF_LABELS.join(','), '--wm', WM_LABELS.join(','),
-        '--out', 'qc.tsv',
+        '--air', template.name, '--json', 'qc.json',
       ],
-      outName: 'qc.tsv',
+      outName: 'qc.json',
     })
   })
 }
@@ -243,15 +233,19 @@ async function computeQc(segBytes: Uint8Array): Promise<void> {
   await ensureNiimath()
   const t1 = await nv.saveVolume({ volumeByIndex: 0, filename: '' })
   if (!(t1 instanceof Uint8Array)) throw new Error('could not serialize the input volume')
-  const tsv = await withTimeout(
+  const report = await withTimeout(
     // Both inputs are uncompressed .nii (saveVolume with an empty filename does not
     // gzip; writeNifti emits raw) — no gunzip cost, and `--qc` writes a TSV so output
     // gz never applies. Name matches content so niimath doesn't attempt a gunzip.
     runNiimathQc(new File([t1], 'qc_t1.nii'), new File([segBytes], 'qc_seg.nii')),
     WORKER_TIMEOUT_MS,
-    'niimath --qc',
+    'niimath --qc --air',
   )
-  renderQc(qcBody, parseQcTsv(tsv))
+  if (bidsMeta) report.bids_meta = bidsMeta
+  Object.assign(report.provenance as object, { segmentation: 'mindgrab 16chan18cls (Subcortical + GWM)' })
+  lastReport = report
+  saveBtn.disabled = false
+  renderQc(qcBody, report as QcMetrics)
 }
 
 // Load `file` as the displayed volume, segment it, and QC the result.
@@ -259,46 +253,25 @@ async function runSegment(file: File): Promise<void> {
   if (isCleanedUp) return // a job queued before cleanup() (HMR) must not touch a dead nv
   spin(true)
   busy = true
+  lastReport = null
+  lastName = file.name
+  saveBtn.disabled = true
   $<HTMLDetailsElement>('resultsSection').open = false
   renderQc(qcBody, null) // clear any prior QC while we recompute
   const t0 = performance.now()
   try {
-    await ensureConformTransform()
     setStatus(`Loading ${file.name}…`)
     await nv.loadVolumes([{ url: file, name: file.name } as ImageFromUrlOptions])
     if (isCleanedUp) return
-    const nativeVol = nv.volumes[0]
-
-    // Conform to the model's canonical 256³ 1 mm space.
-    setStatus('Conforming input (256³ 1 mm)…')
-    const conf = await withTimeout(nv.volumeTransform.conform(nativeVol), WORKER_TIMEOUT_MS, 'conform')
-    if (isCleanedUp || !conf.img) return
-
     setStatus('Segmenting (Subcortical + GWM)… first run downloads the model')
-    const { segment, segColormapUrl } = await import('./brainchop/segment')
-    const rootURL = ASSET_BASE_URL.replace(/\/$/, '')
-    const labels = await segment(
-      { dims: conf.hdr.dims, datatypeCode: conf.hdr.datatypeCode },
-      conf.img,
-      rootURL,
-      (m) => setStatus(m),
-    )
-    if (isCleanedUp) return
-
-    // Back-project conformed labels onto the native grid (input resolution).
-    setStatus('Back-projecting to native space…')
-    const { resliceToNative } = await import('./brainchop/reslice')
-    const nativeLabels = resliceToNative(
-      { dims: nativeVol.hdr.dims, affine: nativeVol.hdr.affine },
-      { dims: conf.hdr.dims, affine: conf.hdr.affine },
-      labels,
-    )
-    const { writeNifti, INTENT_LABEL } = await import('./brainchop/nifti')
-    const bytes = writeNifti(
-      { dims: nativeVol.hdr.dims, pixDims: nativeVol.hdr.pixDims, affine: nativeVol.hdr.affine },
-      nativeLabels,
-      INTENT_LABEL,
-    )
+    const { segment } = await import('@brainchop/mindgrab')
+    const t1 = await nv.saveVolume({ volumeByIndex: 0, filename: '' })
+    if (!(t1 instanceof Uint8Array)) throw new Error('could not serialize the input volume')
+    const result = await withTimeout(segment(t1, {
+      model: '16chan18cls', worker: true, backend: 'auto',
+      assetPath: `${import.meta.env.BASE_URL}brainchop/`,
+    }), WORKER_TIMEOUT_MS, 'segmentation')
+    const bytes = new Uint8Array(result.image)
     if (isCleanedUp) return // teardown may have run during the reslice/nifti imports
     await nv.addVolume({
       url: new File([bytes], 'segmentation.nii'),
@@ -307,10 +280,7 @@ async function runSegment(file: File): Promise<void> {
     } as ImageFromUrlOptions)
     if (isCleanedUp) return
 
-    const cmapRes = await fetch(segColormapUrl(rootURL))
-    if (!cmapRes.ok) throw new Error(`fetch colormap failed: ${cmapRes.status}`)
-    const cmap = await cmapRes.json()
-    await nv.setColormapLabel(nv.volumes.length - 1, toColorMap(cmap))
+    await nv.setColormapLabel(nv.volumes.length - 1, SEG_COLORMAP)
     // Scene mutation is done. Apply the latest slider value first — a drag during the
     // locked window updated the control but the handler dropped it, so `addVolume`'s
     // sampled opacity may be stale — then release the lock so subsequent drags land
@@ -354,6 +324,13 @@ async function handleDrop(filesPromise: Promise<File[]>): Promise<void> {
       setStatus('Drop contained no readable files.')
       return
     }
+    const sidecar = files.find((file) => file.name.toLowerCase().endsWith('.json'))
+    let dropMeta: unknown = null
+    if (sidecar) {
+      try { dropMeta = JSON.parse(await sidecar.text()) } catch { setStatus(`Ignoring invalid JSON sidecar: ${sidecar.name}`) }
+    }
+    const hasImage = files.some((file) => DIRECT_VOLUME_RE.test(file.name))
+    ;({ bind: bidsMeta, staged: stagedSidecar } = bindSidecar(dropMeta, stagedSidecar, hasImage))
     dcmConverted = []
     dicomPick.classList.add('hidden')
     // Fast-path a single obvious volume file straight to segmentation.
@@ -411,7 +388,8 @@ async function init(): Promise<void> {
     setStatus(noWebGpu)
     return
   }
-  // Load + segment the bundled default subject.
+  // Load + segment the pinned external sample subject.
+  bidsMeta = await fetchJson(`${ASSET_BASE_URL}t1_crop.json`)
   const t1 = await fetchFile(T1_URL, 't1_crop.nii.gz')
   await runSegment(t1)
 }
@@ -445,6 +423,19 @@ dicomPick.addEventListener(
   ac,
 )
 aboutBtn.addEventListener('click', () => aboutDialog.showModal(), ac)
+citeBtn.addEventListener('click', () => citeDialog.showModal(), ac)
+privacyBtn.addEventListener('click', () => privacyDialog.showModal(), ac)
+$('copyLogBtn').addEventListener('click', () => void navigator.clipboard?.writeText(consoleOutput.textContent ?? ''), ac)
+$('clearLogBtn').addEventListener('click', () => consoleOutput.replaceChildren(), ac)
+saveBtn.addEventListener('click', () => {
+  if (!lastReport) return
+  const url = URL.createObjectURL(new Blob([`${JSON.stringify(lastReport, null, 2)}\n`], { type: 'application/json' }))
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `${lastName.replace(/\.(nii|nii\.gz|mgz|mgh)$/i, '')}_qc.json`
+  link.click()
+  setTimeout(() => URL.revokeObjectURL(url), 0)
+}, ac)
 niftiInput.addEventListener('change', () => {
   const files = Array.from(niftiInput.files ?? [])
   if (files.length > 0) enqueue(() => handleDrop(Promise.resolve(files)))
@@ -478,7 +469,7 @@ async function cleanup(): Promise<void> {
   // uninterruptible call, so awaiting the queue would stall teardown. The terminated
   // run never resolves; any run that already resolved hits `if (isCleanedUp) return`
   // before touching nv/ctx.
-  killNiimathWorker()
+  resetNiimathWorker()
   try {
     ctx?.dispose() // null if WebGPU was unavailable (attachNiiVue never ran)
   } catch {

@@ -17,8 +17,12 @@ use std::{
 
 const MODEL: &[u8] = include_bytes!(env!("SYNTHSR_MODEL_PATH"));
 const MODEL_SHA256: &str = env!("SYNTHSR_MODEL_SHA256");
+const MODEL_NAME: &str = "synthsr_v20_230130";
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 const HELP: &str = "synthsr VERSION — SynthSR v2 brain image synthesis (ONNX Runtime, CPU)
+
+Model: MODEL_NAME (general model, January 2023, version 2)
+Cite: Iglesias et al. (2023). SynthSR: A public AI tool to turn heterogeneous clinical brain scans into high-resolution T1-weighted images for 3D morphometry. Science Advances 9(5):eadd3607. PMID: 36724222.
 
 Usage:
   synthsr INPUT.nii[.gz] [OUTPUT.nii[.gz]] [options]
@@ -88,6 +92,7 @@ fn parse_args() -> Result<Args, String> {
                 print!(
                     "{}",
                     HELP.replace("VERSION", VERSION)
+                        .replace("MODEL_NAME", MODEL_NAME)
                         .replace("DEFAULT", DEFAULT_DEVICE)
                 );
                 exit(0);
@@ -372,7 +377,7 @@ fn run(a: &Args) -> Result<(), String> {
         .map(|b| sha256_hex(&b))
         .unwrap_or_default();
     let provenance = serde_json::json!({
-        "package": "synthsr", "version": VERSION, "model": "synthsr_v20_230130", "modelSha256": MODEL_SHA256,
+        "package": "synthsr", "version": VERSION, "model": MODEL_NAME, "modelSha256": MODEL_SHA256,
         "app": format!("synthsr {VERSION}"), "executableSha256": exe_hash, "onnxRuntime": ort_version(),
         "executionProvider": a.device, "target": format!("{}-{}", std::env::consts::ARCH, std::env::consts::OS),
         "threads": a.threads, "ct": a.ct, "tiled": false, "flip": a.flip, "sharpen": a.sharpen, "backend": a.device,

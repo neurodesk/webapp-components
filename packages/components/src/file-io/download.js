@@ -10,7 +10,9 @@ export function downloadBlob(blob, filename) {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  // Revoke on a later macrotask: Safari/WebKit can drop the download if the blob
+  // URL is revoked before the fetch is queued, notably on back-to-back downloads.
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export function downloadFile(file) {

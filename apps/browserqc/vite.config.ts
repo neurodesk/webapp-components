@@ -13,9 +13,7 @@ export default neurodeskViteConfig({
   },
   // Vite's dev dep-prebundler cannot resolve @niivue/dcm2niix's WASM worker
   // after it moves under .vite/deps. Keep that package as source in dev. The
-  // niimath wrapper comes from the workspace runtime-support package, and Vite
-  // resolves its worker assets from source during dev and build.
   optimizeDeps: {
-    exclude: ['@niivue/dcm2niix'],
+    exclude: ['@niivue/dcm2niix', '@niivue/niimath'],
   },
 })

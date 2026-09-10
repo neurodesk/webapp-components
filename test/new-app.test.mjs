@@ -67,6 +67,20 @@ test('default invocation (pnpm new-app <name>) scaffolds and validates', async (
   const information = await loadAppInformation(registry, join(root, 'registry', 'app-information.yml'));
   assert.ok(information.apps['demo-app'], 'scaffold seeds an app-information entry');
   assert.equal(information.apps['demo-app'].packages[0].name, 'NiiVue');
+  assert.equal(
+    packageJson.scripts.build,
+    'vite build && node ../../scripts/theme-app-dist.mjs --app demo-app',
+  );
+
+  const viteConfig = await readFile(join(root, 'apps', 'demo-app', 'vite.config.js'), 'utf8');
+  const main = await readFile(join(root, 'apps', 'demo-app', 'src', 'main.js'), 'utf8');
+  const html = await readFile(join(root, 'apps', 'demo-app', 'index.html'), 'utf8');
+  assert.match(viteConfig, /neurodeskViteConfig/);
+  assert.match(viteConfig, /appId:\s*["']demo-app["']/);
+  assert.match(main, /controlsContract/);
+  for (const id of ['aboutBtn', 'privacyBtn']) {
+    assert.match(html, new RegExp(`id=["']${id}["']`), id);
+  }
 });
 
 test('flags select runtime, shell, category, and catalog text', async (t) => {
