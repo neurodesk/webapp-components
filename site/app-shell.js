@@ -17,7 +17,7 @@ import { resolveShellAdapter } from './shell-adapters/index.js';
   };
 
   const analyticsUrl = new URL(metadata.analyticsHref, document.baseURI);
-  import(analyticsUrl.href)
+  import(/* @vite-ignore */ analyticsUrl.href)
     .then(({ initAnalytics }) => initAnalytics(metadata.measurementId))
     .catch((error) => console.warn('Neurodesk page-view analytics could not start:', error));
 

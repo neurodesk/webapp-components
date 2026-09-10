@@ -37,6 +37,18 @@ await runVitePreviewSmoke({
   basePath: '/deface/',
   fallbackEnvVar: 'DEFACE_EXPECT_WEBGPU_FALLBACK',
   run: async ({ page, fail, expectWebGpuFallback, allowConsoleError }) => {
+    await page.waitForSelector('.nd-app-bar')
+    if (await page.locator('.nd-app-bar').count() !== 1) await fail('shared application bar is missing or duplicated', page)
+    await page.click('[data-neurodesk-shell-control="about"]')
+    if (!(await page.isVisible('#aboutDialog'))) await fail('About dialog did not open', page)
+    await page.click('#closeAboutBtn')
+    await page.click('[data-neurodesk-shell-control="cite"]')
+    if (!(await page.isVisible('#citeDialog'))) await fail('Cite dialog did not open', page)
+    await page.click('#citeDialog button')
+    await page.click('[data-neurodesk-shell-control="privacy"]')
+    if (!(await page.isVisible('#privacyDialog'))) await fail('Privacy dialog did not open', page)
+    await page.click('#privacyDialog button')
+
     // GitHub's Linux runners do not expose a usable WebGPU adapter. Verify that
     // init() reaches its intended fallback instead of hanging or crashing: the
     // status shows the unsupported-WebGPU message, and because init returns
@@ -52,10 +64,7 @@ await runVitePreviewSmoke({
       if (!(await page.isDisabled('#applyBtn'))) await fail('Apply enabled without WebGPU (init must fail closed)', page)
       if (!(await page.isDisabled('#saveBtn'))) await fail('Save enabled without WebGPU (M2 privacy footgun)', page)
       allowConsoleError('Failed to get WebGPU adapter')
-      await page.click('#aboutBtn')
-      if (!(await page.isVisible('#aboutDialog'))) await fail('About dialog did not open', page)
-      await page.click('#closeAboutBtn')
-      console.log('✓ unsupported-WebGPU guidance shown, Apply/Save stay disabled, About dialog opens')
+      console.log('✓ unsupported-WebGPU guidance shown and Apply/Save stay disabled')
       return
     }
 

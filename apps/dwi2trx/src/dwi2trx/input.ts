@@ -7,13 +7,14 @@
  * displays anything, so an invalid image is never loaded into the viewer.
  */
 
-import { traverseDataTransferItems } from './files'
+import { traverseDataTransferItems } from './files.ts'
 import {
   assertInputSize,
   InputTooLargeError,
   MAX_INPUT_BYTES,
-} from './input-limits'
-import type { DwiInput } from './state'
+} from './input-limits.ts'
+import type { DwiInput } from './state.ts'
+import { isValidNifti1, parseNiftiHeader } from '@neurodesk/webapp-components/file-io'
 import {
   baseName,
   chooseBestSeries,
@@ -22,7 +23,7 @@ import {
   isBvec,
   isJson,
   isNifti,
-} from './validate'
+} from './validate.ts'
 
 // Sanity cap so a stray huge folder can't be walked into memory before we refuse.
 // Generous — real DWI studies are well under it. The companion BYTE cap now lives

@@ -18,6 +18,7 @@ import NiiVueGPU, {
 } from '@niivue/niivue'
 import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-imaging-workspace'
 import '@neurodesk/webapp-components/styles/imaging-workspace.css'
+import { ConsoleOutput } from '@neurodesk/webapp-components/ui'
 import { readImageFiles, traverseDataTransferItems } from '@neurodesk/runtime-support/dcm2niix-client'
 import { Niimath } from '@neurodesk/runtime-support/niimath'
 import type { MindgrabInferer } from './mindgrab/index'
@@ -29,13 +30,13 @@ const MNI_URL = `${ASSET_BASE_URL}avg152T1.nii.gz`
 const MASK_URL = `${ASSET_BASE_URL}avg152T1mask.nii.gz`
 
 mountImagingWorkspace({
-  controls: 'body > header',
-  viewer: '#canvas-container',
-  status: 'body > footer',
+  controls: '#controls',
+  viewer: '#viewer',
+  status: '#status',
   title: 'Deface',
   subtitle: 'Privacy-preserving MRI defacing in your browser',
   mark: 'D',
-  controlsContract: { about: '#aboutBtn' },
+  controlsContract: { about: '#aboutBtn', cite: '#citeBtn', privacy: '#privacyBtn' },
 })
 
 function $<T extends HTMLElement>(id: string): T {
@@ -53,11 +54,14 @@ const applyBtn = $<HTMLButtonElement>('applyBtn')
 const saveBtn = $<HTMLButtonElement>('saveBtn')
 const aboutBtn = $<HTMLButtonElement>('aboutBtn')
 const aboutDialog = $<HTMLDialogElement>('aboutDialog')
+const citeDialog = $<HTMLDialogElement>('citeDialog')
+const privacyDialog = $<HTMLDialogElement>('privacyDialog')
 const dicomPick = $<HTMLSelectElement>('dicomPick')
 const niftiInput = $<HTMLInputElement>('niftiInput')
 const dicomInput = $<HTMLInputElement>('dicomInput')
 const methodDescription = $('methodDescription')
 const webgpuDialog = $<HTMLDialogElement>('webgpuDialog')
+const technicalLog = new ConsoleOutput({ element: 'consoleOutput', mirrorToConsole: false })
 
 // --- NiiVue setup ---
 // The NiiVue constructor is GPU-free; attachTo() acquires the WebGPU device and
@@ -177,6 +181,7 @@ function setStatus(msg: string): void {
   // The footer cell ellipsizes; expose the full text (esp. long failures) on hover.
   statusMsg.title = msg
   statusMsg.classList.toggle('hidden', msg === '')
+  if (msg) technicalLog.log(msg, msg.startsWith('Failed') ? 'error' : 'info')
 }
 function spin(on: boolean): void {
   // Toggle visibility (not display) so the spinner's box stays reserved and the
@@ -537,6 +542,10 @@ dicomPick.addEventListener(
 applyBtn.addEventListener('click', () => enqueue(runDeface), ac)
 saveBtn.addEventListener('click', () => void runSave(), ac)
 aboutBtn.addEventListener('click', () => aboutDialog.showModal(), ac)
+$<HTMLButtonElement>('citeBtn').addEventListener('click', () => citeDialog.showModal(), ac)
+$<HTMLButtonElement>('privacyBtn').addEventListener('click', () => privacyDialog.showModal(), ac)
+$<HTMLButtonElement>('copyLogBtn').addEventListener('click', () => void technicalLog.copyToClipboard(), ac)
+$<HTMLButtonElement>('clearLogBtn').addEventListener('click', () => technicalLog.clear(), ac)
 niftiInput.addEventListener('change', () => {
   const files = Array.from(niftiInput.files ?? [])
   if (files.length > 0) enqueue(() => handleDrop(Promise.resolve(files)))

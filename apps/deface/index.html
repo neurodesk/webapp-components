@@ -4,114 +4,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/src/style.css" />
-  <!-- empty favicon: suppress the browser's default /favicon.ico request (404) -->
+  <link rel="stylesheet" href="./src/style.css" />
   <link rel="icon" href="data:," />
-  <title>Deface | Neurodesk Webapps</title>
+  <meta name="description" content="Remove facial features from brain MRI locally in your browser." />
+  <title>Deface · Neurodesk</title>
 </head>
 
 <body>
-  <header>
-    <section class="control-section" aria-labelledby="inputHeading">
-      <h2 id="inputHeading">1. Input image</h2>
-      <p>Choose NIfTI or DICOM files, or a DICOM folder. Files stay in this browser.</p>
-      <div class="upload-actions">
-        <label class="upload-button" for="niftiInput">Choose NIfTI / DICOM</label>
-        <input id="niftiInput" type="file" data-neurodesk-input="image" multiple hidden />
-        <label class="upload-button" for="dicomInput">Choose DICOM folder</label>
-        <input id="dicomInput" type="file" data-neurodesk-input="image" webkitdirectory multiple hidden />
+  <header id="controls">
+    <details class="nd-sidebar-section workflow-section" id="inputSection" open>
+      <summary class="nd-section-title">1 · Input image</summary>
+      <div class="nd-section-content">
+        <p class="section-help">The included T1w example loads automatically. Replace it with NIfTI or DICOM files; images stay local.</p>
+        <div class="upload-actions">
+          <label class="upload-button" for="niftiInput">Choose NIfTI / DICOM</label>
+          <input id="niftiInput" type="file" data-neurodesk-input="image" multiple hidden />
+          <label class="upload-button" for="dicomInput">Choose DICOM folder</label>
+          <input id="dicomInput" type="file" data-neurodesk-input="image" webkitdirectory multiple hidden />
+        </div>
+        <p class="section-help">You can also drop either format onto the viewer.</p>
+        <select id="dicomPick" class="hidden" aria-label="Pick a converted NIfTI series"></select>
       </div>
-      <p class="drop-hint">You can also drop either format onto the viewer.</p>
-      <select id="dicomPick" class="hidden" aria-label="Pick a converted NIfTI series"></select>
-    </section>
-    <section class="control-section" aria-labelledby="processingHeading">
-      <h2 id="processingHeading">2. Processing</h2>
-      <label for="methodSelect">Defacing method</label>
-      <select id="methodSelect" title="niimath affine defacing (BSD allineate: fast or Hellinger engine) or MindGrab brain extraction (WebGPU)">
-        <option value="allineate" selected>allineate (fast)</option>
-        <option value="allineate_robustfov">allineate (fast, robustfov)</option>
-        <option value="allineate_hel">allineate (Hellinger)</option>
-        <option value="allineate_hel_robustfov">allineate (Hellinger, robustfov)</option>
-        <option value="mindgrab">mindgrab (WebGPU)</option>
-        <option value="mindgrab_robust">mindgrab robustfov (WebGPU)</option>
-        <option value="mindgrab8">mindgrab 8mm border (WebGPU)</option>
-        <option value="mindgrab_robust8">mindgrab robustfov + 8mm (WebGPU)</option>
-      </select>
-      <p id="methodDescription" class="option-description">Fast affine registration to remove facial voxels.</p>
-      <button id="applyBtn">Apply</button>
-    </section>
-    <details class="nd-workflow-disclosure control-section" aria-labelledby="outputHeading" id="outputSection">
-      <summary class="nd-section-title">3. Output</summary>
-      <p>Review the result in the viewer before downloading the defaced NIfTI image.</p>
-      <button disabled id="saveBtn">Save Image</button>
     </details>
-    <div class="sidebar-actions">
-      <button id="aboutBtn">About</button>
-    </div>
+
+    <details class="nd-sidebar-section workflow-section" id="processingSection" open>
+      <summary class="nd-section-title">2 · Deface</summary>
+      <div class="nd-section-content">
+        <label for="methodSelect">Method</label>
+        <select id="methodSelect" title="niimath affine defacing or MindGrab brain extraction">
+          <option value="allineate" selected>allineate (fast)</option>
+          <option value="allineate_robustfov">allineate (fast, robustfov)</option>
+          <option value="allineate_hel">allineate (Hellinger)</option>
+          <option value="allineate_hel_robustfov">allineate (Hellinger, robustfov)</option>
+          <option value="mindgrab">mindgrab (WebGPU)</option>
+          <option value="mindgrab_robust">mindgrab robustfov (WebGPU)</option>
+          <option value="mindgrab8">mindgrab 8 mm border (WebGPU)</option>
+          <option value="mindgrab_robust8">mindgrab robustfov + 8 mm (WebGPU)</option>
+        </select>
+        <p id="methodDescription" class="section-help">Fast affine registration to remove facial voxels.</p>
+        <button type="button" id="applyBtn">Apply defacing</button>
+      </div>
+    </details>
+
+    <details class="nd-sidebar-section workflow-section" id="outputSection">
+      <summary class="nd-section-title">3 · Output</summary>
+      <div class="nd-section-content">
+        <p class="section-help">Review the result before downloading the defaced NIfTI image.</p>
+        <button type="button" disabled id="saveBtn">Save image</button>
+      </div>
+    </details>
+
+    <button type="button" id="aboutBtn" hidden>About</button>
+    <button type="button" id="citeBtn" hidden>Cite</button>
+    <button type="button" id="privacyBtn" hidden>Privacy</button>
   </header>
 
-  <main id="canvas-container">
-    <canvas id="gl1"></canvas>
+  <main id="viewer">
+    <canvas id="gl1" aria-label="MRI viewer"></canvas>
   </main>
 
-  <footer>
-    <div class="footer">
-      <table class="footer">
-        <tr>
-          <th id="location">Drag &amp; drop a NIfTI image or a folder of DICOM files</th>
-          <th>
-            <div id="loadingCircle" class="loading-circle"></div>
-            <label id="statusMsg" class="hidden"></label>
-          </th>
-        </tr>
-      </table>
+  <footer id="status">
+    <div class="statusrow">
+      <span id="loadingCircle" class="loading-circle" aria-hidden="true"></span>
+      <span id="statusMsg" class="hidden"></span>
     </div>
+    <span id="location">Drag and drop a NIfTI image or DICOM folder</span>
+    <details class="nd-sidebar-section console-container">
+      <summary class="nd-section-title">Technical log</summary>
+      <div class="nd-section-content">
+        <div class="console-actions">
+          <button type="button" id="copyLogBtn">Copy</button>
+          <button type="button" id="clearLogBtn">Clear</button>
+        </div>
+        <div id="consoleOutput" class="nd-console-output" aria-live="polite"></div>
+      </div>
+    </details>
   </footer>
 
-  <dialog id="aboutDialog">
-    <form method="dialog">
-      <h3><a href="https://github.com/neurodesk/webapps/tree/main/apps/deface" target="_blank" rel="noopener">deface</a></h3>
-      <p>Remove facial features from a brain MRI for anonymization — entirely in your browser.
-        <strong>No data is sent to any server.</strong>
-      </p>
-      <p>Defacing runs <a href="https://github.com/rordenlab/niimath" target="_blank" rel="noopener">niimath</a>,
-        which registers a bundled MNI template (affine, BSD) and zeros the face voxels:</p>
-      <ul>
-        <li><strong>allineate (fast)</strong> — fast affine registration engine (Hellinger MI,
-          with a robust Hellinger fallback) — the default</li>
-        <li><strong>allineate (fast, robustfov)</strong> — same fast engine after a
-          <code>-robustfov</code> crop of the neck/inferior slices for a tighter face mask</li>
-        <li><strong>allineate (Hellinger)</strong> — the exhaustive Hellinger engine
-          (<code>-cost hel</code>): slower, reference-quality fit (also offered with a
-          <code>-robustfov</code> crop)</li>
-        <li><strong>mindgrab</strong> — deep-learning brain extraction (skull-strip): a
-          <a href="https://github.com/neuroneural/brainchop" target="_blank" rel="noopener">brainchop</a>-style
-          model runs entirely on the GPU (<strong>WebGPU, shader-f16</strong>) to mask out everything but the brain</li>
-      </ul>
-      <p>Visualization uses <a href="https://niivue.com/" target="_blank" rel="noopener">NiiVue</a>;
-        DICOM import uses <a href="https://github.com/rordenlab/dcm2niix" target="_blank" rel="noopener">dcm2niix</a>.
-      </p>
-      <p><small>Defacing uses the BSD-2 build of
-        <a href="https://github.com/rordenlab/niimath" target="_blank" rel="noopener">niimath</a>
-        (<code>@niivue/niimath</code>), so this app is licensed <strong>BSD-2-Clause</strong> ·
-        thread-deterministic registration, fails closed on out-of-memory. Requires a browser with
-        WebGPU (recent desktop Chrome, Edge, or Safari).</small></p>
-      <button autofocus id="closeAboutBtn" value="default">Close</button>
+  <dialog id="aboutDialog" class="nd-app-dialog">
+    <form method="dialog" class="nd-app-dialog__panel">
+      <h2>Deface</h2>
+      <p>Remove facial features from brain MRI for anonymization entirely in your browser. No imaging data is sent to a server.</p>
+      <p>The allineate methods use niimath to register an MNI template and remove facial voxels. MindGrab uses local WebGPU brain extraction. Visualization uses NiiVue and DICOM import uses dcm2niix.</p>
+      <p>This BSD-2-Clause app fails closed if processing cannot complete. Always review the result before sharing it.</p>
+      <button class="nd-app-dialog__close" autofocus id="closeAboutBtn">Close</button>
     </form>
   </dialog>
 
-  <dialog id="webgpuDialog">
-    <form method="dialog">
-      <h3>MindGrab needs WebGPU</h3>
-      <p>The <strong>mindgrab</strong> brain-extraction method runs a neural network on the GPU and needs
-        <strong>WebGPU with the <code>shader-f16</code> feature</strong> (recent desktop Chrome, Edge, or Safari).
-        This browser doesn't provide it.</p>
-      <p>Use an <strong>allineate</strong> method instead — they run in WebAssembly and need no WebGPU.</p>
-      <button autofocus value="default">Close</button>
+  <dialog id="citeDialog" class="nd-app-dialog">
+    <form method="dialog" class="nd-app-dialog__panel">
+      <h2>How to cite Deface</h2>
+      <p><strong>allineate / AFNI</strong></p>
+      <p>Cox RW. AFNI: What a long strange trip it's been. <em>NeuroImage</em>. 2012;62(2):743–747. <a href="https://pubmed.ncbi.nlm.nih.gov/21889996/" target="_blank" rel="noreferrer">PMID 21889996</a>. DOI: 10.1016/j.neuroimage.2011.08.056.</p>
+      <p><strong>MindGrab</strong></p>
+      <p>Fani A, Doan M, Le I, et al. MindGrab: A spectrally-motivated architecture for accessible deep learning in neuroimaging. <em>NeuroImage</em>. 2026;338:122074. <a href="https://pubmed.ncbi.nlm.nih.gov/42331200/" target="_blank" rel="noreferrer">PMID 42331200</a>. DOI: 10.1016/j.neuroimage.2026.122074.</p>
+      <p>Please also cite NiiVue, niimath, and dcm2niix when they are material to your analysis.</p>
+      <button class="nd-app-dialog__close">Close</button>
     </form>
   </dialog>
 
-  <script type="module" src="/src/main.ts"></script>
+  <dialog id="privacyDialog" class="nd-app-dialog">
+    <form method="dialog" class="nd-app-dialog__panel">
+      <h2>Privacy</h2>
+      <p>Deface processes scans locally in your browser. It does not upload your source image or defaced result. Always inspect the output before sharing it.</p>
+      <button class="nd-app-dialog__close">Close</button>
+    </form>
+  </dialog>
+
+  <dialog id="webgpuDialog" class="nd-app-dialog">
+    <form method="dialog" class="nd-app-dialog__panel">
+      <h2>MindGrab needs WebGPU</h2>
+      <p>MindGrab needs WebGPU with shader-f16 support. Use an allineate method if this browser does not provide it.</p>
+      <button class="nd-app-dialog__close" autofocus>Close</button>
+    </form>
+  </dialog>
+
+  <script type="module" src="./src/main.ts"></script>
 </body>
 
 </html>

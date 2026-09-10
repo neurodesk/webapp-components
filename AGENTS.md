@@ -14,6 +14,28 @@ Before changing UI, adding controls, or scaffolding an app, read [the interface 
 
 For catalog-wide work, use [the interface audit](docs/architecture/interface-audit.md) to track remaining changes per app. Update its findings when resolving them.
 
+## Reference app and minimal implementations
+
+New apps are built to look familiar and read familiar. Start from the reference
+app rather than from an empty page:
+
+- Reference app: `apps/dwi2trx` (structure, shell wiring, dev setup, tests).
+  Visual reference for workflow grouping stays QSMbly, per the interface standard.
+- Copy its skeleton: `index.html` with `#controls`, `#viewer`, `#status` and the
+  About/Cite/Privacy buttons; `src/main.*` calling `mountImagingWorkspace` with a
+  `controlsContract`; `vite.config.*` calling the shared `neurodeskViteConfig`
+  so `pnpm --filter <app> dev` renders the same bar and theme as production;
+  `e2e/smoke.spec.js` asserting that bar; the same
+  `scripts`, `lint` and `test` entries in `package.json`.
+- Do not draw your own bar, theme toggle, dialogs, download helper, NIfTI header
+  parser or DICOM import. They exist in `@neurodesk/webapp-components` and
+  `@neurodesk/runtime-support`; an app-local copy is a defect, not a convenience.
+- An app is code the reference does not already provide: its scientific
+  pipeline, its controls, its About/Cite text. Aim for the reference app's size
+  or smaller. When a new app needs something general, add it to the shared
+  package and use it from there.
+- If `dev` and `build` look different, fix the dev shell before touching styles.
+
 ## Test browser apps through the public reverse proxy
 
 When a user needs an interactive remote preview, use this host's existing HTTPS Caddy site. Prefer a narrow app path over T3 port forwarding or a temporary public tunnel.

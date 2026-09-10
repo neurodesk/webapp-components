@@ -1,234 +1,169 @@
 :root {
-  --bg: #303030;
-  --panel: #3a3a3a;
-  --border: #555;
-  --accent: #4a6dff;
-  --text: #f0f0f0;
+  --bg: var(--nd-color-bg);
+  --panel: var(--nd-color-surface-elevated);
+  --border: var(--nd-color-border);
+  --accent: var(--nd-color-primary);
+  --muted: var(--nd-color-text-muted);
+  --text: var(--nd-color-text);
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  height: 100%;
-  margin: 0;
-}
+* { box-sizing: border-box; }
 
 body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
   color: var(--text);
   background: var(--bg);
-  user-select: none;
 }
 
-header {
-  padding: 8px 12px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+#controls {
+  overflow-y: auto;
+  padding: var(--nd-space-md);
 }
 
-header .row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.control-section {
+#controls .nd-sidebar-section {
   width: 100%;
-  padding: 0 0 14px;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--nd-space-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--nd-radius-md);
 }
 
-.control-section h2 {
-  margin: 0 0 6px;
-  color: #c9d0e0;
-  font-size: 0.78rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+#controls .nd-section-title {
+  min-height: 44px;
+  padding: var(--nd-space-sm) var(--nd-space-md);
 }
 
-.control-section p {
-  margin: 0 0 10px;
-  color: #aab2c4;
-  font-size: 0.76rem;
-  line-height: 1.45;
+#controls .nd-section-content {
+  padding: 0 var(--nd-space-md) var(--nd-space-md);
 }
 
-.upload-actions,
-.sidebar-actions {
+.section-help {
+  margin: 0 0 var(--nd-space-sm);
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.upload-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.sidebar-actions {
-  width: 100%;
-}
-
-header.nd-imaging-controls {
-  flex-wrap: nowrap;
+  gap: var(--nd-space-sm);
+  margin-bottom: var(--nd-space-sm);
 }
 
 .upload-button {
   display: grid;
-  min-height: 42px;
+  min-height: 44px;
   place-items: center;
-  padding: 8px;
-  border: 1px solid #6f8cff;
-  border-radius: 6px;
-  color: #fff;
-  background: rgba(74, 109, 255, 0.16);
+  padding: var(--nd-space-sm);
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--nd-radius-sm);
   cursor: pointer;
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.82rem;
   text-align: center;
 }
 
-.upload-button:hover { background: rgba(74, 109, 255, 0.28); }
-.drop-hint { margin-top: 7px !important; color: #838a9a !important; }
-.control-section select { width: 100%; margin: 5px 0; }
-.control-section #applyBtn,
-.control-section #saveBtn { width: 100%; margin-top: 6px; }
-.option-description { min-height: 3.3em; }
-
-header label {
-  font-size: 0.85rem;
+#controls label:not(.upload-button) {
+  display: block;
+  margin-bottom: var(--nd-space-xs);
+  color: var(--muted);
+  font-size: 0.82rem;
 }
 
-header strong {
-  min-width: 6.5rem;
-  display: inline-block;
-}
-
-button,
-select {
-  font-family: inherit;
-  font-size: 0.85rem;
-  background: var(--panel);
+#controls button,
+#controls select {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--nd-space-sm);
   color: var(--text);
+  background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 0.3rem 0.6rem;
-  cursor: pointer;
+  border-radius: var(--nd-radius-sm);
+  font: inherit;
 }
 
-button:hover:not(:disabled),
-select:hover {
-  background: #474747;
-}
-
-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
+#controls button { cursor: pointer; }
+#controls button:disabled { cursor: not-allowed; }
+#methodSelect { margin-bottom: var(--nd-space-sm); }
 
 #applyBtn {
+  color: white;
   background: var(--accent);
-  border-color: #5b7bff;
-  color: #fff;
-  font-weight: 500;
+  border-color: var(--accent);
+  font-weight: 600;
 }
 
-#applyBtn:hover {
-  background: #5b7bff;
-}
-
-main {
-  flex: 1;
+#viewer {
   position: relative;
-  background: #000;
   min-height: 0;
+  background: #000;
 }
 
-canvas {
+#gl1 {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  cursor: crosshair;
 }
 
-canvas:focus {
-  outline: 0;
+#status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nd-space-sm);
 }
 
-footer {
-  border-top: 1px solid var(--border);
-  background: var(--bg);
+.statusrow {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--nd-space-xs);
 }
 
-div.footer {
-  width: 100%;
-}
-
-table.footer {
-  width: 100%;
-  table-layout: fixed;
+#statusMsg,
+#location {
+  color: var(--muted);
   font-size: 0.8rem;
-  border-collapse: collapse;
 }
 
-table.footer th {
-  font-weight: normal;
-  text-align: left;
-  padding: 4px 12px;
+#location {
+  margin-left: auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  /* Reserve the spinner's box height (18px glyph + 2×3px border = 24px) so the
-     status bar doesn't grow/shrink — and flicker the canvas — as it toggles. */
-  height: 24px;
-  vertical-align: middle;
-}
-
-table.footer th:nth-child(2) {
-  text-align: center;
-}
-
-table.footer th:last-child {
-  text-align: right;
 }
 
 .loading-circle {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s linear infinite;
-  vertical-align: middle;
-  /* Always occupy its box; spin() only toggles visibility, so showing/hiding the
-     spinner causes no reflow and the status bar never flickers. */
+  width: 14px;
+  height: 14px;
+  flex: none;
   visibility: hidden;
-}
-
-#statusMsg {
-  font-size: 0.8rem;
-  color: #b9c4ff;
-}
-
-@media (max-width: 1024px) {
-  table.footer th {
-    height: auto;
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
+  border: 2px solid color-mix(in srgb, var(--text) 25%, transparent);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
+}
+
+#status .console-container { width: 100%; }
+
+.console-actions {
+  display: flex;
+  gap: var(--nd-space-xs);
+  margin-bottom: var(--nd-space-xs);
+}
+
+.console-actions button {
+  min-height: 30px;
+  padding: var(--nd-space-xs) var(--nd-space-sm);
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--nd-radius-sm);
+  cursor: pointer;
 }
 
 .hidden,
@@ -236,36 +171,7 @@ table.footer th:last-child {
   display: none !important;
 }
 
-dialog {
-  color: var(--text);
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1.1rem 1.3rem;
-  min-width: 18rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-}
-
-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.45);
-}
-
-dialog p {
-  margin: 0.5rem 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-dialog h3 {
-  margin: 0 0 0.5rem;
-}
-
-dialog a {
-  color: #9ab0ff;
-}
-
-dialog button {
-  margin-top: 0.8rem;
-  margin-right: 0.5rem;
+@media (max-width: 480px) {
+  .upload-actions { grid-template-columns: 1fr; }
+  #location { width: 100%; margin-left: 0; }
 }

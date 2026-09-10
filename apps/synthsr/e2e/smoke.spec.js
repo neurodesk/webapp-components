@@ -17,9 +17,10 @@ test('load, invalid input, and cancellation preserve the original',async({page})
   await expect(page.locator('#statusText')).toContainText('cancelled');
   await expect(page.locator('#saveBtn')).toBeDisabled();
   await expect(page.locator('#processButton')).toBeEnabled();
-  await page.locator('#aboutBtn').click();await expect(page.locator('#aboutDialog')).toBeVisible();
+  await expect(page.locator('.nd-app-bar')).toHaveCount(1);
+  await page.getByRole('button',{name:'About'}).click();await expect(page.locator('#aboutDialog')).toBeVisible();
   await page.getByRole('button',{name:'Close',exact:true}).click();
-  await page.locator('#standaloneBtn').click();
+  await page.getByRole('button',{name:'Standalone'}).click();
   await expect(page.locator('#standaloneDialog')).toBeVisible();
   await expect(page.locator('#standaloneDialog')).toContainText('curl -fLO');
   await expect(page.locator('#standaloneDialog')).not.toContainText('Slurm');

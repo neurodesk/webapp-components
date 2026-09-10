@@ -21,8 +21,6 @@ import { Niimath } from '@niivue/niimath'
 import { CSF_LABELS, WM_LABELS, bindSidecar, renderQc } from './qc'
 import type { QcMetrics, QcReport } from './qc'
 
-if (import.meta.env.DEV) await (await import('./dev-shell')).installDevShell()
-
 const ASSET_BASE_URL = 'https://huggingface.co/datasets/neurodeskorg/webapps/resolve/12eb1069c34097b7c0881b22e1f7e4ed953aa5cc/browserqc/'
 const T1_URL = `${ASSET_BASE_URL}t1_crop.nii.gz`
 const TEMPLATE_URL = `${ASSET_BASE_URL}avg152T1.nii.gz`

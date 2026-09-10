@@ -1,5 +1,6 @@
 import NiiVue, { MULTIPLANAR_TYPE, SLICE_TYPE, SHOW_RENDER } from '@niivue/niivue';
 import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-imaging-workspace';
+import { ConsoleOutput } from '@neurodesk/webapp-components/ui';
 import { NIFTI_EXAMPLES } from '@neurodesk/webapp-components/example-images';
 import { filesFromDataTransferItems } from '@neurodesk/webapp-components/file-io';
 import { readImageFiles } from '@neurodesk/runtime-support/dcm2niix-client';
@@ -7,8 +8,9 @@ import { readVolume } from './volume.js';
 import manifest from '../../../models/synthsr.manifest.json';
 import './styles.css';
 
-mountImagingWorkspace({controls:'#controls',viewer:'#viewer',status:'#status',title:'SynthSR',subtitle:'Brain image synthesis, in your browser',mark:'S',controlsContract:{about:'#aboutBtn'}});
+mountImagingWorkspace({controls:'#controls',viewer:'#viewer',status:'#status',title:'SynthSR',subtitle:'Brain image synthesis, in your browser',mark:'S',controlsContract:{about:'#aboutBtn',cite:'#citeBtn',privacy:'#privacyBtn',standalone:'#standaloneBtn'}});
 const $ = (id) => document.getElementById(id);
+const technicalLog = new ConsoleOutput({ element: 'consoleOutput', mirrorToConsole: false });
 let source, output, provenance, worker, viewer, viewerReady, busy=false, timer, started, exampleAbort;
 let importAbort, importedImages = [], loadedExample = '';
 const assetBase=import.meta.env.VITE_SYNTHSR_ASSET_BASE || manifest.base_url || `${import.meta.env.BASE_URL}model-assets/`;
@@ -16,7 +18,7 @@ const exampleURL=import.meta.env.VITE_SYNTHSR_EXAMPLE_URL || 'https://raw.github
 const excludedExamples = new Set(['CT_Abdo', 'CT_Electrodes', 'Iguana', 'spmMotor']);
 const examples = [{ id: 'FLAIR', url: exampleURL }, ...NIFTI_EXAMPLES.filter(example => !excludedExamples.has(example.id))];
 for (const example of examples) $('exampleSelect').add(new Option(example.id, example.id));
-function status(message,error=false){$('statusText').textContent=message;$('statusText').classList.toggle('error',error);}
+function status(message,error=false){$('statusText').textContent=message;$('statusText').classList.toggle('error',error);technicalLog.log(message,error?'error':'info');}
 function setBusy(value){
   busy=value;
   for(const id of ['imageInput','seriesSelect','exampleSelect','modality','backend','mode','flip','sharpen','modelInput']) $(id).disabled=value;
@@ -127,7 +129,11 @@ function download(blob,name){const url=URL.createObjectURL(blob),a=document.crea
 $('saveBtn').onclick=()=>output&&download(output,output.name);
 $('reportBtn').onclick=()=>provenance&&download(new Blob([JSON.stringify(provenance,null,2)],{type:'application/json'}),output.name.replace('.nii','.json'));
 $('aboutBtn').onclick=()=>$('aboutDialog').showModal();
+$('citeBtn').onclick=()=>$('citeDialog').showModal();
+$('privacyBtn').onclick=()=>$('privacyDialog').showModal();
 $('standaloneBtn').onclick=()=>$('standaloneDialog').showModal();
+$('copyLogBtn').onclick=()=>void technicalLog.copyToClipboard();
+$('clearLogBtn').onclick=()=>technicalLog.clear();
 $('standalonePackage').href=`${import.meta.env.BASE_URL}downloads/neurodesk-synthsr-0.2.20260909.tgz`;
 if(!navigator.gpu){$('backend').value='wasm';status('Ready · WebGPU unavailable; CPU processing selected');}
 window.addEventListener('pagehide',()=>{exampleAbort?.abort();importAbort?.abort();worker?.terminate();clearInterval(timer);});

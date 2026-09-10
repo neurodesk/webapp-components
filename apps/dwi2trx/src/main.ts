@@ -47,8 +47,6 @@ import {
   withAntipodalNodes,
 } from './dwi2trx/vectors'
 
-if (import.meta.env.DEV) await (await import('./dev-shell')).installDevShell()
-
 mountImagingWorkspace({
   controls: '#controls',
   viewer: '#canvas-container',
