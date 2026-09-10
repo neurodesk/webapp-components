@@ -12,7 +12,6 @@ apps/*/public/brainchop/
 exes/*/dist/
 exes/*/models/
 exes/*/target/
-**/synthseg/
 
 # dwi2trx ships the small dtifit-enabled niimath runtime, including its WASM.
 !apps/dwi2trx/vendor/
