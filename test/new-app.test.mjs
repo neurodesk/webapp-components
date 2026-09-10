@@ -20,6 +20,7 @@ async function makeRepo(t) {
     recursive: true,
   });
   await cp(sourceRegistry, join(root, 'registry', 'apps.yml'));
+  await cp(join(repoRoot, 'registry', 'app-information.yml'), join(root, 'registry', 'app-information.yml'));
   return root;
 }
 
@@ -61,6 +62,10 @@ test('default invocation (pnpm new-app <name>) scaffolds and validates', async (
 
   const packageJson = JSON.parse(await readFile(join(root, 'apps', 'demo-app', 'package.json'), 'utf8'));
   assert.equal(packageJson.name, 'demo-app');
+  const { loadAppInformation } = await import('../scripts/lib/app-information.mjs');
+  const information = await loadAppInformation(registry, join(root, 'registry', 'app-information.yml'));
+  assert.ok(information.apps['demo-app'], 'scaffold seeds an app-information entry');
+  assert.equal(information.apps['demo-app'].packages[0].name, 'NiiVue');
 });
 
 test('flags select runtime, shell, category, and catalog text', async (t) => {

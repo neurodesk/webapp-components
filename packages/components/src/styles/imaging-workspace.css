@@ -1,7 +1,33 @@
 @import url('./base.css');
 
-/* Shared chrome for applications that own their scientific UI and viewer.
-   Whole regions are moved into this layout without recreating their contents. */
+/* =============================================================================
+   Neurodesk imaging workspace — the one stylesheet an app needs.
+
+   This file is the design language for every app mounted with
+   `mountImagingWorkspace`. It is organised as a small vocabulary of classes
+   whose metrics are copied from QSMbly, the visual reference for the catalog:
+
+     Shell      .nd-imaging-workspace / -app-header / -controls / -viewer / -status
+     Sections   details.nd-sidebar-section > summary.nd-section-title + .nd-section-content
+     Fields     .nd-field, .nd-hint, .nd-check, .nd-row, .nd-file, .nd-file-info
+     Buttons    .nd-btn, .nd-btn-primary, .nd-btn-secondary, .nd-btn-danger,
+                .nd-btn-sm, .nd-btn-icon
+     Messages   .nd-message.(error|warning|success|info), .nd-info-icon
+     Viewer     .nd-viewer-toolbar, .nd-view-tabs/.nd-view-tab, .nd-viewer-actions,
+                .nd-viewer-canvas-wrapper, .nd-viewer-empty, .nd-viewer-info
+     Console    .nd-console-container / -header / -title / -actions / -clear / -output
+     Status     .nd-imaging-status > .nd-status-label / .nd-status-text / progress
+     Dialogs    dialog.nd-dialog > .nd-dialog-header + .nd-dialog-body, .nd-command
+
+   Rules for app stylesheets (enforced by test/design-system.test.mjs):
+     - colour only through --nd-color-* tokens; never hex/rgb literals
+     - never restyle the vocabulary above; add a class to this file instead
+     - app CSS is for scientific widgets that genuinely have no shared owner
+   ============================================================================= */
+
+/* --------------------------------------------------------------------------
+   1. Shell grid
+   -------------------------------------------------------------------------- */
 nd-imaging-workspace,
 nd-imaging-app-header,
 nd-imaging-brand {
@@ -80,6 +106,9 @@ nd-imaging-brand {
   text-decoration: none;
 }
 
+/* Sidebar. The flat form (labels and controls as direct children) keeps the
+   original flex layout; a sidebar built from sections becomes a plain column
+   so section borders run edge to edge exactly as in QSMbly. */
 .nd-imaging-controls {
   display: flex;
   flex-wrap: wrap;
@@ -97,6 +126,13 @@ nd-imaging-brand {
   border-top: 0;
   border-bottom: 0;
 }
+
+.nd-imaging-controls:has(> .nd-sidebar-section) {
+  display: block;
+  padding: 0;
+}
+.nd-imaging-controls:has(> .nd-sidebar-section) > :not(.nd-sidebar-section):not([hidden]) { padding: var(--nd-space-sm) var(--nd-space-md); }
+.nd-imaging-controls:has(> .nd-sidebar-section) > :not(.nd-sidebar-section) > button { width: 100%; }
 
 .nd-imaging-controls > label {
   display: block;
@@ -177,6 +213,13 @@ nd-imaging-brand {
   background: #000;
 }
 
+/* A viewer composed from toolbar + canvas + info + console stacks vertically. */
+.nd-imaging-viewer:has(> .nd-viewer-canvas-wrapper) {
+  display: flex;
+  flex-direction: column;
+  background: var(--nd-color-bg);
+}
+
 .nd-imaging-status {
   grid-column: 1 / -1;
   grid-row: 3;
@@ -204,6 +247,367 @@ nd-imaging-brand {
   cursor: pointer;
 }
 
+/* --------------------------------------------------------------------------
+   2. Sidebar sections (QSMbly: 0.7rem uppercase title, 16px padding)
+   -------------------------------------------------------------------------- */
+.nd-sidebar-section { width: 100%; min-width: 0; border-bottom: 1px solid var(--nd-color-border); }
+.nd-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--nd-space-sm);
+  margin: 0;
+  padding: var(--nd-space-md);
+  color: var(--nd-color-text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  transition: background var(--nd-transition-fast), color var(--nd-transition-fast);
+}
+.nd-section-title:hover { color: var(--nd-color-text); background: var(--nd-color-surface-elevated); }
+.nd-section-title svg { width: 14px; height: 14px; flex-shrink: 0; }
+.nd-section-title::after {
+  content: "";
+  margin-left: auto;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+  transition: transform var(--nd-transition-fast);
+}
+.nd-section-title::-webkit-details-marker { display: none; }
+.nd-section-title:focus-visible { outline: 2px solid var(--nd-color-primary); outline-offset: -2px; }
+.nd-sidebar-section:not([open]) > .nd-section-title::after { transform: rotate(-90deg); }
+.nd-workflow-disclosure > summary.nd-section-title::after,
+.nd-workflow-disclosure:not([open]) > summary.nd-section-title::after { content: ""; }
+.nd-workflow-disclosure:not([open]) > summary.nd-section-title::after { transform: rotate(-90deg); }
+.nd-section-content { display: block; padding: 0 var(--nd-space-md) var(--nd-space-md); }
+@media (pointer: coarse) {
+  .nd-section-title { min-height: 44px; box-sizing: border-box; }
+}
+.nd-step-disabled .nd-section-content { pointer-events: none; opacity: 0.45; }
+.nd-step-badge { margin-left: auto; font-size: 0.6rem; border-radius: 8px; padding: 1px 6px; background: var(--nd-color-border); color: var(--nd-color-text-dim); }
+
+/* Section contents stack with one shared rhythm; children need no margins.
+   Grid ignores display:none children, so hidden controls leave no gaps. */
+.nd-imaging-controls .nd-section-content {
+  display: grid;
+  gap: var(--nd-space-sm);
+  align-content: start;
+}
+.nd-imaging-controls .nd-section-content > p { margin: 0; }
+.nd-section-content > .nd-sidebar-section { border: 0; }
+.nd-section-content > .nd-sidebar-section > .nd-section-title { padding: var(--nd-space-xs) 0; font-weight: 500; text-transform: none; letter-spacing: 0; font-size: 0.75rem; }
+.nd-section-content > .nd-sidebar-section > .nd-section-title:hover { background: transparent; }
+.nd-section-content > .nd-sidebar-section > .nd-section-content { padding: 0; }
+
+/* --------------------------------------------------------------------------
+   3. Fields (QSMbly: 0.8rem labels, 0.8rem controls, 0.7rem hints)
+   -------------------------------------------------------------------------- */
+.nd-imaging-controls .nd-section-content :is(select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"])) {
+  width: 100%;
+  min-height: 30px;
+  margin: 0;
+  padding: var(--nd-space-xs) var(--nd-space-sm);
+  color: var(--nd-color-text);
+  background: var(--nd-color-surface-elevated);
+  border: 1px solid var(--nd-color-border);
+  border-radius: var(--nd-radius-sm);
+  font: inherit;
+  font-size: 0.8rem;
+  transition: border-color var(--nd-transition-fast), box-shadow var(--nd-transition-fast);
+}
+.nd-imaging-controls .nd-section-content :is(select, textarea, input):focus {
+  outline: none;
+  border-color: var(--nd-color-primary);
+  box-shadow: 0 0 0 3px var(--nd-color-primary-glow);
+}
+.nd-imaging-controls .nd-section-content select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b99ad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+.nd-imaging-controls .nd-section-content :is(select, input, button):disabled { opacity: 0.5; cursor: not-allowed; }
+.nd-imaging-controls .nd-section-content input[type="range"] { width: 100%; margin: 0; accent-color: var(--nd-color-primary); }
+
+.nd-field { display: grid; gap: 2px; min-width: 0; }
+.nd-field > label,
+.nd-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  color: var(--nd-color-text);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.nd-field > label small,
+.nd-label small { color: var(--nd-color-text-muted); font-size: 0.7rem; font-weight: 400; }
+.nd-hint { margin: 0; color: var(--nd-color-text-muted); font-size: 0.7rem; line-height: 1.4; }
+.nd-hint strong { color: var(--nd-color-text); font-weight: 500; }
+.nd-check { display: flex; align-items: center; gap: var(--nd-space-sm); color: var(--nd-color-text); font-size: 0.8rem; cursor: pointer; }
+.nd-check input[type="checkbox"], .nd-check input[type="radio"] { width: 14px; height: 14px; margin: 0; cursor: pointer; accent-color: var(--nd-color-primary); }
+.nd-row { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--nd-space-xs); min-width: 0; }
+.nd-row > * { min-width: 0; }
+
+/* File field: one compact dashed drop zone around the native input. */
+.nd-file {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--nd-space-sm);
+  box-sizing: border-box;
+  min-height: 40px;
+  margin: 0;
+  padding: var(--nd-space-sm) var(--nd-space-md);
+  color: var(--nd-color-text-muted);
+  background: transparent;
+  border: 1px dashed var(--nd-color-border);
+  border-radius: var(--nd-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: border-color var(--nd-transition-fast), background var(--nd-transition-fast);
+}
+.nd-file:hover, .nd-file.dragover, .nd-file:focus-within { border-color: var(--nd-color-primary); background: var(--nd-color-primary-glow); }
+.nd-file.dragover { border-style: solid; }
+.nd-file.has-files { border-style: solid; border-color: var(--nd-color-success); background: var(--nd-color-success-bg); }
+.nd-file:focus-within { outline: 2px solid var(--nd-color-primary); outline-offset: 2px; }
+.nd-file > input[type="file"],
+.nd-imaging-controls .nd-file > input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; opacity: 0; cursor: pointer; }
+.nd-file > svg { width: 18px; height: 18px; flex-shrink: 0; }
+.nd-file:hover > svg { color: var(--nd-color-primary); }
+.nd-file strong { color: var(--nd-color-primary); font-weight: 500; }
+.nd-file:has(> input:disabled) { opacity: 0.5; cursor: not-allowed; }
+.nd-file-info { margin: 0; color: var(--nd-color-text-muted); font-size: 0.75rem; overflow-wrap: anywhere; }
+.nd-file-info strong { color: var(--nd-color-text); font-weight: 500; }
+
+/* --------------------------------------------------------------------------
+   4. Buttons (QSMbly .btn family)
+   -------------------------------------------------------------------------- */
+.nd-btn,
+.nd-view-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nd-space-sm);
+  border: 0;
+  border-radius: var(--nd-radius-sm);
+  cursor: pointer;
+  transition: background var(--nd-transition-fast), color var(--nd-transition-fast), opacity var(--nd-transition-fast);
+}
+
+.nd-btn { margin: 0; padding: var(--nd-space-sm) var(--nd-space-lg); border-radius: var(--nd-radius-md); color: var(--nd-color-text); background: var(--nd-color-surface-elevated); font: inherit; font-size: 0.875rem; font-weight: 500; line-height: 1.2; }
+.nd-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nd-btn-sm { padding: var(--nd-space-xs) var(--nd-space-sm); font-size: 0.75rem; }
+.nd-btn-sm svg { width: 14px; height: 14px; }
+.nd-btn-primary { background: var(--nd-color-primary); color: white; padding: var(--nd-space-sm) var(--nd-space-md); }
+.nd-btn-primary:hover:not(:disabled) { background: var(--nd-color-primary-hover); box-shadow: var(--nd-shadow-glow); }
+.nd-btn-secondary { background: var(--nd-color-surface-elevated); color: var(--nd-color-text); border: 1px solid var(--nd-color-border); }
+.nd-btn-secondary:hover:not(:disabled) { background: var(--nd-color-border); border-color: var(--nd-color-border-light); }
+.nd-btn-danger { background: var(--nd-color-error); color: white; }
+.nd-btn-danger:hover:not(:disabled) { filter: brightness(0.9); }
+.nd-btn-icon { padding: 2px; background: transparent; color: var(--nd-color-text-muted); border-radius: var(--nd-radius-sm); }
+.nd-btn-icon:hover:not(:disabled) { color: var(--nd-color-primary); background: var(--nd-color-surface-elevated); }
+.nd-btn-block { width: 100%; font-size: 0.75rem; gap: var(--nd-space-xs); }
+.nd-btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+
+/* Inside a section every button is a full-width block, as in QSMbly. */
+.nd-imaging-controls .nd-section-content .nd-btn,
+.nd-imaging-controls .nd-section-content button:not(.nd-btn):not(.nd-btn-icon):not(.nd-view-btn):not(.nd-download-btn) {
+  width: 100%;
+  min-height: 34px;
+  margin: 0;
+  font-size: 0.8rem;
+}
+.nd-imaging-controls .nd-section-content .nd-btn-sm { min-height: 28px; font-size: 0.75rem; }
+.nd-imaging-controls .nd-section-content button.nd-btn:hover:not(:disabled) { border-color: transparent; }
+.nd-imaging-controls .nd-section-content button.nd-btn-secondary:hover:not(:disabled) { border-color: var(--nd-color-border-light); }
+.nd-imaging-controls .nd-section-content .nd-btn-secondary { border-color: var(--nd-color-border); }
+.nd-imaging-controls .nd-section-content .nd-btn-primary { border: 1px solid var(--nd-color-primary); }
+.nd-imaging-controls .nd-section-content .nd-btn-primary:hover:not(:disabled) { border-color: var(--nd-color-primary-hover); background: var(--nd-color-primary-hover); }
+
+/* --------------------------------------------------------------------------
+   5. Messages and inline help
+   -------------------------------------------------------------------------- */
+.nd-message { display: flex; align-items: flex-start; gap: var(--nd-space-sm); margin: 0; padding: var(--nd-space-sm) var(--nd-space-md); border-radius: var(--nd-radius-md); font-size: 0.75rem; line-height: 1.4; color: var(--nd-color-text-muted); background: var(--nd-color-surface-elevated); }
+.nd-message.error { color: var(--nd-color-error); background: var(--nd-color-error-bg); }
+.nd-message.warning { color: var(--nd-color-warning); background: var(--nd-color-warning-bg); }
+.nd-message.success { color: var(--nd-color-success); background: var(--nd-color-success-bg); }
+.nd-message.info { color: var(--nd-color-primary); background: var(--nd-color-primary-glow); }
+.nd-message svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+
+.nd-info-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border: 1px solid var(--nd-color-text-dim);
+  border-radius: 50%;
+  color: var(--nd-color-text-dim);
+  font-size: 9px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 1;
+  cursor: help;
+}
+.nd-info-icon:focus-visible { outline: 2px solid var(--nd-color-primary); outline-offset: 2px; }
+.nd-info-tooltip {
+  position: fixed;
+  z-index: 10000;
+  width: min(220px, calc(100vw - 16px));
+  padding: 6px 10px;
+  color: var(--nd-color-text);
+  background: var(--nd-color-surface-elevated);
+  border: 1px solid var(--nd-color-border-light);
+  border-radius: var(--nd-radius-sm);
+  box-shadow: var(--nd-shadow-md);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: normal;
+  pointer-events: none;
+}
+.nd-info-tooltip[hidden] { display: none; }
+
+/* --------------------------------------------------------------------------
+   6. Viewer chrome (QSMbly toolbar: 34px, 0.75rem tabs, mono info bar)
+   -------------------------------------------------------------------------- */
+.nd-viewer-toolbar { display: flex; align-items: center; gap: var(--nd-space-md); min-height: 34px; padding: var(--nd-space-xs) var(--nd-space-md); background: var(--nd-color-surface); border-bottom: 1px solid var(--nd-color-border); flex-wrap: wrap; flex-shrink: 0; }
+.nd-view-tabs, .nd-viewer-actions { display: flex; align-items: center; gap: var(--nd-space-sm); flex-wrap: wrap; }
+.nd-view-tabs { gap: 2px; }
+.nd-viewer-actions { margin-left: auto; }
+.nd-view-tab { padding: var(--nd-space-xs) var(--nd-space-sm); color: var(--nd-color-text-muted); background: transparent; font: inherit; font-size: 0.75rem; font-weight: 500; }
+.nd-view-tab:hover:not(:disabled) { color: var(--nd-color-text); background: var(--nd-color-surface-elevated); }
+.nd-view-tab.active, .nd-view-tab[aria-selected="true"] { color: var(--nd-color-primary); background: var(--nd-color-primary-glow); }
+.nd-view-tab:disabled { opacity: 0.4; cursor: not-allowed; }
+.nd-viewer-toolbar label, .nd-viewer-label { color: var(--nd-color-text-muted); font-size: 0.7rem; }
+.nd-viewer-toolbar select, .nd-colormap-select { width: auto; min-height: 26px; margin: 0; padding: var(--nd-space-xs) var(--nd-space-sm); color: var(--nd-color-text); background: var(--nd-color-surface-elevated); border: 1px solid var(--nd-color-border); border-radius: var(--nd-radius-sm); font: inherit; font-size: 0.75rem; }
+.nd-viewer-toolbar .nd-btn-sm { min-height: 26px; }
+.nd-window-controls { display: flex; align-items: center; gap: 6px; }
+.nd-window-input { width: 80px; padding: 3px; color: var(--nd-color-text); background: var(--nd-color-surface); border: 1px solid var(--nd-color-border); border-radius: var(--nd-radius-sm); font-size: 0.7rem; text-align: center; }
+.nd-range-slider-container { position: relative; width: 135px; height: 20px; }
+.nd-range-track, .nd-range-selected { position: absolute; top: 8px; height: 4px; border-radius: 2px; pointer-events: none; }
+.nd-range-track { width: 100%; background: var(--nd-color-border); }
+.nd-range-selected { background: var(--nd-color-primary); }
+.nd-range-slider { position: absolute; width: 100%; height: 20px; margin: 0; background: transparent; pointer-events: none; appearance: none; }
+.nd-range-slider::-webkit-slider-thumb { pointer-events: auto; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--nd-color-primary); border: 2px solid white; }
+.nd-opacity-control { display: flex; align-items: center; gap: var(--nd-space-xs); margin: 0; color: var(--nd-color-text-muted); font-size: 0.75rem; font-weight: 400; }
+.nd-opacity-control input[type="range"] { width: 80px; margin: 0; accent-color: var(--nd-color-primary); }
+.nd-opacity-control output, .nd-opacity-control span:last-child { min-width: 3ch; text-align: right; font-variant-numeric: tabular-nums; }
+.nd-viewer-checkbox { display: flex; align-items: center; gap: 4px; color: var(--nd-color-text-muted); font-size: 0.7rem; cursor: pointer; white-space: nowrap; }
+.nd-viewer-checkbox input[type="checkbox"] { width: 12px; height: 12px; margin: 0; cursor: pointer; accent-color: var(--nd-color-primary); }
+
+.nd-viewer-canvas-wrapper { flex: 1; position: relative; min-height: 0; background: #000; }
+.nd-viewer-canvas-wrapper canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+.nd-viewer-empty { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: var(--nd-space-lg); color: var(--nd-color-text-dim); font-size: 0.85rem; text-align: center; pointer-events: none; }
+.nd-viewer-empty[hidden] { display: none; }
+.nd-viewer-notice { position: absolute; left: var(--nd-space-md); right: var(--nd-space-md); bottom: var(--nd-space-md); margin: 0; padding: var(--nd-space-sm) var(--nd-space-md); color: var(--nd-color-text); background: var(--nd-color-surface-elevated); border: 1px solid var(--nd-color-border); border-radius: var(--nd-radius-sm); font-size: 0.75rem; }
+.nd-viewer-notice[hidden] { display: none; }
+.nd-viewer-info { display: flex; justify-content: space-between; gap: var(--nd-space-sm); min-height: 24px; padding: var(--nd-space-xs) var(--nd-space-md); background: var(--nd-color-surface); border-top: 1px solid var(--nd-color-border); color: var(--nd-color-text-muted); font: 0.7rem/1.5 "SF Mono", Consolas, monospace; flex-shrink: 0; }
+.nd-viewer-info-primary { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nd-viewer-info-label { flex-shrink: 0; color: var(--nd-color-text-dim); }
+
+/* --------------------------------------------------------------------------
+   7. Technical log (QSMbly console: 120px, collapsed by default)
+   -------------------------------------------------------------------------- */
+.nd-console-container { height: 120px; flex-shrink: 0; display: flex; flex-direction: column; background: var(--nd-color-surface); border-top: 1px solid var(--nd-color-border); }
+.nd-console-container.collapsed { height: auto; }
+.nd-console-header { display: flex; align-items: center; justify-content: space-between; gap: var(--nd-space-sm); min-height: 28px; padding: var(--nd-space-xs) var(--nd-space-md); border-bottom: 1px solid var(--nd-color-border); flex-shrink: 0; }
+.nd-console-container.collapsed > .nd-console-header { border-bottom: 0; }
+.nd-console-title { margin: 0; padding: 0; color: var(--nd-color-text-muted); background: none; border: 0; font: inherit; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; }
+.nd-console-actions { display: flex; gap: var(--nd-space-sm); margin-left: auto; }
+.nd-console-clear { padding: 0 var(--nd-space-xs); color: var(--nd-color-text-dim); background: none; border: 0; font: inherit; font-size: 0.7rem; cursor: pointer; transition: color var(--nd-transition-fast); }
+.nd-console-clear:hover { color: var(--nd-color-text-muted); }
+.nd-console-output { flex: 1; min-height: 0; margin: 0; overflow-y: auto; padding: var(--nd-space-xs) var(--nd-space-md); color: var(--nd-color-text-muted); font: 0.7rem/1.5 "SF Mono", Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.nd-console-line { display: flex; gap: var(--nd-space-md); }
+.nd-console-time { color: var(--nd-color-text-dim); flex-shrink: 0; }
+.nd-console-message { color: var(--nd-color-text-muted); }
+.nd-console-success .nd-console-message { color: var(--nd-color-success); }
+.nd-console-error .nd-console-message { color: var(--nd-color-error); }
+.nd-console-warning .nd-console-message { color: var(--nd-color-warning); }
+
+/* --------------------------------------------------------------------------
+   8. Status bar (QSMbly sidebar status: label, value, cancel, 4px bar)
+   -------------------------------------------------------------------------- */
+.nd-imaging-status:has(> .nd-status-text, > .nd-status-label) { display: flex; align-items: center; gap: var(--nd-space-md); min-height: 32px; padding: var(--nd-space-xs) var(--nd-space-lg); font-size: 0.75rem; }
+.nd-status-label { color: var(--nd-color-text-muted); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+.nd-status-text { flex: 1; min-width: 0; color: var(--nd-color-text); font-size: 0.75rem; font-weight: 500; overflow-wrap: anywhere; }
+.nd-status-text.error { color: var(--nd-color-error); }
+.nd-status-elapsed { color: var(--nd-color-text-dim); font-size: 0.7rem; font-variant-numeric: tabular-nums; }
+.nd-imaging-status progress { width: 160px; max-width: 30vw; height: 4px; margin: 0; border: 0; border-radius: 2px; overflow: hidden; background: var(--nd-color-border); appearance: none; -webkit-appearance: none; accent-color: var(--nd-color-primary); }
+.nd-imaging-status progress::-webkit-progress-bar { background: var(--nd-color-border); border-radius: 2px; }
+.nd-imaging-status progress::-webkit-progress-value { background: var(--nd-color-primary); border-radius: 2px; transition: width var(--nd-transition-normal); }
+.nd-imaging-status progress::-moz-progress-bar { background: var(--nd-color-primary); border-radius: 2px; }
+.nd-imaging-status .nd-btn-cancel { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin: 0; padding: 0; color: var(--nd-color-error); background: transparent; border: 1px solid var(--nd-color-error); border-radius: var(--nd-radius-sm); font-size: 0.8rem; line-height: 1; cursor: pointer; }
+.nd-imaging-status .nd-btn-cancel:hover { color: white; background: var(--nd-color-error); }
+.nd-imaging-status .nd-btn-cancel[hidden] { display: none; }
+
+/* --------------------------------------------------------------------------
+   9. Dialogs (QSMbly modal geometry: centered, bounded, header + close)
+   -------------------------------------------------------------------------- */
+dialog.nd-dialog { box-sizing: border-box; width: min(560px, calc(100vw - 32px)); max-width: none; max-height: min(85vh, 85dvh); margin: auto; padding: 0; overflow: hidden; color: var(--nd-color-text); background: var(--nd-color-surface); border: 1px solid var(--nd-color-border); border-radius: var(--nd-radius-lg); box-shadow: var(--nd-shadow-lg); font-family: inherit; }
+dialog.nd-dialog.nd-dialog-wide { width: min(720px, calc(100vw - 32px)); }
+dialog.nd-dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+.nd-dialog-header { display: flex; align-items: center; justify-content: space-between; gap: var(--nd-space-md); padding: var(--nd-space-md) var(--nd-space-lg); border-bottom: 1px solid var(--nd-color-border); }
+.nd-dialog-header h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+.nd-dialog-close { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; margin: -12px -16px -12px 0; padding: 0; color: var(--nd-color-text-muted); background: none; border: 0; font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.nd-dialog-close:hover { color: var(--nd-color-text); }
+.nd-dialog-body { max-height: calc(min(85vh, 85dvh) - 60px); overflow-y: auto; padding: var(--nd-space-lg); font-size: 0.875rem; line-height: 1.55; }
+.nd-dialog-body > :first-child { margin-top: 0; }
+.nd-dialog-body > :last-child { margin-bottom: 0; }
+.nd-dialog-body p { margin: 0 0 var(--nd-space-sm); }
+.nd-dialog-body h3 { margin: var(--nd-space-lg) 0 var(--nd-space-xs); padding-bottom: var(--nd-space-xs); border-bottom: 1px solid var(--nd-color-border); color: var(--nd-color-primary); font-size: 0.9rem; font-weight: 600; }
+.nd-dialog-body h3:first-child { margin-top: 0; }
+.nd-dialog-body a { color: var(--nd-color-primary); overflow-wrap: anywhere; }
+.nd-dialog-body pre { margin: 0 0 var(--nd-space-sm); padding: var(--nd-space-sm) var(--nd-space-md); overflow: auto; background: var(--nd-color-bg); border: 1px solid var(--nd-color-border); border-radius: var(--nd-radius-sm); font-size: 0.75rem; line-height: 1.6; }
+.nd-dialog-body code { font-family: "SF Mono", Consolas, monospace; font-size: 0.8em; }
+.nd-dialog-body ul, .nd-dialog-body ol { margin: 0 0 var(--nd-space-sm); padding-left: 1.2em; }
+.nd-dialog-highlight { margin: 0 0 var(--nd-space-md); padding: var(--nd-space-md); background: var(--nd-color-surface-elevated); border: 1px solid var(--nd-color-primary); border-radius: var(--nd-radius-md); }
+.nd-dialog-highlight strong { display: block; color: var(--nd-color-primary); }
+.nd-dialog-highlight p { margin: 4px 0 0; color: var(--nd-color-text-muted); font-size: 0.8rem; }
+.nd-citation { margin: 0 0 var(--nd-space-md); padding-left: var(--nd-space-sm); border-left: 2px solid var(--nd-color-border); }
+.nd-citation strong { display: block; margin-bottom: 2px; font-size: 0.85rem; }
+.nd-citation p { margin: 0 0 4px; color: var(--nd-color-text-muted); font-size: 0.8rem; }
+.nd-citation small { display: block; margin-bottom: 4px; color: var(--nd-color-text-muted); font-size: 0.72rem; }
+.nd-citation a { font-size: 0.78rem; text-decoration: none; }
+.nd-citation a:hover { text-decoration: underline; }
+
+/* Copyable terminal command. */
+.nd-command { position: relative; display: block; margin: 0 0 var(--nd-space-sm); padding: var(--nd-space-sm) 64px var(--nd-space-sm) var(--nd-space-sm); background: var(--nd-color-bg); border: 1px solid var(--nd-color-border); border-radius: var(--nd-radius-sm); overflow-wrap: anywhere; }
+.nd-command code { display: block; font-size: 0.75rem; line-height: 1.5; white-space: pre-wrap; }
+.nd-command .nd-btn { position: absolute; top: 4px; right: 4px; min-width: 44px; min-height: 28px; padding: 2px var(--nd-space-sm); font-size: 0.7rem; }
+
+/* --------------------------------------------------------------------------
+   10. Utilities and touch sizing
+   -------------------------------------------------------------------------- */
+.nd-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.nd-hidden, .hidden { display: none !important; }
+[hidden] { display: none !important; }
+
+/* Touch targets: coarse pointers and phone widths (narrow windows are touch far more often than not). */
+@media (pointer: coarse), (max-width: 780px) {
+  .nd-imaging-controls .nd-section-content :is(button, select, .nd-btn, .nd-file, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"])) { min-height: 44px; }
+  .nd-imaging-controls .nd-section-content :is(select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"])) { font-size: 16px; }
+  .nd-viewer-toolbar :is(button, select, .nd-view-tab) { min-height: 44px; min-width: 44px; }
+  .nd-viewer-toolbar select { font-size: 16px; }
+  .nd-console-title, .nd-console-clear { min-height: 44px; }
+  .nd-dialog-body .nd-btn, .nd-command .nd-btn { min-height: 44px; }
+  .nd-imaging-status .nd-btn-cancel { width: 44px; height: 44px; }
+}
+
 @media (max-width: 780px) {
   .nd-imaging-workspace {
     grid-template-columns: 1fr;
@@ -219,9 +623,15 @@ nd-imaging-brand {
   }
 
   .nd-imaging-viewer { grid-column: 1; grid-row: 3; }
-  .nd-imaging-status { grid-column: 1; grid-row: 4; }
+  .nd-imaging-status { grid-column: 1; grid-row: 4; flex-wrap: wrap; }
+  .nd-imaging-status progress { width: 100%; max-width: none; order: 10; }
+  .nd-viewer-toolbar { gap: var(--nd-space-xs); padding: var(--nd-space-xs) var(--nd-space-sm); }
 }
 
+/* --------------------------------------------------------------------------
+   11. Legacy static layout (.nd-app-container family). Retained for apps that
+   render the whole shell themselves; new apps use mountImagingWorkspace.
+   -------------------------------------------------------------------------- */
 .nd-app-container {
   display: grid;
   grid-template-columns: 320px 1fr;
@@ -273,77 +683,11 @@ nd-imaging-brand {
 .nd-sidebar-scroll { flex: 1; min-height: 0; overflow-y: auto; }
 .nd-sidebar-status { flex-shrink: 0; padding: var(--nd-space-sm) var(--nd-space-md); background: var(--nd-color-surface-elevated); border-top: 1px solid var(--nd-color-border); }
 .nd-status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--nd-space-xs); }
-.nd-status-label { color: var(--nd-color-text-muted); font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
 .nd-status-value { color: var(--nd-color-text); font-size: 0.75rem; }
 .nd-progress-bar { height: 4px; background: var(--nd-color-border); border-radius: 2px; overflow: hidden; }
 .nd-progress-fill { width: 0; height: 100%; background: linear-gradient(90deg, var(--nd-color-primary), var(--nd-color-accent)); transition: width 250ms ease; }
 
-.nd-sidebar-section { width: 100%; min-width: 0; border-bottom: 1px solid var(--nd-color-border); }
-.nd-section-title { display: flex; align-items: center; gap: var(--nd-space-sm); margin: 0; padding: var(--nd-space-md); color: var(--nd-color-text-muted); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; user-select: none; }
-.nd-section-title:hover { color: var(--nd-color-text); background: var(--nd-color-surface-elevated); }
-.nd-section-title::after { content: ""; margin-left: auto; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid currentColor; transition: transform var(--nd-transition-fast); }
-.nd-section-title::-webkit-details-marker { display: none; }
-.nd-section-title:focus-visible { outline: 2px solid var(--nd-color-primary); outline-offset: -2px; }
-.nd-sidebar-section:not([open]) > .nd-section-title::after { transform: rotate(-90deg); }
-.nd-section-content { display: block; padding: 0 var(--nd-space-md) var(--nd-space-md); }
-@media (pointer: coarse) {
-  .nd-section-title { min-height: 44px; box-sizing: border-box; }
-}
-.nd-step-disabled .nd-section-content { pointer-events: none; opacity: 0.45; }
-.nd-step-badge { margin-left: auto; font-size: 0.6rem; border-radius: 8px; padding: 1px 6px; background: var(--nd-color-border); color: var(--nd-color-text-dim); }
-
-.nd-btn,
-.nd-view-tab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--nd-space-sm);
-  border: 0;
-  border-radius: var(--nd-radius-sm);
-  cursor: pointer;
-  transition: background var(--nd-transition-fast), color var(--nd-transition-fast), opacity var(--nd-transition-fast);
-}
-
-.nd-btn { padding: var(--nd-space-sm) var(--nd-space-md); font-size: 0.875rem; }
-.nd-btn-sm { padding: var(--nd-space-xs) var(--nd-space-sm); font-size: 0.75rem; }
-.nd-btn-primary { background: var(--nd-color-primary); color: white; }
-.nd-btn-primary:hover:not(:disabled) { background: var(--nd-color-primary-hover); }
-.nd-btn-secondary { background: var(--nd-color-surface-elevated); color: var(--nd-color-text); border: 1px solid var(--nd-color-border); }
-.nd-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
 .nd-app-main { display: flex; flex-direction: column; min-width: 0; overflow: hidden; background: var(--nd-color-bg); }
-.nd-viewer-toolbar { display: flex; align-items: center; gap: var(--nd-space-md); padding: var(--nd-space-xs) var(--nd-space-md); border-bottom: 1px solid var(--nd-color-border); flex-wrap: wrap; }
-.nd-view-tabs, .nd-viewer-actions { display: flex; align-items: center; gap: var(--nd-space-sm); flex-wrap: wrap; }
-.nd-view-tab { padding: var(--nd-space-xs) var(--nd-space-sm); color: var(--nd-color-text-muted); background: transparent; font-size: 0.75rem; }
-.nd-view-tab.active, .nd-view-tab:hover { color: var(--nd-color-primary); background: var(--nd-color-primary-glow); }
-.nd-window-controls { display: flex; align-items: center; gap: 6px; }
-.nd-window-input { width: 80px; padding: 3px; color: var(--nd-color-text); background: var(--nd-color-surface); border: 1px solid var(--nd-color-border); border-radius: var(--nd-radius-sm); }
-.nd-range-slider-container { position: relative; width: 135px; height: 20px; }
-.nd-range-track, .nd-range-selected { position: absolute; top: 8px; height: 4px; border-radius: 2px; pointer-events: none; }
-.nd-range-track { width: 100%; background: var(--nd-color-border); }
-.nd-range-selected { background: var(--nd-color-primary); }
-.nd-range-slider { position: absolute; width: 100%; height: 20px; margin: 0; background: transparent; pointer-events: none; appearance: none; }
-.nd-range-slider::-webkit-slider-thumb { pointer-events: auto; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--nd-color-primary); border: 2px solid white; }
-.nd-opacity-control { display: flex; align-items: center; gap: var(--nd-space-xs); color: var(--nd-color-text-muted); font-size: 0.75rem; }
-.nd-colormap-select { width: auto; color: var(--nd-color-text); background: var(--nd-color-surface-elevated); border: 1px solid var(--nd-color-border); border-radius: var(--nd-radius-sm); padding: var(--nd-space-xs) var(--nd-space-sm); }
-
-.nd-viewer-canvas-wrapper { flex: 1; position: relative; min-height: 0; background: #000; }
-.nd-viewer-canvas-wrapper canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
-.nd-viewer-info { display: flex; justify-content: space-between; gap: var(--nd-space-sm); padding: var(--nd-space-xs) var(--nd-space-md); border-top: 1px solid var(--nd-color-border); color: var(--nd-color-text-muted); font: 0.7rem "SF Mono", Consolas, monospace; }
-.nd-viewer-info-primary { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.nd-viewer-info-label { flex-shrink: 0; color: var(--nd-color-text-dim); }
-
-.nd-console-container { height: 120px; flex-shrink: 0; display: flex; flex-direction: column; border-top: 1px solid var(--nd-color-border); }
-.nd-console-header { display: flex; align-items: center; justify-content: space-between; padding: var(--nd-space-xs) var(--nd-space-md); border-bottom: 1px solid var(--nd-color-border); }
-.nd-console-title { color: var(--nd-color-text-muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
-.nd-console-clear { color: var(--nd-color-text-dim); background: none; border: 0; cursor: pointer; }
-.nd-console-output { flex: 1; overflow-y: auto; padding: var(--nd-space-xs) var(--nd-space-md); font: 0.7rem/1.5 "SF Mono", Consolas, monospace; }
-.nd-console-line { display: flex; gap: var(--nd-space-md); }
-.nd-console-time { color: var(--nd-color-text-dim); flex-shrink: 0; }
-.nd-console-message { color: var(--nd-color-text-muted); }
-.nd-console-error .nd-console-message { color: var(--nd-color-error); }
-.nd-console-warning .nd-console-message { color: var(--nd-color-warning); }
-
 .nd-app-footer { grid-column: 1 / -1; display: flex; justify-content: space-between; padding: var(--nd-space-xs) var(--nd-space-lg); border-top: 1px solid var(--nd-color-border); color: var(--nd-color-text-dim); font-size: 0.65rem; }
 .nd-modal-overlay { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); opacity: 0; pointer-events: none; transition: opacity 200ms ease; }
 .nd-modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -352,9 +696,23 @@ nd-imaging-brand {
 .nd-modal-header h3 { margin: 0; font-size: 1rem; }
 .nd-modal-close { color: var(--nd-color-text-muted); background: none; border: 0; font-size: 1.5rem; cursor: pointer; }
 .nd-modal-body { padding: var(--nd-space-lg); }
-.nd-hidden, .hidden { display: none !important; }
 
 @media (max-width: 1024px) {
   .nd-app-container { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr auto; }
   .nd-app-sidebar { border-right: 0; border-bottom: 1px solid var(--nd-color-border); max-height: 50vh; }
 }
+
+/* --------------------------------------------------------------------------
+   12. Result rows (StageResultList / QSMbly stage list): View · label · Download
+   -------------------------------------------------------------------------- */
+.nd-volume-toggle { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.nd-volume-toggle .nd-stage-label { flex: 1; min-width: 0; color: var(--nd-color-text); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nd-imaging-controls .nd-section-content .nd-volume-toggle :is(.nd-view-btn, .nd-download-btn),
+.nd-volume-toggle :is(.nd-view-btn, .nd-download-btn) { width: auto; min-height: 28px; margin: 0; padding: var(--nd-space-xs) var(--nd-space-sm); color: var(--nd-color-text); background: var(--nd-color-surface-elevated); border: 1px solid var(--nd-color-border); border-radius: var(--nd-radius-sm); font: inherit; font-size: 0.75rem; font-weight: 500; cursor: pointer; flex-shrink: 0; }
+.nd-volume-toggle .nd-view-btn { min-width: 52px; }
+.nd-volume-toggle .nd-view-btn.active { color: white; background: var(--nd-color-primary); border-color: var(--nd-color-primary); }
+.nd-volume-toggle :is(.nd-view-btn, .nd-download-btn):hover:not(:disabled) { border-color: var(--nd-color-border-light); background: var(--nd-color-border); }
+.nd-volume-toggle .nd-view-btn.active:hover:not(:disabled) { background: var(--nd-color-primary-hover); border-color: var(--nd-color-primary-hover); }
+.nd-volume-toggle :is(.nd-view-btn, .nd-download-btn):disabled { opacity: 0.45; cursor: not-allowed; }
+.nd-empty-state { margin: 0; color: var(--nd-color-text-dim); font-size: 0.75rem; }
+@media (pointer: coarse) { .nd-volume-toggle :is(.nd-view-btn, .nd-download-btn) { min-height: 44px; } }

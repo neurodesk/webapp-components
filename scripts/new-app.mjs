@@ -205,6 +205,28 @@ await stamp(dest);
 // Register the app so deploy + statistics workflows pick it up.
 await writeFile(registry, nextText);
 
+// Seed its About/Cite data. The shared shell renders packages, builder and
+// ecosystem statements from this entry; test/app-information.test.mjs fails
+// until every implemented method has a citation here.
+const informationPath = join(root, 'registry', 'app-information.yml');
+try {
+  const current = await readFile(informationPath, 'utf8');
+  if (!new RegExp(`^  ${name}:`, 'm').test(current)) {
+    await writeFile(informationPath, `${current.replace(/\n*$/, '\n')}
+  ${name}:
+    packages:
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+    citations:
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+`);
+  }
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+}
+
 console.log(`Created apps/${name} and registered it in registry/apps.yml. Next:`);
 console.log('  pnpm install');
 console.log(`  pnpm --filter ${name} dev`);

@@ -6,22 +6,24 @@ Real `@neurodesk/webapp-components` imports per app (import-map aliases excluded
 Apps absent from a column ship their own code for that concern or do not need it;
 the fork ratchet in `test/component-forks.test.mjs` lists which of those are forks.
 
-| App | (root) | core/mount-imaging-workspace | file-io | pipeline | styles/imaging-workspace.css | ui | viewer | volume | worker |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| musclemap | ✓ |  | ✓ |  |  | ✓ |  |  |  |
-| vesselboost | ✓ |  | ✓ | ✓ |  | ✓ |  | ✓ |  |
-| spinalcordtoolbox | ✓ |  | ✓ |  |  | ✓ | ✓ | ✓ |  |
-| calmar | ✓ |  | ✓ |  |  | ✓ | ✓ |  |  |
-| qsmbly | ✓ |  | ✓ |  |  | ✓ |  | ✓ | ✓ |
-| seedseg | ✓ |  | ✓ |  |  | ✓ |  |  |  |
-| dicompare |  |  |  |  |  | ✓ |  |  |  |
-| deface |  | ✓ |  |  | ✓ |  |  |  |  |
-| easy-mp2rage |  |  |  |  |  |  |  |  |  |
-| niimath |  | ✓ |  |  | ✓ |  |  |  |  |
-| dicom2vid |  |  |  |  |  |  |  |  |  |
-| browserqc |  | ✓ |  |  | ✓ |  |  |  |  |
-| surfannotate |  | ✓ |  |  | ✓ |  |  |  |  |
-| zarro |  | ✓ |  |  | ✓ |  |  |  |  |
+| App | (root) | core | core/mount-imaging-workspace | example-images | file-io | pipeline | styles/imaging-workspace.css | ui | viewer | volume | worker |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| musclemap | ✓ |  |  |  | ✓ |  |  | ✓ |  |  |  |
+| vesselboost | ✓ |  |  |  | ✓ | ✓ |  | ✓ |  | ✓ |  |
+| spinalcordtoolbox | ✓ |  |  |  | ✓ |  |  | ✓ | ✓ | ✓ |  |
+| calmar | ✓ |  |  |  | ✓ |  |  | ✓ | ✓ |  |  |
+| qsmbly | ✓ |  |  |  | ✓ |  |  | ✓ |  | ✓ | ✓ |
+| seedseg | ✓ |  |  |  | ✓ |  |  | ✓ |  |  |  |
+| dicompare |  |  |  |  |  |  |  | ✓ |  |  |  |
+| deface |  |  | ✓ |  |  |  | ✓ |  |  |  |  |
+| easy-mp2rage |  |  |  |  |  |  |  |  |  |  |  |
+| niimath |  |  | ✓ | ✓ |  |  | ✓ |  |  |  |  |
+| dicom2vid |  |  |  |  |  |  |  |  |  |  |  |
+| browserqc |  |  | ✓ |  |  |  | ✓ |  |  |  |  |
+| surfannotate |  |  | ✓ |  |  |  | ✓ |  |  |  |  |
+| zarro |  |  | ✓ |  |  |  | ✓ |  |  |  |  |
+| synthsr |  |  | ✓ | ✓ |  |  |  | ✓ |  |  |  |
+| syncro |  | ✓ | ✓ |  |  |  |  | ✓ |  |  |  |
 
 ## Import sites
 
@@ -48,7 +50,7 @@ the fork ratchet in `test/component-forks.test.mjs` lists which of those are for
   - `viewer`: scripts/test_viewer_controller.mjs
 - **qsmbly**
   - `(root)`: index.html, js/controllers/QsmDicomInput.js, js/controllers/QsmEchoViewer.js
-  - `file-io`: js/controllers/MaskController.js, js/controllers/QsmDicomInput.js, js/modules/file-io/NiftiUtils.test.js, js/modules/file-io/index.js, js/qsm-app-romeo.js
+  - `file-io`: js/controllers/MaskController.js, js/controllers/QsmDicomInput.js, js/controllers/QsmInputSet.js, js/modules/file-io/NiftiUtils.test.js, js/modules/file-io/index.js, js/qsm-app-romeo.js
   - `ui`: js/qsm-app-romeo.js
   - `volume`: js/controllers/MaskController.js, js/qsm-app-romeo.js
   - `worker`: js/controllers/QsmPipelineController.js
@@ -63,6 +65,7 @@ the fork ratchet in `test/component-forks.test.mjs` lists which of those are for
   - `styles/imaging-workspace.css`: src/main.ts
 - **niimath**
   - `core/mount-imaging-workspace`: main.js
+  - `example-images`: main.js
   - `styles/imaging-workspace.css`: main.js
 - **browserqc**
   - `core/mount-imaging-workspace`: src/main.ts
@@ -73,3 +76,11 @@ the fork ratchet in `test/component-forks.test.mjs` lists which of those are for
 - **zarro**
   - `core/mount-imaging-workspace`: src/viewer.ts
   - `styles/imaging-workspace.css`: src/viewer.ts
+- **synthsr**
+  - `core/mount-imaging-workspace`: src/main.js
+  - `example-images`: e2e/interface.spec.js, src/main.js
+  - `ui`: src/main.js
+- **syncro**
+  - `core`: src/main.js
+  - `core/mount-imaging-workspace`: src/main.js
+  - `ui`: src/main.js

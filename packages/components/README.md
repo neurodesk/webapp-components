@@ -21,6 +21,8 @@ Two app tracks are supported:
 
 See [docs/architecture/overview.md](docs/architecture/overview.md) and [docs/components/catalog.md](docs/components/catalog.md).
 
+The look of every app comes from one stylesheet, `src/styles/imaging-workspace.css`, and the workflow builders in `src/ui` (`renderFileField`, `renderViewerToolbar`, `renderConsole`, `createInfoDialog`). The monorepo's `docs/architecture/design-system.md` explains the vocabulary and the test that enforces it.
+
 ## Quick Start
 
 ```js

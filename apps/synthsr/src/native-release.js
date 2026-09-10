@@ -28,7 +28,8 @@ export function nativeDownloads(version) {
   };
 }
 
-export function configureNativeDownloads(downloads, document) {
+export function configureNativeDownloads(downloads, root) {
+  const document = { getElementById: (id) => root.querySelector(`#${id}`) };
   for (const [platform, item] of Object.entries(downloads)) {
     const name = platform[0].toUpperCase() + platform.slice(1);
     const link = document.getElementById(`native${name}Download`);

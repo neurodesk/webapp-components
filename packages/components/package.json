@@ -20,7 +20,10 @@
       "types": "./src/core/mountImagingWorkspace.d.ts",
       "default": "./src/core/mountImagingWorkspace.js"
     },
-    "./ui": "./src/ui/index.js",
+    "./ui": {
+      "types": "./src/index.d.ts",
+      "default": "./src/ui/index.js"
+    },
     "./file-io": "./src/file-io/index.js",
     "./viewer": "./src/viewer/index.js",
     "./inference": "./src/inference/index.js",

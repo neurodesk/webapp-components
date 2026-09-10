@@ -17,21 +17,21 @@ test('load, invalid input, and cancellation preserve the original',async({page})
   await expect(page.locator('#statusText')).toContainText('cancelled');
   await expect(page.locator('#saveBtn')).toBeDisabled();
   await expect(page.locator('#processButton')).toBeEnabled();
-  await page.locator('#aboutBtn').click();await expect(page.locator('#aboutDialog')).toBeVisible();
-  await page.getByRole('button',{name:'Close',exact:true}).click();
-  await page.locator('#standaloneBtn').click();
-  await expect(page.locator('#standaloneDialog')).toBeVisible();
-  await expect(page.locator('#standaloneDialog')).toContainText('curl -fLO');
-  await expect(page.locator('#standaloneDialog')).not.toContainText('Slurm');
-  for(const [id,asset] of Object.entries({nativeMacosDownload:'synthsr-0.2.20260910-macos-arm64.pkg',nativeWindowsDownload:'synthsr-0.2.20260910-windows-x64.zip',nativeLinuxDownload:'synthsr-0.2.20260910-linux-x64.tar.gz'})) {
+  await page.locator('#aboutBtn').dispatchEvent('click');await expect(page.locator('#infoDialog')).toBeVisible();await expect(page.locator('#infoDialogTitle')).toHaveText('About SynthSR');await page.locator('#infoDialog').getByRole('button',{name:'Close',exact:true}).click();
+  await expect(page.locator('#infoDialog')).toBeHidden();
+  await page.locator('#standaloneBtn').dispatchEvent('click');
+  await expect(page.locator('#infoDialog')).toBeVisible();
+  await expect(page.locator('#infoDialog')).toContainText('curl -fLO');
+  await expect(page.locator('#infoDialog')).not.toContainText('Slurm');
+  for(const [id,asset] of Object.entries({nativeMacosDownload:'synthsr-0.2.20260910-macos-arm64.pkg',nativeWindowsDownload:'synthsr-0.2.20260910-windows-x64.zip',nativeLinuxDownload:'synthsr-0.2.20260910-linux-x64.tar.gz'})){
     await expect(page.locator(`#${id}`)).toHaveAttribute('href',`https://github.com/neurodesk/webapps/releases/download/synthsr-v0.2.20260910/${asset}`);
+    await expect(page.locator(`#${id.replace('Download','Checksum')}`)).toHaveAttribute('href',`https://github.com/neurodesk/webapps/releases/download/synthsr-v0.2.20260910/${asset}.sha256`);
   }
   await expect(page.locator('#nativeWindowsCommands')).toContainText('.\\synthsr.exe input.nii.gz output_synthsr.nii.gz');
   await expect(page.locator('#nativeLinuxCommands')).toContainText('./synthsr input.nii.gz output_synthsr.nii.gz');
-  await page.locator('#nodePackageDetails > summary').click();
   const packageDownload=page.waitForEvent('download');await page.locator('#standalonePackage').click();
   expect((await packageDownload).suggestedFilename()).toBe('neurodesk-synthsr-0.2.20260910.tgz');
-  await page.locator('#standaloneDialog').getByRole('button',{name:'Close',exact:true}).click();
+  await page.locator('#infoDialog').getByRole('button',{name:'Close',exact:true}).click();
 });
 
 for(const backend of ['webgpu','wasm']) test(`full-volume ${backend} regression with default augmentation`,async({page})=>{
@@ -84,8 +84,8 @@ for(const backend of ['wasm','webgpu']) test(`real ${backend} inference matches 
   if(backend==='webgpu')expect(report.gpuImplementation).toBe('synthsr-blocked-fp32-v1');
   else expect(report.onnxRuntime).toBe('1.29.0');
   await expect(page.locator('#outputTab')).toBeVisible();
-  await page.locator('#inputTab').click();await expect(page.locator('#resultBadge')).toBeHidden();
+  await page.locator('#inputTab').click();await expect(page.locator('#inputTab')).toHaveClass(/active/);await expect(page.locator('#outputTab')).not.toHaveClass(/active/);
   await page.locator('#imageInput').setInputFiles(fixture('validation.nii.gz'));
   await expect(page.locator('#outputTab')).toBeHidden();
-  await expect(page.locator('#inputTab')).toBeVisible();
+  await expect(page.locator('#processButton')).toBeEnabled();
 });

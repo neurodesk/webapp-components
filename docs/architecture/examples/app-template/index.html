@@ -6,20 +6,85 @@
     <title>APP_NAME — NeuroDesk</title>
   </head>
   <body>
+    <!--
+      Every Neurodesk webapp is built from the shared workspace vocabulary in
+      @neurodesk/webapp-components/styles/imaging-workspace.css. Keep the
+      structure below; change the labels, fields and scientific logic only.
+      Do not add app CSS for anything shown here. See docs/architecture/design-system.md.
+    -->
     <header id="controls">
-      <button id="runButton" type="button">Run</button>
-    </header>
-    <main id="viewer">
-      <div id="app">APP_NAME workspace</div>
-    </main>
-    <footer id="status">
-      <span id="statusText">Ready</span>
-      <div aria-label="Progress"><div id="progressBar"></div></div>
-      <details class="nd-sidebar-section">
-        <summary class="nd-section-title">Technical log</summary>
-        <div id="consoleOutput" class="nd-section-content"></div>
+      <!-- 1. Input: open, one compact scan picker, optional example. -->
+      <details class="nd-sidebar-section" id="inputSection" open>
+        <summary class="nd-section-title">Input image</summary>
+        <div class="nd-section-content">
+          <label class="nd-file" id="dropZone">
+            <input id="imageInput" type="file" data-neurodesk-input="image" multiple aria-label="Choose NIfTI or DICOM files" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Drop NIfTI or DICOM files or folder</span>
+          </label>
+          <p id="fileInfo" class="nd-file-info" hidden></p>
+          <button id="exampleButton" class="nd-btn nd-btn-secondary nd-btn-sm" type="button">Load example image</button>
+        </div>
       </details>
+
+      <!-- 2. The task: its fields, advanced settings collapsed, one primary action. -->
+      <details class="nd-sidebar-section" id="taskSection" open>
+        <summary class="nd-section-title">Processing</summary>
+        <div class="nd-section-content">
+          <div class="nd-field">
+            <label for="method">Method</label>
+            <select id="method"><option value="default">Default</option></select>
+          </div>
+          <details class="nd-sidebar-section" id="advancedSettings">
+            <summary class="nd-section-title">Advanced settings</summary>
+            <div class="nd-section-content">
+              <div class="nd-field">
+                <label for="threshold">Threshold <small>0–1</small></label>
+                <input id="threshold" type="number" min="0" max="1" step="0.05" value="0.5" />
+                <p class="nd-hint">Short help sits beside the field it explains.</p>
+              </div>
+              <label class="nd-check"><input id="option" type="checkbox" checked /> Example option</label>
+            </div>
+          </details>
+          <button id="runButton" class="nd-btn nd-btn-primary" type="button" disabled>Run processing</button>
+        </div>
+      </details>
+
+      <!-- 3. Output: collapsed until results exist; View/Download per result. -->
+      <details class="nd-sidebar-section" id="outputSection">
+        <summary class="nd-section-title">Output</summary>
+        <div class="nd-section-content">
+          <div id="resultList"></div>
+        </div>
+      </details>
+
+      <!-- About and Privacy content is app-owned; the shared app bar shows the buttons and
+           appends the packages, builder and ecosystem block. Cite is rendered entirely from
+           registry/app-information.yml. -->
+      <button id="aboutBtn" type="button" hidden>About</button>
+      <button id="privacyBtn" type="button" hidden>Privacy</button>
+    </header>
+
+    <main id="viewer">
+      <!-- renderViewerToolbar() is prepended here; renderConsole() is appended. -->
+      <div class="nd-viewer-canvas-wrapper">
+        <canvas id="gl1" aria-label="Image viewer"></canvas>
+        <p id="emptyState" class="nd-viewer-empty">Load an image to begin.</p>
+      </div>
+      <div class="nd-viewer-info"><span id="location" class="nd-viewer-info-primary"></span></div>
+    </main>
+
+    <footer id="status">
+      <span class="nd-status-label">Status</span>
+      <span id="statusText" class="nd-status-text" role="status" aria-live="polite">Ready</span>
+      <span id="elapsed" class="nd-status-elapsed"></span>
+      <progress id="progress" max="1" value="0" aria-label="Processing progress"></progress>
+      <button id="cancelButton" class="nd-btn-cancel" type="button" title="Cancel processing" aria-label="Cancel processing" hidden>×</button>
     </footer>
+
+    <template id="aboutContent"><p>Describe the method, its reference implementation and its limits.</p></template>
+    <template id="privacyContent"><p>Images are processed locally in this browser and are never uploaded.</p></template>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

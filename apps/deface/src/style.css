@@ -1,9 +1,10 @@
 :root {
-  --bg: #303030;
-  --panel: #3a3a3a;
-  --border: #555;
-  --accent: #4a6dff;
-  --text: #f0f0f0;
+  /* Local role names resolve to the shared design tokens so the app shares the catalog palette. */
+  --bg: var(--nd-color-bg);
+  --panel: var(--nd-color-surface);
+  --border: var(--nd-color-border);
+  --accent: var(--nd-color-primary);
+  --text: var(--nd-color-text);
 }
 
 * {
@@ -63,7 +64,6 @@ header .row {
   line-height: 1.45;
 }
 
-.upload-actions,
 .sidebar-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -78,23 +78,7 @@ header.nd-imaging-controls {
   flex-wrap: nowrap;
 }
 
-.upload-button {
-  display: grid;
-  min-height: 42px;
-  place-items: center;
-  padding: 8px;
-  border: 1px solid #6f8cff;
-  border-radius: 6px;
-  color: #fff;
-  background: rgba(74, 109, 255, 0.16);
-  cursor: pointer;
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-align: center;
-}
 
-.upload-button:hover { background: rgba(74, 109, 255, 0.28); }
-.drop-hint { margin-top: 7px !important; color: #838a9a !important; }
 .control-section select { width: 100%; margin: 5px 0; }
 .control-section #applyBtn,
 .control-section #saveBtn { width: 100%; margin-top: 6px; }

@@ -27,6 +27,6 @@ test('GitHub Pages fallback isolates the page and its processing worker',async({
       const w=new Worker(url);w.onmessage=e=>{w.terminate();URL.revokeObjectURL(url);resolve(e.data);};w.onerror=reject;
     }));
     expect(worker).toEqual({isolated:true,shared:'function'});
-    await page.locator('#standaloneBtn').click();await expect(page.locator('#standaloneDialog')).toBeVisible();
+    await page.locator('#standaloneBtn').dispatchEvent('click');await expect(page.locator('#infoDialog')).toBeVisible();
   } finally {server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
 });

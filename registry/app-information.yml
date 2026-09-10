@@ -1,0 +1,680 @@
+# App information rendered into every hosted webapp's About and Cite dialogs by
+# site/app-shell.js. Parsed and validated only through
+# scripts/lib/app-information.mjs; test/app-information.test.mjs enforces that
+# every registered app has an entry, that every implemented method has a paper,
+# and that the shared statements below reach every app unchanged.
+#
+# Shared statements (rendered by the shell, never repeated per app):
+#   builder   "The web application is developed and hosted by the Neurodesk team …"
+#   ecosystem "This app is part of the lightning.org ecosystem, which aims to make
+#              neuroimaging tools widely available for clinical translation."
+#   platform  Renton et al. 2024, Nature Methods (Neurodesk) — closes every Cite list.
+#
+# Per app:
+#   builders   optional sentence naming additional authors of the web application
+#   about      optional paragraphs shown when the app has no About dialog of its own
+#   packages   libraries and runtimes under the hood: name, url, role
+#   citations  one entry per implemented method: group, title, reference, doi|url, code?
+
+shared:
+  builder: The web application is developed and hosted by the Neurodesk team at the University of Queensland and collaborators, and runs entirely in your browser.
+  ecosystem: This app is part of the lightning.org ecosystem, which aims to make neuroimaging tools widely available for clinical translation.
+  ecosystem_url: https://lightning.org
+  platform_citation:
+    title: Neurodesk
+    reference: "Renton AI, Dao TT, Johnstone T, Civier O, Sullivan RP, White DJ, Lyons P, Slade BM, Abbott DF, Amos TJ, Bollmann S, Botting A, Campbell MEJ, Chang J, Chatelin TR, Cerpa C, Cooper D, Dagg E, … Bollmann S. Neurodesk: an accessible, flexible and portable data analysis environment for reproducible neuroimaging. Nature Methods. 2024;21(5):804–808."
+    doi: 10.1038/s41592-023-02145-x
+    code: https://www.neurodesk.org
+
+apps:
+  musclemap:
+    packages:
+      - { name: ONNX Runtime Web, url: https://onnxruntime.ai, role: runs the segmentation model in the browser }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+      - { name: MONAI, url: https://monai.io, role: framework the 2D UNet was trained with }
+    citations:
+      - group: Muscle segmentation
+        title: MuscleMap
+        reference: "McKay MJ, Weber KA 2nd, Wesselink EO, et al. MuscleMap: An Open-Source, Community-Supported Consortium for Whole-Body Quantitative MRI of Muscle. Journal of Imaging. 2024;10(11):262."
+        doi: 10.3390/jimaging10110262
+        code: https://github.com/MuscleMap/MuscleMap
+      - group: Deep learning framework
+        title: MONAI
+        reference: "Cardoso MJ, Li W, Brown R, et al. MONAI: An open-source framework for deep learning in healthcare. arXiv. 2022."
+        url: https://arxiv.org/abs/2211.02701
+        code: https://monai.io
+      - group: Fat quantification
+        title: Dixon fat fraction
+        reference: "Dixon WT. Simple proton spectroscopic imaging. Radiology. 1984;153(1):189–194."
+        doi: 10.1148/radiology.153.1.6089263
+      - group: Browser inference
+        title: ONNX Runtime Web
+        reference: "Microsoft. ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator [Computer software]."
+        url: https://onnxruntime.ai
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+        code: https://github.com/rordenlab/dcm2niix
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  vesselboost:
+    packages:
+      - { name: ONNX Runtime Web, url: https://onnxruntime.ai, role: runs the 3D UNet in the browser }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+      - { name: QSM.rs (Rust → WebAssembly), url: https://github.com/astewartau/QSM.rs, role: bias correction, denoising and BET preprocessing }
+    citations:
+      - group: Vessel segmentation
+        title: VesselBoost
+        reference: "Xu M, Ribeiro FL, Barth M, et al. VesselBoost: A Python Toolbox for Small Blood Vessel Segmentation in Human Magnetic Resonance Angiography Data. Aperture Neuro. 2024;4."
+        doi: 10.52294/001c.123217
+        code: https://github.com/KMarshallX/VesselBoost
+      - group: Preprocessing
+        title: N4 bias field correction
+        reference: "Tustison NJ, Avants BB, Cook PA, et al. N4ITK: improved N3 bias correction. IEEE Transactions on Medical Imaging. 2010;29(6):1310–1320."
+        doi: 10.1109/TMI.2010.2046908
+      - group: Preprocessing
+        title: Non-local means denoising
+        reference: "Coupé P, Yger P, Prima S, Hellier P, Kervrann C, Barillot C. An optimized blockwise nonlocal means denoising filter for 3-D magnetic resonance images. IEEE Transactions on Medical Imaging. 2008;27(4):425–441."
+        doi: 10.1109/TMI.2007.906087
+      - group: Preprocessing
+        title: Bilateral filtering
+        reference: "Tomasi C, Manduchi R. Bilateral filtering for gray and color images. Proceedings of the IEEE International Conference on Computer Vision. 1998:839–846."
+        doi: 10.1109/ICCV.1998.710815
+      - group: Brain extraction
+        title: FSL BET
+        reference: "Smith SM. Fast robust automated brain extraction. Human Brain Mapping. 2002;17(3):143–155."
+        doi: 10.1002/hbm.10062
+        code: https://github.com/astewartau/QSM.rs
+      - group: Brain extraction
+        title: SynthStrip
+        reference: "Hoopes A, Mora JS, Dalca AV, Fischl B, Hoffmann M. SynthStrip: skull-stripping for any brain image. NeuroImage. 2022;260:119474."
+        doi: 10.1016/j.neuroimage.2022.119474
+      - group: Deep learning framework
+        title: PyTorch
+        reference: "Paszke A, Gross S, Massa F, et al. PyTorch: An imperative style, high-performance deep learning library. Advances in Neural Information Processing Systems. 2019;32."
+        url: https://pytorch.org
+      - group: Browser inference
+        title: ONNX Runtime Web
+        reference: "Microsoft. ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator [Computer software]."
+        url: https://onnxruntime.ai
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  spinalcordtoolbox:
+    packages:
+      - { name: ONNX Runtime Web, url: https://onnxruntime.ai, role: runs the segmentation models in the browser }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+    citations:
+      - group: Spinal cord processing
+        title: Spinal Cord Toolbox
+        reference: "De Leener B, Lévy S, Dupont SM, et al. SCT: Spinal Cord Toolbox, an open-source software for processing spinal cord MRI data. NeuroImage. 2017;145:24–43."
+        doi: 10.1016/j.neuroimage.2016.10.009
+        code: https://spinalcordtoolbox.com
+      - group: Spinal cord segmentation
+        title: Contrast-agnostic spinal cord segmentation
+        reference: "Bédard S, Karthik EN, Tsagkas C, et al. Towards contrast-agnostic soft segmentation of the spinal cord. Medical Image Analysis. 2025;101:103473."
+        doi: 10.1016/j.media.2025.103473
+      - group: Segmentation networks
+        title: nnU-Net
+        reference: "Isensee F, Jaeger PF, Kohl SAA, Petersen J, Maier-Hein KH. nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature Methods. 2021;18(2):203–211."
+        doi: 10.1038/s41592-020-01008-z
+      - group: Lesion segmentation
+        title: SCIsegV2
+        reference: "Naga Karthik E, Valošek J, Farner L, et al. SCIsegV2: A universal tool for segmentation of intramedullary lesions in spinal cord injury. arXiv. 2024."
+        url: https://arxiv.org/abs/2407.17265
+      - group: Spine segmentation
+        title: TotalSpineSeg
+        reference: "Warszawer Y, Molinier N, Valošek J, et al. TotalSpineSeg: Robust spine segmentation and labeling across multiple MRI contrasts. Proceedings of the ISMRM. 2025."
+        url: https://github.com/neuropoly/totalspineseg
+      - group: Vertebral labeling
+        title: Vertebral level labeling
+        reference: "Ullmann E, Pelletier Paquette JF, Thong WE, Cohen-Adad J. Automatic labeling of vertebral levels using a robust template-based approach. International Journal of Biomedical Imaging. 2014;2014:719520."
+        doi: 10.1155/2014/719520
+      - group: Template
+        title: PAM50
+        reference: "De Leener B, Fonov VS, Collins DL, Callot V, Stikov N, Cohen-Adad J. PAM50: Unbiased multimodal template of the brainstem and spinal cord aligned with the ICBM152 space. NeuroImage. 2018;165:170–179."
+        doi: 10.1016/j.neuroimage.2017.10.041
+      - group: Deep learning framework
+        title: PyTorch
+        reference: "Paszke A, Gross S, Massa F, et al. PyTorch: An imperative style, high-performance deep learning library. Advances in Neural Information Processing Systems. 2019;32."
+        url: https://pytorch.org
+      - group: Browser inference
+        title: ONNX Runtime Web
+        reference: "Microsoft. ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator [Computer software]."
+        url: https://onnxruntime.ai
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  calmar:
+    packages:
+      - { name: ONNX Runtime Web, url: https://onnxruntime.ai, role: runs SynthStrip, SynthStroke and SynthMorph in the browser }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+    citations:
+      - group: Lesion network mapping
+        title: Lesion network mapping
+        reference: "Boes AD, Prasad S, Liu H, et al. Network localization of neurological symptoms from focal brain lesions. Brain. 2015;138(10):3061–3075."
+        doi: 10.1093/brain/awv228
+      - group: Brain extraction
+        title: SynthStrip
+        reference: "Hoopes A, Mora JS, Dalca AV, Fischl B, Hoffmann M. SynthStrip: skull-stripping for any brain image. NeuroImage. 2022;260:119474."
+        doi: 10.1016/j.neuroimage.2022.119474
+      - group: Lesion segmentation
+        title: SynthStroke
+        reference: "Chalcroft L, Crinion J, Price CJ, Ashburner J. Synthetic data for robust stroke segmentation. Machine Learning for Biomedical Imaging. 2025."
+        url: https://github.com/liamchalcroft/SynthStroke
+      - group: Lesion segmentation
+        title: DeepISLES
+        reference: "de la Rosa E, Reyes M, Liew SL, et al. A robust ensemble algorithm for ischemic stroke lesion segmentation: generalizability and clinical utility beyond the ISLES challenge. arXiv. 2024."
+        url: https://arxiv.org/abs/2403.19425
+      - group: Lesion segmentation
+        title: ATLAS v2.0
+        reference: "Liew SL, Lo BP, Donnelly MR, et al. A large, curated, open-source stroke neuroimaging dataset to improve lesion segmentation algorithms. Scientific Data. 2022;9:320."
+        doi: 10.1038/s41597-022-01401-7
+      - group: Registration
+        title: SynthMorph
+        reference: "Hoffmann M, Billot B, Greve DN, Iglesias JE, Fischl B, Dalca AV. SynthMorph: learning contrast-invariant registration without acquired images. IEEE Transactions on Medical Imaging. 2022;41(3):543–558."
+        doi: 10.1109/TMI.2021.3116879
+      - group: Template
+        title: MNI152NLin2009cAsym
+        reference: "Fonov V, Evans AC, Botteron K, Almli CR, McKinstry RC, Collins DL. Unbiased average age-appropriate atlases for pediatric studies. NeuroImage. 2011;54(1):313–327."
+        doi: 10.1016/j.neuroimage.2010.07.033
+      - group: Functional atlases
+        title: Yeo 7-network atlas
+        reference: "Yeo BTT, Krienen FM, Sepulcre J, et al. The organization of the human cerebral cortex estimated by intrinsic functional connectivity. Journal of Neurophysiology. 2011;106(3):1125–1165."
+        doi: 10.1152/jn.00338.2011
+      - group: Functional atlases
+        title: Schaefer 400-parcel atlas
+        reference: "Schaefer A, Kong R, Gordon EM, et al. Local-global parcellation of the human cerebral cortex from intrinsic functional connectivity MRI. Cerebral Cortex. 2018;28(9):3095–3114."
+        doi: 10.1093/cercor/bhx179
+      - group: Functional connectivity data
+        title: Development fMRI dataset (via Nilearn)
+        reference: "Richardson H, Lisandrelli G, Riobueno-Naylor A, Saxe R. Development of the social brain from age three to twelve years. Nature Communications. 2018;9:1027."
+        doi: 10.1038/s41467-018-03399-2
+      - group: Functional connectivity data
+        title: Nilearn
+        reference: "Abraham A, Pedregosa F, Eickenberg M, et al. Machine learning for neuroimaging with scikit-learn. Frontiers in Neuroinformatics. 2014;8:14."
+        doi: 10.3389/fninf.2014.00014
+      - group: Functional decoding
+        title: Neurosynth
+        reference: "Yarkoni T, Poldrack RA, Nichols TE, Van Essen DC, Wager TD. Large-scale automated synthesis of human functional neuroimaging data. Nature Methods. 2011;8(8):665–670."
+        doi: 10.1038/nmeth.1635
+      - group: Browser inference
+        title: ONNX Runtime Web
+        reference: "Microsoft. ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator [Computer software]."
+        url: https://onnxruntime.ai
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  qsmbly:
+    builders: QSMbly and its QSM.rs core were created by Ashley Stewart.
+    packages:
+      - { name: QSM.rs (Rust → WebAssembly), url: https://github.com/astewartau/QSM.rs, role: all QSM algorithms }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+      - { name: dicompare, url: https://github.com/astewartau/dicompare, role: acquisition protocol validation report }
+    citations:
+      - group: Brain extraction
+        title: BET (Brain Extraction Tool)
+        reference: "Smith SM. Fast robust automated brain extraction. Human Brain Mapping. 2002;17(3):143–155."
+        doi: 10.1002/hbm.10062
+        code: https://github.com/Bostrix/FSL-BET2
+      - group: Phase unwrapping
+        title: ROMEO
+        reference: "Dymerska B, Eckstein K, Bachrata B, et al. Phase unwrapping with a rapid opensource minimum spanning tree algorithm (ROMEO). Magnetic Resonance in Medicine. 2021;85(4):2294–2308."
+        doi: 10.1002/mrm.28563
+        code: https://github.com/korbinian90/MriResearchTools.jl
+      - group: Phase unwrapping
+        title: Laplacian phase unwrapping
+        reference: "Schofield MA, Zhu Y. Fast phase unwrapping algorithm for interferometric applications. Optics Letters. 2003;28(14):1194–1196."
+        doi: 10.1364/OL.28.001194
+        code: https://github.com/kamesy/QSM.jl
+      - group: Multi-echo processing
+        title: MCPC-3D-S / ASPIRE
+        reference: "Eckstein K, Dymerska B, Bachrata B, et al. Computationally efficient combination of multi-channel phase data from multi-echo acquisitions (ASPIRE). Magnetic Resonance in Medicine. 2018;79(6):2996–3006."
+        doi: 10.1002/mrm.26963
+        code: https://github.com/korbinian90/MriResearchTools.jl
+      - group: Multi-echo processing
+        title: Homogeneity (bias field) correction
+        reference: "Eckstein K, Trattnig S, Robinson SD. A simple homogeneity correction for neuroimaging at 7T. Proceedings of the ISMRM 27th Annual Meeting. 2019."
+        url: https://github.com/korbinian90/MriResearchTools.jl
+      - group: Background field removal
+        title: V-SHARP
+        reference: "Wu B, Li W, Guidon A, Liu C. Whole brain susceptibility mapping using compressed sensing. Magnetic Resonance in Medicine. 2012;67(1):137–147."
+        doi: 10.1002/mrm.23000
+      - group: Background field removal
+        title: SHARP
+        reference: "Schweser F, Deistung A, Lehr BW, Reichenbach JR. Quantitative imaging of intrinsic magnetic tissue properties using MRI signal phase: an approach to in vivo brain iron metabolism? NeuroImage. 2011;54(4):2789–2807."
+        doi: 10.1016/j.neuroimage.2010.10.070
+      - group: Background field removal
+        title: RESHARP
+        reference: "Sun H, Wilman AH. Background field removal using spherical mean value filtering and Tikhonov regularization. Magnetic Resonance in Medicine. 2014;71(3):1151–1157."
+        doi: 10.1002/mrm.24765
+      - group: Background field removal
+        title: iSMV
+        reference: "Wen Y, Zhou D, Liu T, Spincemaille P, Wang Y. An iterative spherical mean value method for background field removal in MRI. Magnetic Resonance in Medicine. 2014;72(4):1065–1071."
+        doi: 10.1002/mrm.24998
+      - group: Background field removal
+        title: PDF (Projection onto Dipole Fields)
+        reference: "Liu T, Khalidov I, de Rochefort L, et al. A novel background field removal method for MRI using projection onto dipole fields (PDF). NMR in Biomedicine. 2011;24(9):1129–1136."
+        doi: 10.1002/nbm.1670
+      - group: Background field removal
+        title: LBV (Laplacian Boundary Value)
+        reference: "Zhou D, Liu T, Spincemaille P, Wang Y. Background field removal by solving the Laplacian boundary value problem. NMR in Biomedicine. 2014;27(3):312–319."
+        doi: 10.1002/nbm.3064
+      - group: Background field removal
+        title: HARPERELLA
+        reference: "Li W, Wu B, Liu C. Integrated Laplacian-based phase unwrapping and background phase removal for quantitative susceptibility mapping. NMR in Biomedicine. 2014;27(2):219–227."
+        doi: 10.1002/nbm.3056
+      - group: Background field removal
+        title: iHARPERELLA
+        reference: "Li W, Wu B, Liu C. iHARPERELLA: an improved method for integrated 3D phase unwrapping and background phase removal. Proceedings of the ISMRM 23rd Annual Meeting. 2015:3313."
+        url: https://archive.ismrm.org/2015/3313.html
+      - group: Dipole inversion
+        title: TKD / TSVD
+        reference: "Shmueli K, de Zwart JA, van Gelderen P, Li TQ, Dodd SJ, Duyn JH. Magnetic susceptibility mapping of brain tissue in vivo using MRI phase data. Magnetic Resonance in Medicine. 2009;62(6):1510–1522."
+        doi: 10.1002/mrm.22135
+      - group: Dipole inversion
+        title: Tikhonov regularization
+        reference: "Bilgic B, Chatnuntawech I, Fan AP, et al. Fast image reconstruction with L2-regularization. Journal of Magnetic Resonance Imaging. 2014;40(1):181–191."
+        doi: 10.1002/jmri.24365
+      - group: Dipole inversion
+        title: TV-ADMM
+        reference: "Bilgic B, Fan AP, Polimeni JR, et al. Fast quantitative susceptibility mapping with L1-regularization and automatic parameter selection. Magnetic Resonance in Medicine. 2014;72(5):1444–1459."
+        doi: 10.1002/mrm.25029
+      - group: Dipole inversion
+        title: RTS and NLTV
+        reference: "Kames C, Wiggermann V, Rauscher A. Rapid two-step dipole inversion for susceptibility mapping with sparsity priors. NeuroImage. 2018;167:276–283."
+        doi: 10.1016/j.neuroimage.2017.11.018
+      - group: Dipole inversion
+        title: MEDI
+        reference: "Liu T, Liu J, de Rochefort L, et al. Morphology enabled dipole inversion (MEDI) from a single-angle acquisition: comparison with COSMOS in human brain imaging. Magnetic Resonance in Medicine. 2011;66(3):777–783."
+        doi: 10.1002/mrm.22816
+        code: https://github.com/huawu02/MEDI_toolbox
+      - group: Dipole inversion
+        title: iLSQR
+        reference: "Li W, Wang N, Yu F, et al. A method for estimating and removing streaking artifacts in quantitative susceptibility mapping. NeuroImage. 2015;108:111–122."
+        doi: 10.1016/j.neuroimage.2014.12.043
+      - group: Dipole inversion
+        title: TGV
+        reference: "Langkammer C, Bredies K, Poser BA, et al. Fast quantitative susceptibility mapping using 3D EPI and total generalized variation. NeuroImage. 2015;111:622–630."
+        doi: 10.1016/j.neuroimage.2015.02.041
+        code: https://github.com/korbinian90/QuantitativeSusceptibilityMappingTGV.jl
+      - group: QSMART pipeline
+        title: QSMART and spatial domain filtering
+        reference: "Yaghmaie N, Syeda WT, Wu C, et al. QSMART: Quantitative Susceptibility Mapping Artifact Reduction Technique. NeuroImage. 2021;231:117701."
+        doi: 10.1016/j.neuroimage.2020.117701
+        code: https://github.com/wtsyeda/QSMART
+      - group: Utility algorithms
+        title: Frangi vesselness filter
+        reference: "Frangi AF, Niessen WJ, Vincken KL, Viergever MA. Multiscale vessel enhancement filtering. Medical Image Computing and Computer-Assisted Intervention. 1998;1496:130–137."
+        doi: 10.1007/BFb0056195
+      - group: Utility algorithms
+        title: Surface curvature
+        reference: "Meyer M, Desbrun M, Schröder P, Barr AH. Discrete differential-geometry operators for triangulated 2-manifolds. Visualization and Mathematics III. 2003:35–57."
+        doi: 10.1007/978-3-662-05105-4_2
+      - group: QSM reviews
+        title: Overview of QSM
+        reference: "Deistung A, Schweser F, Reichenbach JR. Overview of quantitative susceptibility mapping. NMR in Biomedicine. 2017;30(4):e3569."
+        doi: 10.1002/nbm.3569
+      - group: QSM reviews
+        title: Foundations of MRI phase imaging
+        reference: "Schweser F, Deistung A, Reichenbach JR. Foundations of MRI phase imaging and processing for Quantitative Susceptibility Mapping (QSM). Zeitschrift für Medizinische Physik. 2016;26(1):6–34."
+        doi: 10.1016/j.zemedi.2015.10.002
+      - group: QSM reviews
+        title: QSM basic methods and clinical applications
+        reference: "Harada T, Kudo K, Fujima N, et al. Quantitative susceptibility mapping: basic methods and clinical applications. RadioGraphics. 2022;42(4):1161–1176."
+        doi: 10.1148/rg.210054
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  seedseg:
+    packages:
+      - { name: ONNX Runtime Web, url: https://onnxruntime.ai, role: runs the four 3D UNet models in the browser }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+      - { name: dicompare, url: https://github.com/astewartau/dicompare, role: acquisition protocol validation report }
+    citations:
+      - group: Fiducial marker segmentation
+        title: SeedSeg
+        reference: "Stewart AW, Goodwin J, Richardson M, et al. Deep-learning-enabled differentiation between intraprostatic gold fiducial markers and calcification in quantitative susceptibility mapping. bioRxiv. 2023."
+        doi: 10.1101/2023.10.26.564293
+        code: https://github.com/astewartau/prostate-fiducial-seg
+      - group: Bias field correction
+        title: Homogeneity correction
+        reference: "Eckstein K, Trattnig S, Robinson SD. A simple homogeneity correction for neuroimaging at 7T. Proceedings of the ISMRM 27th Annual Meeting. 2019."
+        url: https://github.com/korbinian90/MriResearchTools.jl
+      - group: Segmentation networks
+        title: 3D U-Net
+        reference: "Çiçek Ö, Abdulkadir A, Lienkamp SS, Brox T, Ronneberger O. 3D U-Net: learning dense volumetric segmentation from sparse annotation. Medical Image Computing and Computer-Assisted Intervention. 2016:424–432."
+        doi: 10.1007/978-3-319-46723-8_49
+      - group: Browser inference
+        title: ONNX Runtime Web
+        reference: "Microsoft. ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator [Computer software]."
+        url: https://onnxruntime.ai
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  dicompare:
+    builders: dicompare is a collaboration between the Pestilli Lab (brainlife.io) and the Bollmann Lab (Neurodesk).
+    about:
+      - dicompare validates DICOM acquisitions against protocol schemas so that scan parameters can be checked, compared and shared before data leave the scanner site.
+    packages:
+      - { name: dicompare (Python, via Pyodide), url: https://github.com/astewartau/dicompare, role: protocol comparison and schema validation }
+      - { name: Pyodide, url: https://pyodide.org, role: runs the Python package in the browser }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+    citations:
+      - group: Protocol validation
+        title: dicompare
+        reference: "Stewart AW, Amorosino G, Veraart J, Heinsfeld AS, Bollmann S, Pestilli F. dicompare [Computer software]."
+        url: https://github.com/astewartau/dicompare
+      - group: Browser runtime
+        title: Pyodide
+        reference: "Pyodide Contributors. Pyodide: Python distribution for the browser and Node.js based on WebAssembly [Computer software]."
+        url: https://pyodide.org
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  deface:
+    packages:
+      - { name: niimath (WebAssembly), url: https://github.com/rordenlab/niimath, role: affine registration and face voxel removal }
+      - { name: MindGrab (brainchop), url: https://github.com/neuroneural/brainchop, role: optional deep-learning brain extraction on WebGPU }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+    citations:
+      - group: Defacing
+        title: niimath
+        reference: "Rorden C, Webster M, Drake C, et al. niimath and fslmaths: replication as a method to enhance testing and improve tool quality. Aperture Neuro. 2024;4."
+        doi: 10.52294/001c.94384
+        code: https://github.com/rordenlab/niimath
+      - group: Template
+        title: MNI152 average template
+        reference: "Mazziotta J, Toga A, Evans A, et al. A probabilistic atlas and reference system for the human brain: International Consortium for Brain Mapping (ICBM). Philosophical Transactions of the Royal Society B. 2001;356(1412):1293–1322."
+        doi: 10.1098/rstb.2001.0915
+      - group: Brain extraction
+        title: MindGrab
+        reference: "Fani A, Nassar M, Ghosh S, et al. MindGrab for BrainChop: fast and accurate skull stripping for command line and browser. arXiv. 2025."
+        url: https://arxiv.org/abs/2506.11860
+      - group: Brain extraction
+        title: Brainchop
+        reference: "Masoud M, Hu F, Plis S. Brainchop: in-browser MRI volumetric segmentation and rendering. Journal of Open Source Software. 2023;8(83):5098."
+        doi: 10.21105/joss.05098
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  easy-mp2rage:
+    builders: The MP2RAGE port was written by Thomas B. Shaw, based on Ashley Stewart's QSMbly.
+    packages:
+      - { name: Rust → WebAssembly T1-mapping core, url: https://github.com/neurodesk/webapps/tree/main/apps/easy-mp2rage, role: MP2RAGE and SA2RAGE computations }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+    citations:
+      - group: T1 mapping
+        title: MP2RAGE
+        reference: "Marques JP, Kober T, Krueger G, van der Zwaag W, Van de Moortele PF, Gruetter R. MP2RAGE, a self bias-field corrected sequence for improved segmentation and T1-mapping at high field. NeuroImage. 2010;49(2):1271–1281."
+        doi: 10.1016/j.neuroimage.2009.10.002
+        code: https://github.com/JosePMarques/MP2RAGE-related-scripts
+      - group: B1 correction
+        title: MP2RAGE B1+ correction
+        reference: "Marques JP, Gruetter R. New developments and applications of the MP2RAGE sequence – focusing the contrast and high spatial resolution R1 mapping. PLoS ONE. 2013;8(7):e69294."
+        doi: 10.1371/journal.pone.0069294
+      - group: B1 mapping
+        title: SA2RAGE
+        reference: "Eggenschwiler F, Kober T, Magill AW, Gruetter R, Marques JP. SA2RAGE: a new sequence for fast B1+-mapping. Magnetic Resonance in Medicine. 2012;67(6):1609–1619."
+        doi: 10.1002/mrm.23145
+      - group: Denoising
+        title: Robust MP2RAGE combination
+        reference: "O'Brien KR, Kober T, Hagmann P, et al. Robust T1-weighted structural brain imaging and morphometry at 7T using MP2RAGE. PLoS ONE. 2014;9(6):e99676."
+        doi: 10.1371/journal.pone.0099676
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  niimath:
+    about:
+      - NiiMath runs the niimath image-maths toolkit in the browser. Choose a NIfTI or DICOM image, edit the command, and process it locally.
+    packages:
+      - { name: niimath (WebAssembly), url: https://github.com/rordenlab/niimath, role: image maths and filtering }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+    citations:
+      - group: Image maths
+        title: niimath
+        reference: "Rorden C, Webster M, Drake C, et al. niimath and fslmaths: replication as a method to enhance testing and improve tool quality. Aperture Neuro. 2024;4."
+        doi: 10.52294/001c.94384
+        code: https://github.com/rordenlab/niimath
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  dicom2vid:
+    builders: MRI2VID was written by Thomas Shaw (University of Queensland), based on Ashley Stewart's QSMbly.
+    packages:
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer and frame rendering }
+      - { name: mp4-muxer and webm-muxer, url: https://github.com/Vanilagy/mp4-muxer, role: video encoding through WebCodecs }
+    citations:
+      - group: DICOM reading
+        title: DICOM standard
+        reference: "Mildenberger P, Eichelberg M, Martin E. Introduction to the DICOM standard. European Radiology. 2002;12(4):920–927."
+        doi: 10.1007/s003300101100
+      - group: Video encoding
+        title: mp4-muxer
+        reference: "Vanilagy. mp4-muxer and webm-muxer: MP4 and WebM multiplexers for the browser [Computer software]."
+        url: https://github.com/Vanilagy/mp4-muxer
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  browserqc:
+    packages:
+      - { name: brainchop (TensorFlow.js), url: https://github.com/neuroneural/brainchop, role: deep-learning tissue segmentation on the GPU }
+      - { name: niimath (WebAssembly), url: https://github.com/rordenlab/niimath, role: MRIQC-style image-quality metrics }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+    citations:
+      - group: Image-quality metrics
+        title: MRIQC
+        reference: "Esteban O, Birman D, Schaer M, Koyejo OO, Poldrack RA, Gorgolewski KJ. MRIQC: advancing the automatic prediction of image quality in MRI from unseen sites. PLoS ONE. 2017;12(9):e0184661."
+        doi: 10.1371/journal.pone.0184661
+      - group: Segmentation
+        title: Brainchop
+        reference: "Masoud M, Hu F, Plis S. Brainchop: in-browser MRI volumetric segmentation and rendering. Journal of Open Source Software. 2023;8(83):5098."
+        doi: 10.21105/joss.05098
+      - group: Image maths
+        title: niimath
+        reference: "Rorden C, Webster M, Drake C, et al. niimath and fslmaths: replication as a method to enhance testing and improve tool quality. Aperture Neuro. 2024;4."
+        doi: 10.52294/001c.94384
+      - group: Deep learning framework
+        title: TensorFlow.js
+        reference: "Smilkov D, Thorat N, Assogba Y, et al. TensorFlow.js: machine learning for the web and beyond. arXiv. 2019."
+        url: https://arxiv.org/abs/1901.05350
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  surfannotate:
+    about:
+      - SurfAnnotate loads cortical surface meshes, shows per-vertex overlays, and lets you draw, fill and export regions of interest.
+    packages:
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: surface rendering and mesh, overlay and label parsing }
+    citations:
+      - group: Surface formats
+        title: FreeSurfer
+        reference: "Fischl B. FreeSurfer. NeuroImage. 2012;62(2):774–781."
+        doi: 10.1016/j.neuroimage.2012.01.021
+      - group: Surface formats
+        title: GIfTI
+        reference: "Harwell J, Bremen H, Coulon O, et al. GIfTI: Geometry data format for exchange of surface-based brain mapping data. Organization for Human Brain Mapping. 2008."
+        url: https://www.nitrc.org/projects/gifti
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  zarro:
+    about:
+      - ZARRo streams multiscale OME-Zarr volumes from public archives such as DANDI and renders them at the resolution the view needs, without downloading whole datasets.
+    packages:
+      - { name: zarrita, url: https://github.com/manzt/zarrita.js, role: Zarr v2 and v3 store access }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: volume rendering }
+    citations:
+      - group: Data format
+        title: OME-NGFF
+        reference: "Moore J, Allan C, Besson S, et al. OME-NGFF: a next-generation file format for expanding bioimaging data-access strategies. Nature Methods. 2021;18(12):1496–1498."
+        doi: 10.1038/s41592-021-01326-w
+      - group: Data format
+        title: Zarr
+        reference: "Zarr Developers. Zarr: chunked, compressed, N-dimensional arrays [Computer software]."
+        url: https://zarr.dev
+      - group: Data archive
+        title: DANDI Archive
+        reference: "DANDI Archive. Distributed Archives for Neurophysiology Data Integration [Data repository]."
+        url: https://dandiarchive.org
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  synthsr:
+    packages:
+      - { name: ONNX Runtime Web, url: https://onnxruntime.ai, role: CPU (WebAssembly) inference }
+      - { name: WebGPU FP32 kernels, url: https://github.com/neurodesk/webapps/tree/main/packages/synthsr, role: GPU inference }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+    citations:
+      - group: Image synthesis
+        title: SynthSR
+        reference: "Iglesias JE, Billot B, Balbastre Y, et al. Joint super-resolution and synthesis of 1 mm isotropic MP-RAGE volumes from clinical MRI exams with scans of different orientation, resolution and contrast. NeuroImage. 2021;237:118206."
+        doi: 10.1016/j.neuroimage.2021.118206
+        code: https://github.com/BBillot/SynthSR
+      - group: Reference implementation
+        title: py_synthsr
+        reference: "Rorden C. py_synthsr: a Python reference implementation of SynthSR [Computer software]."
+        url: https://github.com/neurolabusc/py_synthsr
+      - group: Browser inference
+        title: ONNX Runtime Web
+        reference: "Microsoft. ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator [Computer software]."
+        url: https://onnxruntime.ai
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue
+
+  syncro:
+    packages:
+      - { name: ONNX Runtime Web, url: https://onnxruntime.ai, role: SynthSR and SynthStrip inference on the CPU }
+      - { name: WebGPU FP32 kernels, url: https://github.com/neurodesk/webapps/tree/main/packages/synthsr, role: SynthSR inference on the GPU }
+      - { name: MindGrab (brainchop), url: https://github.com/neuroneural/brainchop, role: default brain extraction }
+      - { name: ANTs SyN (WebAssembly), url: https://github.com/ANTsX/ANTs, role: deformable registration to MNI space }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+    citations:
+      - group: Image synthesis
+        title: SynthSR
+        reference: "Iglesias JE, Billot B, Balbastre Y, et al. Joint super-resolution and synthesis of 1 mm isotropic MP-RAGE volumes from clinical MRI exams with scans of different orientation, resolution and contrast. NeuroImage. 2021;237:118206."
+        doi: 10.1016/j.neuroimage.2021.118206
+        code: https://github.com/BBillot/SynthSR
+      - group: Brain extraction
+        title: MindGrab
+        reference: "Fani A, Nassar M, Ghosh S, et al. MindGrab for BrainChop: fast and accurate skull stripping for command line and browser. arXiv. 2025."
+        url: https://arxiv.org/abs/2506.11860
+      - group: Brain extraction
+        title: Brainchop
+        reference: "Masoud M, Hu F, Plis S. Brainchop: in-browser MRI volumetric segmentation and rendering. Journal of Open Source Software. 2023;8(83):5098."
+        doi: 10.21105/joss.05098
+        code: https://github.com/neuroneural/brainchop
+      - group: Brain extraction
+        title: SynthStrip
+        reference: "Hoopes A, Mora JS, Dalca AV, Fischl B, Hoffmann M. SynthStrip: skull-stripping for any brain image. NeuroImage. 2022;260:119474."
+        doi: 10.1016/j.neuroimage.2022.119474
+        code: https://surfer.nmr.mgh.harvard.edu/docs/synthstrip/
+      - group: Registration
+        title: ANTs SyN
+        reference: "Avants BB, Epstein CL, Grossman M, Gee JC. Symmetric diffeomorphic image registration with cross-correlation: evaluating automated labeling of elderly and neurodegenerative brain. Medical Image Analysis. 2008;12(1):26–41."
+        doi: 10.1016/j.media.2007.06.004
+        code: https://github.com/ANTsX/ANTs
+      - group: Registration
+        title: ANTs evaluation
+        reference: "Avants BB, Tustison NJ, Song G, Cook PA, Klein A, Gee JC. A reproducible evaluation of ANTs similarity metric performance in brain image registration. NeuroImage. 2011;54(3):2033–2044."
+        doi: 10.1016/j.neuroimage.2010.09.025
+      - group: Template
+        title: MNI152 template
+        reference: "Fonov V, Evans AC, Botteron K, Almli CR, McKinstry RC, Collins DL. Unbiased average age-appropriate atlases for pediatric studies. NeuroImage. 2011;54(1):313–327."
+        doi: 10.1016/j.neuroimage.2010.07.033
+      - group: Browser inference
+        title: ONNX Runtime Web
+        reference: "Microsoft. ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator [Computer software]."
+        url: https://onnxruntime.ai
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue

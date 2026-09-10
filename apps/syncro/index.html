@@ -1,23 +1,113 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Normalize brain scans and aligned lesion maps to MNI space with SYNcro."><title>SYNcro · Neurodesk</title></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Normalize brain scans and aligned lesion maps to MNI space with SYNcro.">
+  <title>SYNcro · Neurodesk</title>
+</head>
+<body>
 <header id="controls">
-<section class="nd-sidebar-section"><h2>Normalize a brain scan <span class="info-icon" tabindex="0" aria-label="About this workflow">i<span class="info-tooltip" role="tooltip">Synthesize a T1, extract the brain and align it to MNI space. Images stay on this device.</span></span></h2>
-<label for="input">Anatomical image (NIfTI / DICOM)</label><input id="input" type="file" data-neurodesk-input="image" multiple><button id="example">Load OpenNeuro example</button><p id="fileInfo" class="hint" aria-live="polite"></p>
-<label for="modality">Input modality</label><select id="modality"><option value="mri">MRI</option><option value="ct">CT · Hounsfield units</option></select>
-<button id="runButton" disabled>Normalize to MNI</button><button id="cancel" hidden>Cancel processing</button></section>
-<details class="nd-sidebar-section" id="additionalSection"><summary>Accompanying images</summary><label for="additional">Add aligned images or lesion maps <span class="info-icon" tabindex="0" aria-label="About accompanying images">i<span class="info-tooltip" role="tooltip">Images must already match the anatomical scan's dimensions and geometry. Choose whether each image is continuous, binary or categorical after loading it.</span></span></label><input id="additional" type="file" data-neurodesk-input="image" multiple><div id="additionalList"></div></details>
-<details class="nd-sidebar-section"><summary>Processing settings</summary><label for="synthsrBackend">SynthSR processing device <span class="info-icon" tabindex="0" aria-label="About processing devices">i<span class="info-tooltip" role="tooltip">SynthSR uses full-volume inference with flip averaging and sharpening. WebGPU is fastest on supported hardware. CPU WebAssembly is the fallback. Full scans need several GB of memory, so a desktop browser is recommended.</span></span></label><select id="synthsrBackend"><option value="webgpu">GPU · WebGPU (default)</option><option value="wasm">CPU · WebAssembly</option></select><label for="brainExtractor">Brain extraction</label><select id="brainExtractor"><option value="mindgrab">MindGrab · automatic (default)</option><option value="synthstrip">SynthStrip · CPU WebAssembly</option></select><p class="hint">MindGrab tries WebGPU, WebGL2, then threaded CPU. Registration uses CPU WebAssembly.</p></details>
-<details class="nd-sidebar-section" id="results"><summary>Results and downloads</summary><div class="download-label">Download results <span class="info-icon" tabindex="0" aria-label="About downloaded results">i<span class="info-tooltip" role="tooltip">Includes warped acquired images, synthetic images, masks, forward and inverse transforms, and processing details.</span></span></div><button id="download" disabled>Download all results (.zip)</button></details>
-<button id="aboutBtn" hidden>About</button><button id="citeBtn" hidden>Cite</button><button id="standaloneBtn" data-neurodesk-control="standalone" hidden>Standalone</button><button id="privacyBtn" hidden>Privacy</button>
+  <details class="nd-sidebar-section" id="inputSection" open>
+    <summary class="nd-section-title">Anatomical image</summary>
+    <div class="nd-section-content">
+      <label class="nd-file" id="dropZone">
+        <input id="input" type="file" data-neurodesk-input="image" multiple aria-label="Choose an anatomical NIfTI image or DICOM series">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Drop NIfTI or DICOM files or folder</span>
+      </label>
+      <p id="fileInfo" class="nd-file-info" aria-live="polite" hidden></p>
+      <button id="example" class="nd-btn nd-btn-secondary nd-btn-sm" type="button">Load OpenNeuro example</button>
+      <div class="nd-field">
+        <label for="modality">Input modality</label>
+        <select id="modality"><option value="mri">MRI</option><option value="ct">CT · Hounsfield units</option></select>
+      </div>
+      <button id="runButton" class="nd-btn nd-btn-primary" type="button" disabled>Normalize to MNI</button>
+    </div>
+  </details>
+
+  <details class="nd-sidebar-section" id="additionalSection">
+    <summary class="nd-section-title">Accompanying images</summary>
+    <div class="nd-section-content">
+      <p class="nd-hint">Lesion maps or other images already aligned to the anatomical scan. They are warped with the same transform.</p>
+      <label class="nd-file">
+        <input id="additional" type="file" data-neurodesk-input="image" multiple aria-label="Choose accompanying NIfTI or DICOM images">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Drop aligned images or lesion maps</span>
+      </label>
+      <div id="additionalList"></div>
+    </div>
+  </details>
+
+  <details class="nd-sidebar-section" id="settingsSection">
+    <summary class="nd-section-title">Processing settings</summary>
+    <div class="nd-section-content">
+      <div class="nd-field">
+        <label for="synthsrBackend">SynthSR device <span class="nd-info-icon" tabindex="0" aria-label="About processing devices">i<span class="nd-info-tooltip">Full-volume SynthSR with flip averaging and sharpening. WebGPU is fastest on supported hardware; CPU WebAssembly is the fallback. Full scans need several GB of memory.</span></span></label>
+        <select id="synthsrBackend"><option value="webgpu">GPU · WebGPU</option><option value="wasm">CPU · WebAssembly</option></select>
+      </div>
+      <div class="nd-field">
+        <label for="brainExtractor">Brain extraction</label>
+        <select id="brainExtractor"><option value="mindgrab">MindGrab · automatic</option><option value="synthstrip">SynthStrip · CPU WebAssembly</option></select>
+        <p class="nd-hint">MindGrab tries WebGPU, WebGL2, then threaded CPU. Registration uses CPU WebAssembly.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="nd-sidebar-section" id="results">
+    <summary class="nd-section-title">Results</summary>
+    <div class="nd-section-content">
+      <div id="resultList"></div>
+      <button id="download" class="nd-btn nd-btn-secondary nd-btn-sm" type="button" disabled>Download all results (.zip)</button>
+      <p class="nd-hint">Includes warped images, synthetic images, masks, forward and inverse transforms, and processing details.</p>
+    </div>
+  </details>
+
+  <button id="aboutBtn" type="button" hidden>About</button>
+  <button id="standaloneBtn" type="button" data-neurodesk-control="standalone" hidden>Standalone</button>
+  <button id="privacyBtn" type="button" hidden>Privacy</button>
 </header>
-<main id="viewer"><div class="viewer-actions"><label for="resultSelect">View</label><select id="resultSelect" disabled><option value="">No scan loaded</option></select><span id="viewLabel">Image workspace</span><label class="opacity-control" id="opacityControl" hidden><span>Overlay</span><input id="opacity" type="range" min="0" max="100" step="5" value="50" disabled><span id="opacityValue">50%</span></label></div><div class="canvas-wrap"><canvas id="gl1" aria-label="Brain image viewer"></canvas><p id="empty">Load a brain scan to begin.</p></div><p id="viewerError" hidden></p><div data-disclosure class="collapsed console-container" id="technicalLog"><div class="console-header"><button type="button" class="console-title" data-disclosure-toggle>Technical log</button><div class="console-actions"><button type="button" class="console-clear" id="copyLog">Copy</button><button type="button" class="console-clear" id="clearLog">Clear</button></div></div><pre class="console-output" id="log" aria-label="Processing log" data-disclosure-panel></pre></div></main>
-<footer id="status"><span id="statusText" role="status" aria-live="polite">Ready · choose an anatomical image</span><progress id="progress" value="0" max="1" aria-label="Normalization progress"></progress><span id="elapsed"></span></footer>
-<dialog id="info"><div class="dialog-header"><h2 id="infoTitle"></h2><form method="dialog"><button class="nd-app-dialog__close dialog-close" aria-label="Close">×</button></form></div><div id="infoBody"></div></dialog>
-<template id="standaloneContent">
-  <div class="info-highlight"><div><strong>Run SYNcro from a terminal</strong><p>Install the versioned package and process NIfTI images from the command line. Brain extraction uses SynthStrip with native ONNX Runtime.</p></div></div>
-  <a id="packageLink" class="package-link" href="downloads/neurodesk-syncro-0.1.4.tgz" download>Download npm package · 0.1.4</a>
-  <h3>Download</h3><div class="command-row"><code id="downloadCommand">curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-0.1.4.tgz</code><button class="copy-command" data-copy-target="downloadCommand" aria-label="Copy download command">Copy</button></div>
-  <h3>Install</h3><div class="command-row"><code id="installCommand">ONNXRUNTIME_NODE_INSTALL=skip npm install -g --prefix "$HOME/.local" ./neurodesk-syncro-0.1.4.tgz</code><button class="copy-command" data-copy-target="installCommand" aria-label="Copy install command">Copy</button></div>
-  <h3>Run</h3><div class="command-row"><code id="runCommand">"$HOME/.local/bin/syncro" input.nii.gz results --threads 4</code><button class="copy-command" data-copy-target="runCommand" aria-label="Copy run command">Copy</button></div>
-  <span id="copyStatus" class="sr-only" role="status" aria-live="polite"></span>
+
+<main id="viewer">
+  <div class="nd-viewer-canvas-wrapper">
+    <canvas id="gl1" aria-label="Brain image viewer"></canvas>
+    <p id="empty" class="nd-viewer-empty">Load a brain scan to begin.</p>
+    <p id="viewerError" class="nd-viewer-notice" hidden></p>
+  </div>
+  <div class="nd-viewer-info"><span id="viewLabel" class="nd-viewer-info-primary"></span></div>
+</main>
+
+<footer id="status">
+  <span class="nd-status-label">Status</span>
+  <span id="statusText" class="nd-status-text" role="status" aria-live="polite">Ready · choose an anatomical image</span>
+  <span id="elapsed" class="nd-status-elapsed"></span>
+  <progress id="progress" value="0" max="1" aria-label="Normalization progress"></progress>
+  <button id="cancel" class="nd-btn-cancel" type="button" title="Cancel processing" aria-label="Cancel processing" hidden>×</button>
+</footer>
+
+<template id="aboutContent">
+  <p>SynthSR → brain extraction (MindGrab by default, or SynthStrip) → ANTs SyN normalization to the MNI152 1 mm brain template. The transformation is applied to the original acquired image.</p>
+  <p>Synthetic contrast may alter lesions. Review the original image, brain mask and alignment before using results. This experimental implementation is for research.</p>
+  <p>Code: Apache-2.0 with upstream attribution. MindGrab is MIT licensed. The MNI template has separate <a href="data/FSL-LICENSE.txt">FSL terms for non-commercial use</a>.</p>
 </template>
-<script type="module" src="/src/main.js"></script></body></html>
+
+<template id="privacyContent">
+  <p>Your images are processed locally in this browser. SynthSR, optional SynthStrip and the MNI template are downloaded from Hugging Face; MindGrab ships with the app. The optional example is downloaded from OpenNeuro. Model bytes may be cached on this device. Images are not uploaded to a processing service.</p>
+</template>
+
+<template id="standaloneContent">
+  <div class="nd-dialog-highlight"><strong>Run SYNcro from a terminal</strong><p>Install the versioned package and process NIfTI images from the command line. Brain extraction uses SynthStrip with native ONNX Runtime.</p></div>
+  <h3>Download</h3>
+  <div class="nd-command"><code id="downloadCommand">curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-0.1.4.tgz</code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="downloadCommand" aria-label="Copy download command">Copy</button></div>
+  <h3>Install</h3>
+  <div class="nd-command"><code id="installCommand">ONNXRUNTIME_NODE_INSTALL=skip npm install -g --prefix "$HOME/.local" ./neurodesk-syncro-0.1.4.tgz</code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="installCommand" aria-label="Copy install command">Copy</button></div>
+  <h3>Run</h3>
+  <div class="nd-command"><code id="runCommand">"$HOME/.local/bin/syncro" input.nii.gz results --threads 4</code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="runCommand" aria-label="Copy run command">Copy</button></div>
+  <p><a id="packageLink" href="downloads/neurodesk-syncro-0.1.4.tgz" download>Download the npm package · 0.1.4</a></p>
+  <span id="copyStatus" class="nd-sr-only" role="status" aria-live="polite"></span>
+</template>
+
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
