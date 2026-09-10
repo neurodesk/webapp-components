@@ -39,7 +39,8 @@ await runVitePreviewSmoke({
         { timeout: 30000 },
       ).catch(() => fail('unsupported-WebGPU message did not appear', page))
       allowConsoleError('Failed to get WebGPU adapter')
-      await page.click('#aboutBtn')
+      allowConsoleError('Unable to initialize WebGL2')
+      await page.click('[data-neurodesk-shell-control="about"]')
       if (!(await page.isVisible('#aboutDialog'))) await fail('About dialog did not open', page)
       await page.click('#closeAboutBtn')
       console.log('✓ unsupported-WebGPU guidance shown, About dialog opens')
@@ -79,7 +80,7 @@ await runVitePreviewSmoke({
       el.dispatchEvent(new Event('input', { bubbles: true }))
     })
     // 4. About dialog opens and closes.
-    await page.click('#aboutBtn')
+    await page.click('[data-neurodesk-shell-control="about"]')
     if (!(await page.isVisible('#aboutDialog'))) await fail('About dialog did not open', page)
     await page.click('#closeAboutBtn')
     await page.getByRole('button', { name: 'Cite' }).click()
