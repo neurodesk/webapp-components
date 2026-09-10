@@ -72,6 +72,18 @@ tighten. The Metal executor includes `packages/synthseg/src/gpu-model.json`
 `packages/synthseg/model.manifest.json`. `make test-real` fetches inputs and
 FreeSurfer goldens from Hugging Face into `SYNTHSEG_REFERENCE_DIR`.
 
+`packages/synthseg/wasm/src/lib.rs` includes `exes/synthseg/src/{nifti,volume,post}.rs`
+by `#[path]`, so browser pre/postprocessing is the CLI's code, not a port. The
+built `src/synthseg.wasm` is committed: after changing those Rust files run
+`make wasm` and `make test` in `packages/synthseg`. `apps/synthseg` is WebGPU-only
+(no WASM inference fallback); its e2e parity gate mirrors `tests/parity.rs`.
+
+Deferred SynthSeg cleanups (audit 2026-09-10):
+share the CLI shell/NIfTI decode/volume math with `exes/synthsr` in one crate; route both
+apps' worker model download through `packages/components` `fetchModel`; drop the
+`metal-f16` feature and unused `scripts/{compare_seg,check_onnx}.py`; the per-run
+`is_finite` scan in `main.rs` is on the hot path.
+
 `exes/synthsr/src/nifti.rs` and `src/volume.rs` are line-for-line ports of
 `packages/synthsr/src/volume.js` and must stay bit-identical (f64 math, f32
 storage): change the JS and the Rust together. `exes/synthsr/src/metal.rs`

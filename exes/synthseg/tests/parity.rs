@@ -105,6 +105,15 @@ fn nifti_roundtrip_and_rejections() {
     let mut nan_slope = bytes.clone();
     nan_slope[112..116].copy_from_slice(&f32::NAN.to_le_bytes());
     assert_eq!(nifti::read(&nan_slope).unwrap().data, r.data);
+    let mut oversized_header = bytes.clone();
+    oversized_header[40..42].copy_from_slice(&(4i16).to_le_bytes());
+    for offset in [42, 44, 46, 48] {
+        oversized_header[offset..offset + 2].copy_from_slice(&(i16::MAX).to_le_bytes());
+    }
+    assert!(nifti::read(&oversized_header)
+        .err()
+        .unwrap()
+        .contains("Unsupported image dimensions"));
     let huge = nifti::Volume {
         data: vec![0i32; 8],
         dims: [2, 2, 2],

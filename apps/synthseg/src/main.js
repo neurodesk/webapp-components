@@ -5,6 +5,7 @@ import { downloadBlob, downloadFile, filesFromDataTransferItems, readNifti } fro
 import { readImageFiles } from '@neurodesk/runtime-support/dcm2niix-client';
 import manifest from '@neurodesk/synthseg/manifest';
 import { looksLikeCt, outputStem } from './logic.js';
+import freesurferLut from './freesurfer-lut.json';
 import './styles.css';
 
 mountImagingWorkspace({controls:'#controls',viewer:'#viewer',status:'#status',title:'SynthSeg',subtitle:'FreeSurfer brain labels, in your browser',mark:'S',controlsContract:{about:'#aboutBtn',cite:'#citeBtn',privacy:'#privacyBtn',standalone:'#standaloneBtn'}});
@@ -50,9 +51,13 @@ async function show() {
   $('resultBadge').hidden = !output;
   $('imageLabel').textContent = output ? 'ORIGINAL IMAGE · FREESURFER LABELS' : 'ORIGINAL IMAGE';
   const volumes = [{ url: source, name: source.name }];
-  // freesurfer is NiiVue's built-in FreeSurfer label LUT (dist/luts/freesurfer.json).
-  if (output) volumes.push({ url: output, name: output.name, colormap: 'freesurfer', opacity: Number($('opacity').value) });
-  try { const nv = await ensureViewer(); await nv.loadVolumes(volumes); $('viewerError').hidden = true; }
+  if (output) volumes.push({ url: output, name: output.name, opacity: Number($('opacity').value) });
+  try {
+    const nv = await ensureViewer(); await nv.loadVolumes(volumes);
+    // Label names too, so the location bar reads e.g. "Left-Hippocampus".
+    if (output) await nv.setColormapLabel(1, freesurferLut);
+    $('viewerError').hidden = true;
+  }
   catch (error) {
     $('viewerError').hidden = false;
     $('viewerError').textContent = `Visualization unavailable: ${error.message}. Processing and NIfTI download remain available.`;
@@ -147,11 +152,10 @@ $('processButton').onclick = () => {
     if (data.type === 'result') {
       provenance = data.provenance;
       output = new File([data.buffer], `${outputStem(source.name)}_synthseg.nii.gz`, { type: 'application/gzip' });
-      setBusy(false);
       $('outputSection').open = true;
       $('progress').value = 1;
-      await show();
-      status(`Labels ready · ${provenance.outputShape.join(' × ')} · ${Math.round(provenance.seconds)} s`);
+      try { await show(); status(`Labels ready · ${provenance.outputShape.join(' × ')} · ${Math.round(provenance.seconds)} s`); }
+      finally { setBusy(false); }
     }
   };
   worker.onerror = (e) => { setBusy(false); status(`Processing stopped: ${e.message || 'The inference worker could not run. Reload the app and try again.'}`, true); };

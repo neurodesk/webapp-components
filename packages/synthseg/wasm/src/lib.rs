@@ -17,7 +17,7 @@ pub struct Segmenter {
     prep: volume::Prepared,
     padded: [u32; 3],
     input_dims: [u32; 3],
-    geometry: String,
+    output_dims: [u32; 3],
     flipped: Vec<f32>,
     scratch: Vec<f32>,
     posteriors: Vec<f32>,
@@ -58,7 +58,7 @@ pub unsafe extern "C" fn seg_new(ptr: *const u8, len: usize, ct: u32) -> *mut Se
         Ok((dims, prep)) => Box::into_raw(Box::new(Segmenter {
             padded: prep.padded.map(|d| d as u32),
             input_dims: dims.map(|d| d as u32),
-            geometry: geometry(&dims, &prep),
+            output_dims: prep.dims.map(|d| d as u32),
             prep,
             flipped: Vec::new(),
             scratch: Vec::new(),
@@ -87,8 +87,8 @@ macro_rules! accessors {
 accessors! {
     seg_padded(s) -> *const u32 { s.padded.as_ptr() }
     seg_input_dims(s) -> *const u32 { s.input_dims.as_ptr() }
-    seg_geometry(s) -> *const u8 { s.geometry.as_ptr() }
-    seg_geometry_len(s) -> u32 { s.geometry.len() as u32 }
+    seg_output_dims(s) -> *const u32 { s.output_dims.as_ptr() }
+    seg_affine(s) -> *const f64 { s.prep.affine[0].as_ptr() }
     seg_input(s) -> *const f32 { s.prep.input.as_ptr() }
     seg_labels_len(s) -> u32 { s.output.len() as u32 }
     seg_flipped_input(s) -> *const f32 {
@@ -143,23 +143,4 @@ pub unsafe extern "C" fn seg_labels(seg: *mut Segmenter, fast: u32) -> *const u8
 #[no_mangle]
 pub unsafe extern "C" fn seg_free(seg: *mut Segmenter) {
     drop(Box::from_raw(seg));
-}
-
-fn geometry(dims: &[usize; 3], p: &volume::Prepared) -> String {
-    let list = |v: &[usize; 3]| format!("[{},{},{}]", v[0], v[1], v[2]);
-    let affine: Vec<String> = p
-        .affine
-        .iter()
-        .map(|r| {
-            let cells: Vec<String> = r.iter().map(|v| v.to_string()).collect();
-            format!("[{}]", cells.join(","))
-        })
-        .collect();
-    format!(
-        "{{\"inputShape\":{},\"paddedShape\":{},\"outputShape\":{},\"outputAffine\":[{}]}}",
-        list(dims),
-        list(&p.padded),
-        list(&p.dims),
-        affine.join(",")
-    )
 }

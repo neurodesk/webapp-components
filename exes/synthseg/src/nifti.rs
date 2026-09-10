@@ -17,8 +17,9 @@ pub struct Volume<T> {
     pub units: u8,
 }
 
+// Saturating so the voxel caps below still trip on wasm32, where usize is 32-bit.
 pub fn product(d: &[usize; 3]) -> usize {
-    d[0] * d[1] * d[2]
+    d[0].saturating_mul(d[1]).saturating_mul(d[2])
 }
 
 pub fn read(bytes: &[u8]) -> Result<Volume<f64>, String> {
@@ -69,7 +70,7 @@ pub fn read(bytes: &[u8]) -> Result<Volume<f64>, String> {
     }
     let dims = dims.map(|d| d as usize);
     let channels = if ndim >= 4 { dim[4].max(1) as usize } else { 1 };
-    if product(&dims) * channels > 256 * 1024 * 1024 {
+    if product(&dims).saturating_mul(channels) > 256 * 1024 * 1024 {
         return Err("Unsupported image dimensions.".into());
     }
     let datatype = i16at(70);

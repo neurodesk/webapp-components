@@ -359,11 +359,11 @@ fn run(a: &Args) -> Result<(), String> {
     });
     publish(
         &[
-            (&output, image),
             (
                 &report,
                 (serde_json::to_string_pretty(&provenance).unwrap() + "\n").into_bytes(),
             ),
+            (&output, image),
         ],
         a.force,
     )?;
@@ -371,7 +371,8 @@ fn run(a: &Args) -> Result<(), String> {
     Ok(())
 }
 
-// Stage to unique sibling temp files, then publish atomically; hard links refuse to clobber without --force.
+// Stage to unique sibling temp files, then publish each atomically (sidecar first, so a published
+// image always has one); hard links refuse to clobber without --force.
 fn publish(files: &[(&Path, Vec<u8>)], force: bool) -> Result<(), String> {
     let mut temps = Vec::new();
     let mut published = Vec::new();

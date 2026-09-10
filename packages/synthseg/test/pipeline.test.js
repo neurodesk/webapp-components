@@ -53,7 +53,8 @@ async function createSession(bytes) {
       const output = outputs[session.outputNames[0]];
       return { output: { dims: output.dims, type: 'float32', getData: async () => output.data, dispose() {} } };
     },
-    release: () => session.release(),
+    // Leaked on purpose: releasing makes onnxruntime-node 1.29 abort at process exit (~1 run in 5, macOS).
+    release() {},
   };
 }
 
@@ -68,10 +69,20 @@ async function segment(input, options) {
 }
 
 before(async () => {
+  wasm = await loadSynthseg(await readFile(new URL('../src/synthseg.wasm', import.meta.url)));
   if (!existsSync(modelPath)) return;
   ort = (await import('onnxruntime-node')).default;
   modelBytes = await readFile(modelPath);
-  wasm = await loadSynthseg(await readFile(new URL('../src/synthseg.wasm', import.meta.url)));
+});
+
+// Runs without the model: catches wasm/ABI drift in CI.
+test('wasm preprocessing reports the fixture geometry', async () => {
+  const seg = new wasm.Segmenter(await readFile(new URL('small.nii.gz', fixtures)));
+  const golden = readLabels(await readFile(new URL('small_default.nii.gz', fixtures)));
+  assert.deepEqual(seg.geometry.outputShape, golden.dims);
+  const affine = Math.max(...seg.geometry.outputAffine.flat().map((v, i) => Math.abs(v - golden.affine.flat()[i])));
+  assert.ok(affine <= 1e-4, `affine differs by ${affine}`);
+  seg.free();
 });
 
 for (const fast of [true, false]) {

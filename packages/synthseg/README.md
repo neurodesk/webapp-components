@@ -32,11 +32,17 @@ the work, slightly noisier labels). `ct` clips Hounsfield units to [0, 80].
 ## Build and test
 
     make wasm    # cargo build --target wasm32-unknown-unknown + wasm-opt -O3 -> src/synthseg.wasm
-    make test    # fixture parity against the FreeSurfer 8.1.0 goldens
+    make test    # fixture parity against the FreeSurfer 8.1.0 goldens (needs exes/synthseg/models/synthseg-2.0.onnx)
 
 `src/synthseg.wasm` is committed (as `packages/runtime-support/src/niimath` is),
-so `make wasm` is only needed when the Rust changes. Parity on the benchmark
+so `make wasm` is only needed when the Rust changes. Without the model `make test`
+still runs the wasm geometry check (catches ABI drift). Parity on the benchmark
 volumes: `SYNTHSEG_REFERENCE_DIR=~/src/synthseg-references make test`.
+
+The wasm ABI is plain C exports (`seg_new`, `seg_error_*`, `seg_input`, `seg_flipped_input`,
+`seg_labels`, `seg_free`) plus typed accessors `seg_padded`, `seg_input_dims`,
+`seg_output_dims` (u32×3) and `seg_affine` (f64×12); `src/wasm.js` assembles
+`Segmenter.geometry` from them — no JSON crosses the boundary.
 
 ## Memory
 

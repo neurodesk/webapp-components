@@ -8,6 +8,9 @@ post-processing and NIfTI I/O are the native CLI's Rust compiled to WASM
 WebGPU is required — there is no WASM fallback. Without it the app says so and
 Run stays disabled.
 
+Labels are coloured and named from `src/freesurfer-lut.json` (FreeSurferColorLUT.txt
+rows for the 33 SynthSeg labels; `node scripts/freesurfer-lut.mjs <FreeSurferColorLUT.txt>`).
+
 ## Controls
 
 - **Input image** — NIfTI or DICOM (drag-drop supported), or the `T1_head` example.
@@ -27,7 +30,8 @@ pnpm --filter synthseg test:e2e # needs a WebGPU-capable Chromium
 ```
 
 The model is fetched from Hugging Face and cached (Cache API) after a SHA-256
-check against `models/synthseg.manifest.json`; it is never bundled.
+check against `@neurodesk/synthseg/manifest` (`packages/synthseg/model.manifest.json`);
+it is never bundled.
 
 ## Validation
 

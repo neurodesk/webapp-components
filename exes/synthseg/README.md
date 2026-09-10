@@ -14,7 +14,7 @@ synthseg --self-check
 ```
 
 Options: `--device cpu|metal` (default `metal` on macOS), `--threads N` (default:
-all cores or `SLURM_CPUS_PER_TASK`), `--force`, `--quiet`. Output is an int32
+`SLURM_CPUS_PER_TASK`, else all cores), `--force`, `--quiet`. Output is an int32
 label map on the 1 mm grid, like the Python tool; a JSON sidecar records
 settings, model checksum, geometry and timings.
 
@@ -52,9 +52,10 @@ Runtime binaries for the host target.
 
 Assets live in the Hugging Face dataset `neurodeskorg/webapps` under `synthseg/`
 (`models/synthseg-2.0.onnx`, the upstream `synthseg_2.0.h5`, validation inputs
-and goldens), pinned by commit in `packages/synthseg/model.manifest.json` and
-`models/synthseg.manifest.json`. `scripts/repoint_model_manifest.sh COMMIT`
-repins both. `make export` rebuilds the ONNX and the shared executor graph
+and goldens), pinned by `revision` (currently `main`) in
+`packages/synthseg/model.manifest.json` and the repo-root
+`models/synthseg.manifest.json` (registry copy).
+`scripts/repoint_model_manifest.sh COMMIT` pins both to a commit. `make export` rebuilds the ONNX and the shared executor graph
 index `packages/synthseg/src/gpu-model.json` from a FreeSurfer checkpoint
 (python3 with h5py and onnx; no TensorFlow).
 
@@ -98,8 +99,11 @@ Engineering parity on named hardware, not clinical validation.
 - ORT output is NCDHW; Metal's voxel-major output is transposed to
   channel-major on readback, so `main.rs` sees one layout.
 - Input hardening: `vox_offset` validated, gzip expansion capped at 2 GB,
-  64 M-voxel / i16 dim guard before any allocation, non-finite `scl_slope`
-  treated as unscaled.
+  256 M voxel×channel cap on read and 64 M on the padded 1 mm grid (saturating, so
+  they also trip on wasm32), i16 dim guard, non-finite `scl_slope` treated as unscaled.
+- Output and sidecar are staged to sibling temp files and published sidecar
+  first, so a published label map always has its JSON; neither clobbers
+  without `--force`.
 
 ## Traps
 

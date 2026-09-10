@@ -229,7 +229,8 @@ pub fn prepare(v: &Volume<f64>, ct: bool) -> Result<Prepared, String> {
     let axes = ras_axes(&r.affine)?;
     let flips: [bool; 3] = std::array::from_fn(|i| r.affine[i][axes[i]] < 0.0);
     let aligned = axes.map(|a| r.dims[a]);
-    if product(&aligned) > 64 * 1024 * 1024 || aligned.iter().any(|&s| s > i16::MAX as usize) {
+    let padded = aligned.map(|s| s.div_ceil(32) * 32).map(|s| s.max(128));
+    if product(&padded) > 64 * 1024 * 1024 || aligned.iter().any(|&s| s > i16::MAX as usize) {
         return Err("The 1 mm image is too large.".into());
     }
     let mut im = vec![0f64; product(&aligned)];
@@ -251,7 +252,6 @@ pub fn prepare(v: &Volume<f64>, ct: bool) -> Result<Prepared, String> {
         percentile(&mut scratch, 99.5),
     );
     drop(scratch);
-    let padded = aligned.map(|s| s.div_ceil(32) * 32).map(|s| s.max(128));
     let offsets: [usize; 3] = std::array::from_fn(|a| (padded[a] - aligned[a]) / 2);
     let mut input = vec![0f32; product(&padded)];
     for x in 0..aligned[0] {

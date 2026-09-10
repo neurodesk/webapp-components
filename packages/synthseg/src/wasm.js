@@ -9,6 +9,7 @@ export async function loadSynthseg(source) {
   const text = (ptr, len) => new TextDecoder().decode(u8().subarray(ptr, ptr + len));
   const check = () => new Error(text(wasm.seg_error_ptr(), wasm.seg_error_len()) || 'SynthSeg preprocessing failed.');
   const f32 = (ptr, len) => new Float32Array(wasm.memory.buffer, ptr, len).slice();
+  const dims = (ptr) => Array.from(new Uint32Array(wasm.memory.buffer, ptr, 3));
 
   class Segmenter {
     constructor(bytes, { ct = false } = {}) {
@@ -17,9 +18,11 @@ export async function loadSynthseg(source) {
       this.seg = wasm.seg_new(ptr, bytes.length, ct ? 1 : 0);
       wasm.dealloc(ptr, bytes.length);
       if (!this.seg) throw check();
-      this.padded = Array.from(new Uint32Array(wasm.memory.buffer, wasm.seg_padded(this.seg), 3));
+      this.padded = dims(wasm.seg_padded(this.seg));
       this.voxels = this.padded[0] * this.padded[1] * this.padded[2];
-      this.geometry = JSON.parse(text(wasm.seg_geometry(this.seg), wasm.seg_geometry_len(this.seg)));
+      const affine = Array.from(new Float64Array(wasm.memory.buffer, wasm.seg_affine(this.seg), 12));
+      this.geometry = { inputShape: dims(wasm.seg_input_dims(this.seg)), paddedShape: this.padded,
+        outputShape: dims(wasm.seg_output_dims(this.seg)), outputAffine: [0, 1, 2].map((r) => affine.slice(4 * r, 4 * r + 4)) };
     }
     input() { return f32(wasm.seg_input(this.seg), this.voxels); }
     flippedInput() { return f32(wasm.seg_flipped_input(this.seg), this.voxels); }
