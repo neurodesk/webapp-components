@@ -230,6 +230,16 @@ fn self_check_runs_offline() {
     assert!(String::from_utf8_lossy(&r.stdout).contains("cpu: ok"));
 }
 
+#[test]
+fn help_names_model_and_citation() {
+    let r = run(&["--help"]);
+    let help = String::from_utf8_lossy(&r.stdout);
+    assert!(r.status.success());
+    assert!(help.contains("Model: synthsr_v20_230130"));
+    assert!(help.contains("Iglesias et al. (2023)"));
+    assert!(help.contains("PMID: 36724222"));
+}
+
 // `SYNTHSR_REFERENCE_DIR=... cargo test --release -- --ignored real_volumes` (make test-real).
 // Gates: identical shape, affine <= 4e-6 mm, max uint8 error <= 1, mismatched voxels <= 0.1% (the tolerance used by the JS suites).
 #[test]
