@@ -96,7 +96,16 @@ test('SynthSeg verifies native parity before its isolated signing job', async ()
   assert.equal(flow.jobs.release.if, "github.event_name == 'workflow_dispatch' && inputs.sign_release");
   assert.equal(flow.jobs.release.needs, 'verify');
   assert.ok(!JSON.stringify(flow.jobs.verify).includes('secrets.'));
-  assert.match(JSON.stringify(flow.jobs.verify), /test-real macos-pkg-adhoc/);
+  assert.equal(flow.jobs.verify.env.SYNTHSEG_REAL_DEVICES, 'cpu');
+  assert.equal(flow.jobs.release.env.SYNTHSEG_REAL_DEVICES, 'cpu');
+  const verifySteps = flow.jobs.verify.steps;
+  assert.ok(verifySteps.some(step => /make -C exes\/synthseg fmt lint test(?:\n|$)/.test(step.run || '')));
+  assert.ok(verifySteps.some(step => step.run === 'make -C exes/synthseg test-real'));
+  assert.ok(verifySteps.some(step => step.run === 'make -C exes/synthseg macos-pkg-adhoc'));
+  assert.ok(verifySteps.some(step => /rm -f exes\/synthseg\/validation\/report.json/.test(step.run || '')));
+  const evidence = verifySteps.find(step => step.uses?.startsWith('actions/upload-artifact@'));
+  assert.equal(evidence.if, 'always()');
+  assert.match(evidence.with.path, /validation\/report.json/);
   const steps = flow.jobs.release.steps;
   const target = steps.findIndex(step => step.name === 'Check release target');
   const sign = steps.findIndex(step => step.name === 'Sign and notarize installer');

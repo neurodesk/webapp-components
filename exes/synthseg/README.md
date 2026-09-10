@@ -52,7 +52,7 @@ Runtime binaries for the host target.
 
 Assets live in the Hugging Face dataset `neurodeskorg/webapps` under `synthseg/`
 (`models/synthseg-2.0.onnx`, the upstream `synthseg_2.0.h5`, validation inputs
-and goldens), pinned by `revision` (currently `main`) in
+and goldens), pinned by an immutable Hugging Face commit in the `revision` field of
 `packages/synthseg/model.manifest.json` and the repo-root
 `models/synthseg.manifest.json` (registry copy).
 `scripts/repoint_model_manifest.sh COMMIT` pins both to a commit. `make export` rebuilds the ONNX and the shared executor graph
@@ -134,3 +134,32 @@ MRI scans of any contrast and resolution without retraining. Medical Image
 Analysis 86:102789. https://doi.org/10.1016/j.media.2023.102789
 
 Apache-2.0. See LICENSE, NOTICE and THIRD_PARTY_NOTICES.md.
+
+## Hosted CI validation scope
+
+The standard GitHub `macos-latest` runner has [3 M1 CPU cores and 7 GB RAM](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
+The benchmark inputs pad to 192×224×160. The current FP32 GPU graph allocates
+5,543,301,120 bytes of activation buffers, and each CPU posterior copy needs
+another 908,328,960 bytes. The default flip pass retains the first posterior
+copy while running the second pass. Those allocations and the operating system
+exceed the hosted runner's practical memory budget.
+
+Hosted verification and signing jobs therefore set `SYNTHSEG_REAL_DEVICES=cpu`
+for the two full-volume benchmarks in both modes. `make test` still runs its
+small fixture on CPU and every available Metal device. The validation report
+lists available and selected devices, saves each completed case, and records
+inference failures before failing the job. CPU-only reports do not establish
+full-volume Metal parity.
+
+The first hosted full-volume run passed its four CPU cases, then failed with
+`Metal inference failed: Error`. Its 632-second duration includes the CPU
+cases. The captured status does not distinguish memory pressure from a command
+buffer timeout. No kernel arithmetic or command scheduling was changed in
+response to that failure.
+
+Local `make test-real` continues to test all available devices. Run
+`SYNTHSEG_REAL_DEVICES=cpu,metal make test-real` on an Apple silicon machine
+with sufficient memory to require both backends. Unknown, duplicate, empty,
+or unavailable device selections fail. Full-volume Metal remains unverified
+by the hosted release job; the previously committed M4 Pro results are separate
+hardware validation evidence.

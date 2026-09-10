@@ -51,6 +51,9 @@ pub struct Session {
     steps: Vec<Step>,
     output_slot: usize,
     dims: [usize; 3],
+    device_name: String,
+    activation_bytes: usize,
+    recommended_working_set_bytes: u64,
 }
 
 fn pad4(c: usize) -> usize {
@@ -502,6 +505,9 @@ impl Session {
             steps,
             output_slot,
             dims,
+            device_name: device.name().to_string(),
+            activation_bytes: slot_bytes.iter().sum(),
+            recommended_working_set_bytes: device.recommended_max_working_set_size(),
         })
     }
 
@@ -531,7 +537,13 @@ impl Session {
         cmd.commit();
         cmd.wait_until_completed();
         if cmd.status() != MTLCommandBufferStatus::Completed {
-            return Err(format!("Metal inference failed: {:?}", cmd.status()));
+            return Err(format!(
+                "Metal inference failed: {:?}; device: {}; volume: {:?}; activation buffers: {} bytes; \
+                 recommended Metal working set: {} bytes. CPU posteriors need additional memory. \
+                 Retry with --device cpu on resource-limited systems.",
+                cmd.status(), self.device_name, self.dims,
+                self.activation_bytes, self.recommended_working_set_bytes,
+            ));
         }
         let out = unsafe {
             std::slice::from_raw_parts(

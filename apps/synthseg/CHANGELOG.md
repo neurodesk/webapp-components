@@ -9,6 +9,8 @@
 
 ### Patch Changes
 
+- Validate full volumes on CPU and retain small Metal fixture coverage on memory-limited hosted macOS runners. Record validation device scope and partial failures, and include GPU memory context in native errors. Full-volume Metal validation still requires a suitable separate host.
+
 - Updated dependencies [3fe15c3]
   - @neurodesk/runtime-support@0.1.1
   - @neurodesk/synthseg@0.2.20260910

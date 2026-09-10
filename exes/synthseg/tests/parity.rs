@@ -262,16 +262,87 @@ fn preprocess_matches_keras() {
     }
 }
 
-// `make test-real`: both benchmark volumes, both modes, every available device, against the
-// FreeSurfer goldens in SYNTHSEG_REFERENCE_DIR (make fetch-validation, or scripts/generate_reference.sh).
+fn select_real_devices(
+    requested: Option<&str>,
+    available: &[&'static str],
+) -> Result<Vec<&'static str>, String> {
+    let Some(requested) = requested else {
+        return Ok(available.to_vec());
+    };
+    let mut selected = Vec::new();
+    for name in requested.split(',').map(str::trim) {
+        let device = available
+            .iter()
+            .copied()
+            .find(|&device| device == name)
+            .ok_or_else(|| {
+                format!(
+                    "Requested full-volume device {name:?} is unavailable; available: {}",
+                    available.join(",")
+                )
+            })?;
+        if selected.contains(&device) {
+            return Err(format!("Duplicate full-volume device {name:?}"));
+        }
+        selected.push(device);
+    }
+    Ok(selected)
+}
+
+#[test]
+fn full_volume_device_selection_is_explicit_and_strict() {
+    assert_eq!(
+        select_real_devices(None, &["cpu", "metal"]).unwrap(),
+        ["cpu", "metal"]
+    );
+    assert_eq!(
+        select_real_devices(Some("cpu"), &["cpu", "metal"]).unwrap(),
+        ["cpu"]
+    );
+    assert_eq!(
+        select_real_devices(Some("metal, cpu"), &["cpu", "metal"]).unwrap(),
+        ["metal", "cpu"]
+    );
+    for invalid in ["", "cpu,", "cuda", "cpu,cpu"] {
+        assert!(select_real_devices(Some(invalid), &["cpu", "metal"]).is_err());
+    }
+    assert!(select_real_devices(Some("metal"), &["cpu"]).is_err());
+}
+
+fn write_real_report(
+    available: &[&str],
+    selected: &[&str],
+    results: &[serde_json::Value],
+    failures: &[String],
+) {
+    fs::write(
+        root().join("validation/report.json"),
+        serde_json::to_string_pretty(&serde_json::json!({
+            "available_devices": available,
+            "selected_devices": selected,
+            "results": results,
+            "failures": failures,
+        }))
+        .unwrap()
+            + "\n",
+    )
+    .unwrap();
+}
+
+// Both benchmark volumes and modes use every available device by default. Hosted CI requests
+// CPU explicitly through SYNTHSEG_REAL_DEVICES; small-fixture coverage still uses all devices.
 #[test]
 #[ignore]
 fn real_volumes() {
+    let available = available_devices();
+    let requested = std::env::var("SYNTHSEG_REAL_DEVICES").ok();
+    let selected = select_real_devices(requested.as_deref(), &available).unwrap();
     let dir = std::env::temp_dir().join(format!("synthseg-real-{}", std::process::id()));
     fs::create_dir_all(&dir).unwrap();
     let mut report = Vec::new();
     let mut failures = Vec::new();
-    for device in available_devices() {
+    write_real_report(&available, &selected, &report, &failures);
+    for &device in &selected {
         for stem in ["T1_head", "T1_head_2mm"] {
             for mode in ["fast", "default"] {
                 let input = reference_dir().join(format!("{stem}.nii.gz"));
@@ -289,7 +360,19 @@ fn real_volumes() {
                     args.push("--fast");
                 }
                 let r = run(&args);
-                assert!(r.status.success(), "{}", String::from_utf8_lossy(&r.stderr));
+                if !r.status.success() {
+                    let error = format!(
+                        "{device} {mode} {stem}: {}",
+                        String::from_utf8_lossy(&r.stderr)
+                    );
+                    report.push(serde_json::json!({
+                        "device": device, "input": stem, "mode": mode, "pass": false,
+                        "exit_code": r.status.code(), "error": error,
+                    }));
+                    failures.push(error.clone());
+                    write_real_report(&available, &selected, &report, &failures);
+                    panic!("{error}");
+                }
                 let reference = reference_dir().join(format!("{stem}_{mode}.nii.gz"));
                 assert_header_matches(&out, &reference);
                 let d = compare(&load(&out), &load(&reference));
@@ -305,14 +388,10 @@ fn real_volumes() {
                 if !pass {
                     failures.push(format!("{device} {mode} {stem} {} voxels", d.mismatched));
                 }
+                write_real_report(&available, &selected, &report, &failures);
             }
         }
     }
-    fs::write(
-        root().join("validation/report.json"),
-        serde_json::to_string_pretty(&serde_json::json!({ "results": report })).unwrap() + "\n",
-    )
-    .unwrap();
     fs::remove_dir_all(&dir).unwrap();
     assert!(failures.is_empty(), "failed gates: {failures:?}");
 }
