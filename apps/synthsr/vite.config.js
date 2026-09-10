@@ -1,7 +1,7 @@
 import { neurodeskViteConfig } from '../../scripts/lib/vite-app-config.mjs';
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { standalonePackage } from './scripts/package-plugin.mjs';
+import { nativeReleaseVersion, standalonePackage } from './scripts/package-plugin.mjs';
 import { isolationFallback } from './scripts/coi-plugin.mjs';
 
 // Large weights stay outside dist. A local asset store can serve dev/preview.
@@ -19,7 +19,7 @@ function localModels() {
   return { name: 'synthsr-local-models', configureServer: serve, configurePreviewServer: serve };
 }
 export default neurodeskViteConfig({
-  appId: 'synthsr', plugins: [localModels(), standalonePackage(), isolationFallback()],
+  appId: 'synthsr', plugins: [localModels(), nativeReleaseVersion(), standalonePackage(), isolationFallback()],
   server: { host: '127.0.0.1', port: 5174 },
   preview: { host: '127.0.0.1', port: 5174 },
   build: { target: 'esnext' },

@@ -17,3 +17,13 @@ export function standalonePackage() {
     } finally {await rm(folder,{recursive:true,force:true});}
   }};
 }
+
+export function nativeReleaseVersion() {
+  return {name:'synthsr-native-release-version',async config(){
+    const cargo=await readFile(fileURLToPath(new URL('../../../exes/synthsr/Cargo.toml',import.meta.url)),'utf8');
+    const packageSection=cargo.split('[package]',2)[1]?.split('\n[',1)[0]||'';
+    const version=packageSection.match(/^version\s*=\s*"([^"]+)"\s*$/m)?.[1];
+    if(!version||!/^\d+(?:\.[0-9A-Za-z_-]+)+$/.test(version))throw new Error('SynthSR Cargo package version is missing or invalid.');
+    return {define:{__SYNTHSR_NATIVE_VERSION__:JSON.stringify(version)}};
+  }};
+}

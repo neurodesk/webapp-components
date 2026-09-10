@@ -2,8 +2,8 @@
 
 Self-contained native SynthSR v2 executable. The checksum-pinned
 `synthsr-v2.onnx` model is embedded and ONNX Runtime is statically linked, so it
-runs offline with no FreeSurfer, Python, Node.js or browser. macOS Apple Silicon
-is the supported release; the source builds anywhere the `ort` crate does.
+runs offline with no FreeSurfer, Python, Node.js or browser. Releases are built
+for macOS Apple Silicon, Linux x64 and Windows x64.
 
 ```sh
 synthsr input.nii.gz                 # writes input_synthsr.nii.gz + input_synthsr.json
@@ -32,8 +32,8 @@ GPU (a VM, headless CI) it fails with "No Metal device is available; use
 the report down with it; exit status depends only on the CPU probe.
 
 Backends are the `Net` enum and `DEVICES` list in `main.rs`; CUDA and others
-slot in as new variants. Linux, Windows, CoreML and x86_64 builds are
-deferred. 4D, non-finite and constant images are rejected. Output is never
+slot in as new variants. CoreML and non-x64 Linux and Windows builds are not
+packaged. 4D, non-finite and constant images are rejected. Output is never
 written over the input.
 
 The JSON sidecar records settings, input/output geometry, model SHA-256,
@@ -51,6 +51,33 @@ signed with a Developer ID, notarized by Apple and stapled; it installs
 `/usr/local/bin/synthsr` and `/usr/local/lib/synthsr/libwebgpu_dawn.dylib`
 (the WebGPU runtime, loaded only for `--device webgpu`). Requires macOS 13.4 or
 later on Apple Silicon.
+
+## Install (Linux x64)
+
+Download `synthsr-VERSION-linux-x64.tar.gz`, then run:
+
+```sh
+mkdir -p synthsr-linux
+tar -xzf synthsr-VERSION-linux-x64.tar.gz -C synthsr-linux
+cd synthsr-linux
+./synthsr input.nii.gz output_synthsr.nii.gz --threads 8
+```
+
+Keep `libwebgpu_dawn.so` beside `synthsr`. The executable uses CPU by default.
+The archive also includes the licenses and notices.
+
+## Install (Windows x64)
+
+Download `synthsr-VERSION-windows-x64.zip`, then run in PowerShell:
+
+```powershell
+Expand-Archive .\synthsr-VERSION-windows-x64.zip .\synthsr-windows
+Set-Location .\synthsr-windows
+.\synthsr.exe input.nii.gz output_synthsr.nii.gz --threads 8
+```
+
+Keep `webgpu_dawn.dll` beside `synthsr.exe`. The executable uses CPU by default
+and does not need an installer.
 
 ## Build
 
@@ -91,11 +118,26 @@ The benchmark volumes themselves live outside the repository
 (`$SYNTHSR_REFERENCE_DIR`); moving them into the Hugging Face dataset under
 `synthsr/validation/` is planned but blocked on their licensing.
 
-## Release (macOS)
+## Package Linux and Windows
+
+The portable packager derives `VERSION` from `Cargo.toml`, includes the Dawn
+runtime, and writes a SHA-256 file beside the archive. Run it on the target
+operating system so the verification step can execute the extracted package.
+
+```sh
+python scripts/portable_release.py package linux-x64
+python scripts/portable_release.py verify linux-x64
+```
+
+Use `windows-x64` for Windows. Verification checks the archive contents and
+checksum, runs `--self-check`, and processes the small validation scan with the
+packaged executable.
+
+## Release macOS locally
 
 ```sh
 make macos-notary-profile APPLE_ID='you@example.com' TEAM_ID='ABCDE12345'   # once; password prompted, stored in Keychain
-EXPECTED_TEAM_ID=ABCDE12345 make macos-release VERSION=0.2.20260909   # identities default to the Developer ID certificates in your Keychain
+EXPECTED_TEAM_ID=ABCDE12345 make macos-release VERSION=0.2.20260910   # identities default to the Developer ID certificates in your Keychain
 ```
 
 `MACOS_SIGN_IDENTITY` / `MACOS_INSTALLER_IDENTITY` default to the first
@@ -115,18 +157,20 @@ Signed package verification requires `EXPECTED_TEAM_ID` and checks both the
 installer certificate and executable team before execution. To verify a trusted
 local ad-hoc build, use `scripts/verify_macos_pkg.sh FILE.pkg --allow-adhoc`.
 
-## GitHub Actions macOS builds
+## GitHub Actions native builds
 
-The `synthsr-macos` workflow builds and tests on Apple Silicon for pull requests
-and pushes to main. It uploads an ad-hoc installer as a workflow artifact.
-These test packages are not notarized releases.
+The `synthsr-native` workflow builds and tests Linux x64, Windows x64 and macOS
+Apple Silicon packages for pull requests and pushes to main. It extracts and
+runs each Linux and Windows archive. It also uploads an ad-hoc macOS installer
+as a workflow artifact. These test packages are not signed releases.
 
 For a signed release, create a draft or prerelease named `synthsr-vVERSION`.
 Create its Git tag at the commit you intend to release. Select that tag when
-manually running `synthsr-macos` and enable `sign_release`. The workflow checks
-that the tag, source commit and Cargo version agree, signs and notarizes the
-installer, then attaches the package, checksum and verification log to that
-release. It leaves the release's draft/prerelease status unchanged.
+manually running `synthsr-native` and enable `sign_release`. The workflow checks
+that the tag, source commit and Cargo version agree. It signs and notarizes the
+macOS installer, waits for the verified Linux and Windows archives, then attaches
+all packages, checksums and verification logs to that release. It leaves the
+release's draft or prerelease status unchanged.
 
 Configure these repository Actions secrets, following neurodesk-app's signing
 setup:

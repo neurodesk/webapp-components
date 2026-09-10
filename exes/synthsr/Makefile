@@ -7,8 +7,6 @@ MACOS_SIGN_IDENTITY ?= $(shell security find-identity -v -p codesigning | sed -n
 MACOS_INSTALLER_IDENTITY ?= $(shell security find-identity -v | sed -n 's/.*"\(Developer ID Installer: [^"]*\)".*/\1/p' | head -1)
 NOTARY_PROFILE ?= synthsr-notary
 SYNTHSR_REFERENCE_DIR ?= $(HOME)/src/synthsr-references
-MANIFEST = ../../packages/synthsr/model.manifest.json
-MODEL = models/synthsr-v2.onnx
 BIN = target/release/synthsr
 MACOS_PKG = dist/synthsr-$(VERSION)-macos-arm64.pkg
 
@@ -28,12 +26,8 @@ help:
 	@echo "macos-release          check-notary-profile, macos-pkg, macos-notarize"
 
 # ponytail: the URL is revision-pinned on Hugging Face, so a fetch is reproducible; build.rs re-verifies.
-check-model: $(MODEL)
-	@printf '%s  %s\n' "$$(python3 -c 'import json;print(json.load(open("$(MANIFEST)"))["assets"][0]["sha256"])')" "$(MODEL)" | shasum -a 256 -c
-$(MODEL):
-	mkdir -p models
-	curl -fL --retry 3 -o "$@.partial" "$$(python3 -c 'import json;m=json.load(open("$(MANIFEST)"));print(m["base_url"]+m["assets"][0]["filename"])')"
-	mv "$@.partial" "$@"
+check-model:
+	python3 scripts/fetch_model.py
 
 build: check-model
 	cargo build --release
@@ -50,6 +44,7 @@ test: check-model test-release-scripts
 
 test-release-scripts:
 	python3 scripts/test_release_scripts.py
+	python3 scripts/test_portable_release.py
 
 test-real: check-model
 	@test -f "$(SYNTHSR_REFERENCE_DIR)/manifest.jsonl" || { \

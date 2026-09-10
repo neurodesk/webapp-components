@@ -42,17 +42,19 @@
 <footer id="status"><span id="statusText" role="status" aria-live="polite">Ready · choose an image to begin</span><progress id="progress" max="1" value="0" aria-label="Synthesis progress"></progress><span id="elapsed"></span></footer>
 <dialog id="aboutDialog"><h2>SynthSR</h2><p>A browser implementation of SynthSR, developed by Iglesias, Billot and colleagues. Uses the pretrained v2 model and reproduces its 1 mm resampling, normalization, flip averaging and sharpening workflow.</p><p><a href="https://github.com/neurolabusc/py_synthsr" target="_blank" rel="noopener">Reference implementation</a> · <a href="https://doi.org/10.1016/j.neuroimage.2021.118206" target="_blank" rel="noopener">Iglesias et al., NeuroImage (2021)</a></p><p>Full-volume mode follows the reference method. Tiled mode reduces memory use but changes context and may introduce boundary differences. Outputs are synthetic images for research; they are not acquired T1 scans.</p><p>CPU inference uses ONNX Runtime Web 1.29.0; GPU inference uses optimized FP32 kernels; visualization uses NiiVue 1.0 RC. Source and model attribution: Apache-2.0.</p><form method="dialog"><button>Close</button></form></dialog>
 <dialog id="standaloneDialog" aria-labelledby="standaloneTitle">
-  <h2 id="standaloneTitle">Run SynthSR in a terminal</h2>
-  <p>Linux x64 · paste these commands to download Node.js and SynthSR, install locally, and run on CPU. No administrator access needed.</p>
-  <pre><code>curl -fLO https://nodejs.org/dist/v22.22.0/node-v22.22.0-linux-x64.tar.xz
-tar -xf node-v22.22.0-linux-x64.tar.xz
-export PATH="$PWD/node-v22.22.0-linux-x64/bin:$PATH"
-curl -fLO https://webapps.neurodesk.org/synthsr/downloads/neurodesk-synthsr-0.2.20260909.tgz
-ONNXRUNTIME_NODE_INSTALL=skip npm install --prefix ./synthsr-cli ./neurodesk-synthsr-0.2.20260909.tgz
+  <div class="dialog-heading"><h2 id="standaloneTitle">Run SynthSR in a terminal</h2><form method="dialog"><button>Close</button></form></div>
+  <p>Download the native package for your system. The model is included, so these builds run offline without Python, Node.js or FreeSurfer.</p>
+  <div class="native-downloads">
+    <section><h3>macOS Apple Silicon</h3><p>Open the signed and notarized installer. Requires macOS 13.4 or later.</p><p><a id="nativeMacosDownload" class="standalone-download">Download for macOS</a> <a id="nativeMacosChecksum" class="checksum-link">SHA-256</a></p><pre><code id="nativeMacosCommands"></code></pre></section>
+    <section><h3>Windows x64</h3><p>Extract the zip in PowerShell. No administrator access is needed.</p><p><a id="nativeWindowsDownload" class="standalone-download">Download for Windows</a> <a id="nativeWindowsChecksum" class="checksum-link">SHA-256</a></p><pre><code id="nativeWindowsCommands"></code></pre></section>
+    <section><h3>Linux x64</h3><p>Extract the archive and keep the included shared library beside the executable.</p><p><a id="nativeLinuxDownload" class="standalone-download">Download for Linux</a> <a id="nativeLinuxChecksum" class="checksum-link">SHA-256</a></p><pre><code id="nativeLinuxCommands"></code></pre></section>
+  </div>
+  <p>Replace <code>input.nii.gz</code> with your scan. Add <code>--ct</code> for CT. Output includes the synthetic image and a JSON report. CPU is the default on Windows and Linux. Use <code>--help</code> for all options.</p>
+  <details id="nodePackageDetails"><summary>Node.js package for other systems and HPC</summary>
+    <p><a id="standalonePackage" download>Download the Node.js package</a>. Install it with Node.js 22 or later. The first run downloads and verifies the model.</p>
+    <pre><code>npm install --prefix ./synthsr-cli ./neurodesk-synthsr-0.2.20260910.tgz
 ./synthsr-cli/node_modules/.bin/synthsr input.nii.gz output_synthsr.nii.gz --threads 8</code></pre>
-  <p>Replace <code>input.nii.gz</code> with your scan. The first run downloads and verifies the model. Add <code>--ct</code> for CT. Output includes the synthetic image and a JSON report.</p>
-  <p>Already have Node.js 22+? Skip the first three lines. <a id="standalonePackage" download>Download the package</a> · use <code>--help</code> for options.</p>
-  <form method="dialog"><button>Close</button></form>
+  </details>
 </dialog>
 <script type="module" src="/src/main.js"></script>
 </body></html>
