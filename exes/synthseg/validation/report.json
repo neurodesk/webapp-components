@@ -1,0 +1,92 @@
+{
+  "results": [
+    {
+      "compared_voxels": 5577600,
+      "device": "cpu",
+      "input": "T1_head",
+      "max_affine_error_mm": 0.0,
+      "mismatch_fraction": 0.0,
+      "mismatched_voxels": 0,
+      "mode": "fast",
+      "pass": true,
+      "seconds": 12.822687291
+    },
+    {
+      "compared_voxels": 5577600,
+      "device": "cpu",
+      "input": "T1_head",
+      "max_affine_error_mm": 0.0,
+      "mismatch_fraction": 0.0,
+      "mismatched_voxels": 0,
+      "mode": "default",
+      "pass": true,
+      "seconds": 23.767068791
+    },
+    {
+      "compared_voxels": 5611200,
+      "device": "cpu",
+      "input": "T1_head_2mm",
+      "max_affine_error_mm": 0.0,
+      "mismatch_fraction": 1.7821499857428e-7,
+      "mismatched_voxels": 1,
+      "mode": "fast",
+      "pass": true,
+      "seconds": 11.905050459
+    },
+    {
+      "compared_voxels": 5611200,
+      "device": "cpu",
+      "input": "T1_head_2mm",
+      "max_affine_error_mm": 0.0,
+      "mismatch_fraction": 0.0,
+      "mismatched_voxels": 0,
+      "mode": "default",
+      "pass": true,
+      "seconds": 25.691648417
+    },
+    {
+      "compared_voxels": 5577600,
+      "device": "metal",
+      "input": "T1_head",
+      "max_affine_error_mm": 0.0,
+      "mismatch_fraction": 0.0,
+      "mismatched_voxels": 0,
+      "mode": "fast",
+      "pass": true,
+      "seconds": 5.091725084
+    },
+    {
+      "compared_voxels": 5577600,
+      "device": "metal",
+      "input": "T1_head",
+      "max_affine_error_mm": 0.0,
+      "mismatch_fraction": 1.7928858290304073e-7,
+      "mismatched_voxels": 1,
+      "mode": "default",
+      "pass": true,
+      "seconds": 9.75190575
+    },
+    {
+      "compared_voxels": 5611200,
+      "device": "metal",
+      "input": "T1_head_2mm",
+      "max_affine_error_mm": 0.0,
+      "mismatch_fraction": 1.7821499857428e-7,
+      "mismatched_voxels": 1,
+      "mode": "fast",
+      "pass": true,
+      "seconds": 5.533529583
+    },
+    {
+      "compared_voxels": 5611200,
+      "device": "metal",
+      "input": "T1_head_2mm",
+      "max_affine_error_mm": 0.0,
+      "mismatch_fraction": 1.7821499857428e-7,
+      "mismatched_voxels": 1,
+      "mode": "default",
+      "pass": true,
+      "seconds": 10.448192792
+    }
+  ]
+}

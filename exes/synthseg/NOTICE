@@ -1,0 +1,13 @@
+synthseg
+Copyright 2026 Neurodesk contributors
+
+Native port of SynthSeg 2.0 (https://github.com/BBillot/SynthSeg, Apache-2.0)
+as shipped in FreeSurfer 8.1.0 `mri_synthseg`: preprocessing, U-Net inference
+and postprocessing. Model checkpoint: synthseg_2.0.h5, re-exported to ONNX
+without retraining. The Metal executor derives from exes/synthsr.
+
+Billot B, Greve DN, Puonti O, et al. (2023). SynthSeg: Segmentation of brain
+MRI scans of any contrast and resolution without retraining. Medical Image
+Analysis 86:102789. https://doi.org/10.1016/j.media.2023.102789
+
+See THIRD_PARTY_NOTICES.md for redistributed binaries.

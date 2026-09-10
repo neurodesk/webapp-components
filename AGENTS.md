@@ -64,6 +64,14 @@ builds with `make` inside that directory (`check-model`, `build`, `test`,
 Face dataset `neurodeskorg/webapps` via a pinned manifest and are never
 committed.
 
+`exes/synthseg` is the SynthSeg 2.0 CLI (ORT CPU + native Metal), imported
+from a standalone repo. Its `README.md` "Numerics" and "Traps" sections are the
+maintainer contract: preprocessing is f64, gates in `tests/parity.rs` only
+tighten. The Metal executor includes `packages/synthseg/src/gpu-model.json`
+(written by `make export`); `build.rs` verifies the model against
+`packages/synthseg/model.manifest.json`. `make test-real` fetches inputs and
+FreeSurfer goldens from Hugging Face into `SYNTHSEG_REFERENCE_DIR`.
+
 `exes/synthsr/src/nifti.rs` and `src/volume.rs` are line-for-line ports of
 `packages/synthsr/src/volume.js` and must stay bit-identical (f64 math, f32
 storage): change the JS and the Rust together. `exes/synthsr/src/metal.rs`
