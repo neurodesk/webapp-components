@@ -1,0 +1,7 @@
+SynthSeg web app third-party components
+
+@niivue/niivue — BSD-2-Clause — https://github.com/niivue/niivue
+@niivue/dcm2niix (via @neurodesk/runtime-support) — BSD-2-Clause — https://github.com/niivue/niivue-dcm2niix
+
+SynthSeg 2.0 model weights — FreeSurfer 8.1.0 — https://github.com/freesurfer/freesurfer
+Billot B, Greve DN, Puonti O, et al. Medical Image Analysis 2023;86:102789.

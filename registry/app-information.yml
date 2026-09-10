@@ -735,3 +735,25 @@ apps:
         reference: Winkler AM. Uniform directions for multi-shell diffusion MRI. 2025.
         url: https://brainder.org/2025/05/05/15656/
 
+  synthseg:
+    about:
+      - SynthSeg 2.0 segments brain scans into FreeSurfer labels using the pretrained FreeSurfer 8.1.0 model. It resamples to 1 mm and applies normalization, flip averaging and topological correction.
+      - Fast mode skips flip averaging and topological correction. Browser inference requires WebGPU; the native executable also supports CPU inference.
+    packages:
+      - { name: SynthSeg WebAssembly, url: https://github.com/neurodesk/webapps/tree/main/packages/synthseg, role: shared native and browser preprocessing and postprocessing }
+      - { name: WebGPU FP32 kernels, url: https://github.com/neurodesk/webapps/tree/main/packages/runtime-support/src/gpu-unet, role: segmentation inference }
+      - { name: NiiVue, url: https://github.com/niivue/niivue, role: image and label viewer }
+      - { name: dcm2niix (WebAssembly), url: https://github.com/rordenlab/dcm2niix, role: DICOM to NIfTI conversion }
+    citations:
+      - group: Brain segmentation
+        title: SynthSeg
+        reference: "Billot B, Greve DN, Puonti O, et al. SynthSeg: Segmentation of brain MRI scans of any contrast and resolution without retraining. Medical Image Analysis. 2023;86:102789."
+        doi: 10.1016/j.media.2023.102789
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for neuroimaging data analysis: DICOM to NIfTI conversion. Journal of Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Visualization
+        title: NiiVue
+        reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
+        url: https://github.com/niivue/niivue

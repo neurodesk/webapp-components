@@ -34,8 +34,9 @@ class PortableReleaseTests(unittest.TestCase):
 
     def test_release_target_derives_safe_names(self):
         target = portable_release.load_target(ROOT, "linux-x64")
-        self.assertEqual(target.version, "0.1.20260910")
-        self.assertEqual(target.archive_name, "syncro-0.1.20260910-linux-x64.tar.gz")
+        version = json.loads((ROOT / "packages/syncro/package.json").read_text(encoding="utf8"))["version"]
+        self.assertEqual(target.version, version)
+        self.assertEqual(target.archive_name, f"syncro-{version}-linux-x64.tar.gz")
         self.assertEqual(target.executable, "syncro")
 
     def test_unknown_target_is_rejected(self):

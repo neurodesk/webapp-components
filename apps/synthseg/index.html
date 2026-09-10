@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Segment brain MRI into FreeSurfer labels locally with SynthSeg.">
+    <title>SynthSeg · Neurodesk</title>
+  </head>
+  <body>
+    <header id="controls">
+      <details class="nd-sidebar-section" id="inputSection" open>
+        <summary class="nd-section-title">Input image</summary>
+        <div class="nd-section-content">
+          <label class="nd-file" id="dropZone">
+            <input id="imageInput" type="file" data-neurodesk-input="image" multiple aria-label="Choose NIfTI or DICOM files">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Drop NIfTI or DICOM files or folder</span>
+          </label>
+          <p id="fileInfo" class="nd-file-info" hidden></p>
+          <select id="seriesSelect" aria-label="Input image or DICOM series" hidden></select>
+          <details class="nd-sidebar-section" id="exampleImages">
+            <summary class="nd-section-title">Example image</summary>
+            <div class="nd-section-content">
+              <div class="nd-field">
+                <label for="exampleSelect">Brain scan</label>
+                <select id="exampleSelect"><option value="">Choose an example…</option><option value="T1_head">T1_head</option></select>
+              </div>
+            </div>
+          </details>
+        </div>
+      </details>
+      <details class="nd-sidebar-section" id="segmentSection" open>
+        <summary class="nd-section-title">Segmentation</summary>
+        <div class="nd-section-content">
+          <div class="nd-field">
+            <label for="mode">Processing mode</label>
+            <select id="mode">
+              <option value="default">Default · flip averaging and topology</option>
+              <option value="fast">Fast · single pass</option>
+            </select>
+            <p id="modeHelp" class="nd-hint">Fast mode skips flip averaging and topological correction.</p>
+          </div>
+          <label class="nd-check"><input id="ct" type="checkbox"> Input is CT · Hounsfield units</label>
+          <button id="processButton" class="nd-btn nd-btn-primary" type="button" disabled>Segment brain</button>
+        </div>
+      </details>
+      <details class="nd-sidebar-section" id="outputSection">
+        <summary class="nd-section-title">Output</summary>
+        <div class="nd-section-content">
+          <div id="resultList"></div>
+          <button id="reportBtn" class="nd-btn nd-btn-secondary nd-btn-sm" type="button" disabled>Download report (.json)</button>
+        </div>
+      </details>
+      <button id="aboutBtn" type="button" hidden>About</button>
+      <button id="privacyBtn" type="button" hidden>Privacy</button>
+      <button id="standaloneBtn" type="button" hidden>Standalone</button>
+    </header>
+    <main id="viewer">
+      <div class="nd-viewer-canvas-wrapper">
+        <canvas id="gl1" aria-label="Brain image viewer"></canvas>
+        <p id="emptyState" class="nd-viewer-empty">Load a brain scan to view it and produce FreeSurfer labels.</p>
+        <p id="viewerError" class="nd-viewer-notice" hidden></p>
+      </div>
+      <div class="nd-viewer-info">
+        <span id="imageLabel"></span>
+        <span id="location">Scroll to change slices · drag to adjust the view</span>
+      </div>
+    </main>
+    <footer id="status">
+      <span class="nd-status-label">Status</span>
+      <span id="statusText" class="nd-status-text" role="status" aria-live="polite">Ready · choose an image to begin</span>
+      <span id="elapsed" class="nd-status-elapsed"></span>
+      <progress id="progress" max="1" value="0" aria-label="Segmentation progress"></progress>
+      <button id="cancelBtn" class="nd-btn-cancel" type="button" aria-label="Cancel processing" hidden>×</button>
+    </footer>
+    <template id="privacyContent">
+      <p>SynthSeg processes scans locally in your browser. It does not upload your input image, labels, or processing report.</p>
+      <p>The pretrained model and optional example image are downloaded from Hugging Face.</p>
+    </template>
+    <template id="standaloneContent">
+      <p>The native command-line SynthSeg uses ONNX Runtime on CPU or Metal on Apple silicon. Build and run it with:</p>
+      <pre class="nd-command"><code>git clone https://github.com/neurodesk/webapps
+make -C webapps/exes/synthseg build
+./webapps/exes/synthseg/target/release/synthseg input.nii.gz output_synthseg.nii.gz</code></pre>
+      <p>Add <code>--fast</code> for the single-pass mode and <code>--ct</code> for CT input.</p>
+    </template>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -9,7 +9,9 @@ for name in APPLEID APPLEIDPASS APPLE_TEAM_ID CSC_LINK CSC_KEY_PASSWORD CSC_INST
 done
 
 root=$(cd -- "$(dirname -- "$0")/.." && pwd)
-work=$(mktemp -d "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/synthsr-signing.XXXXXX")
+if [[ $# -gt 0 ]]; then root=$(cd -- "$1" && pwd); fi
+app=$(basename "$root")
+work=$(mktemp -d "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/${app}-signing.XXXXXX")
 keychain="$work/signing.keychain-db"
 original_keychain=$(security default-keychain -d user | tr -d '"' | sed 's/^ *//')
 cleanup() {
@@ -32,7 +34,7 @@ security import "$work/application.p12" -k "$keychain" -P "$CSC_KEY_PASSWORD" -T
 security import "$work/installer.p12" -k "$keychain" -P "$CSC_INSTALLER_KEY_PASSWORD" -T /usr/bin/productsign -T /usr/bin/productbuild
 security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$password" "$keychain" >/dev/null
 
-xcrun notarytool store-credentials synthsr-ci --keychain "$keychain" \
+xcrun notarytool store-credentials "$app-ci" --keychain "$keychain" \
     --apple-id "$APPLEID" --password "$APPLEIDPASS" --team-id "$APPLE_TEAM_ID"
 # The temporary keychain is the sole user search keychain, so Make selects its identities.
-EXPECTED_TEAM_ID="$APPLE_TEAM_ID" make -C "$root" macos-release NOTARY_PROFILE=synthsr-ci
+EXPECTED_TEAM_ID="$APPLE_TEAM_ID" make -C "$root" macos-release NOTARY_PROFILE="$app-ci"

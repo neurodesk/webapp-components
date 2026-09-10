@@ -63,4 +63,4 @@ Deface and BrowserQC passed their unsupported-WebGPU and About workflows in the 
 
 After a fresh production build, reproduce the screenshots and measurements with `INTERFACE_ARTIFACTS="$TMPDIR/interface-audit" pnpm audit:interfaces`. Run `pnpm test:interface-workflows` for the small local-data workflows and `pnpm test:mobile` for layout and touch checks. CI retains the screenshots and measurements as the `interface-audit` artifact.
 
-The September 10 review moves dwi2trx onto the shared vocabulary. Its browser test retains vector-generator settings across dialog closure and exports a Siemens scheme.
+The September 10 pull-request review adds dwi2trx and SynthSeg on the shared vocabulary. dwi2trx retains vector-generator settings across dialog closure and exports a Siemens scheme in its browser test. SynthSeg tests cancellation ownership and keeps unabortable local parsing busy. Full GPU inference remains a separate hardware validation gate.
