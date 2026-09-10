@@ -6,8 +6,8 @@
 #
 # Shared statements (rendered by the shell, never repeated per app):
 #   builder   "The web application is developed and hosted by the Neurodesk team …"
-#   ecosystem "This app is part of the lightning.org ecosystem, which aims to make
-#              neuroimaging tools widely available for clinical translation."
+#   ecosystem "This app is part of the lightNIIng ecosystem (lightniing.org), which aims
+#              to make neuroimaging tools widely available for clinical translation."
 #   platform  Renton et al. 2024, Nature Methods (Neurodesk) — closes every Cite list.
 #
 # Per app:
@@ -18,8 +18,9 @@
 
 shared:
   builder: The web application is developed and hosted by the Neurodesk team at the University of Queensland and collaborators, and runs entirely in your browser.
-  ecosystem: This app is part of the lightning.org ecosystem, which aims to make neuroimaging tools widely available for clinical translation.
-  ecosystem_url: https://lightning.org
+  ecosystem: This app is part of the lightNIIng ecosystem (lightniing.org), which aims to make neuroimaging tools widely available for clinical translation.
+  ecosystem_name: lightNIIng
+  ecosystem_url: https://lightniing.org
   platform_citation:
     title: Neurodesk
     reference: "Renton AI, Dao TT, Johnstone T, Civier O, Sullivan RP, White DJ, Lyons P, Slade BM, Abbott DF, Amos TJ, Bollmann S, Botting A, Campbell MEJ, Chang J, Chatelin TR, Cerpa C, Cooper D, Dagg E, … Bollmann S. Neurodesk: an accessible, flexible and portable data analysis environment for reproducible neuroimaging. Nature Methods. 2024;21(5):804–808."

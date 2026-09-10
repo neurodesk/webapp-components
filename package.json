@@ -25,14 +25,19 @@
     "test:deployed": "node test/deployed-site.smoke.mjs",
     "lint": "turbo run lint",
     "new-app": "node scripts/new-app.mjs",
-    "release": "changeset version && pnpm install --lockfile-only"
+    "release": "node scripts/release-apps.mjs",
+    "release:dry-run": "node scripts/release-apps.mjs --dry-run"
   },
   "devDependencies": {
+    "@changesets/apply-release-plan": "7.1.1",
     "@changesets/cli": "^2.27.0",
+    "@changesets/config": "3.1.4",
+    "@changesets/get-release-plan": "4.0.16",
+    "@manypkg/get-packages": "1.1.3",
     "@playwright/test": "^1.44.0",
+    "jsdom": "^24.0.0",
     "turbo": "^2.0.0",
     "wrangler": "^3.0.0",
-    "jsdom": "^24.0.0",
     "yaml": "^2.8.1"
   }
 }

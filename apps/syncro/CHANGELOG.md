@@ -1,5 +1,11 @@
 # syncro
 
+## 0.1.20260910
+
+### Changes
+
+- Adopt MAJOR.MINOR.YYYYMMDD versioning, link every app to the lightNIIng ecosystem (lightniing.org) from the app bar and About dialog, and keep build scratch files off the shared /tmp volume.
+
 ## 0.1.5
 
 ### Patch Changes

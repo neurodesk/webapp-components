@@ -235,7 +235,7 @@ Linux x64 packages on the matching `synthsr-vVERSION` GitHub release. It include
 the extraction and run commands for each package. Native packages embed the model
 and run offline. See the [native executable README](../../exes/synthsr/README.md).
 
-Every app build includes `downloads/neurodesk-synthsr-0.2.20260910.tgz`. It uses the shared
+Every app build includes `downloads/neurodesk-synthsr-<version>.tgz`. It uses the shared
 processing pipeline with native CPU ONNX Runtime and remains available in the dialog
 for Node.js and HPC use. The native packages stay out of the web build to preserve its
 artifact budget. Build the Node.js tarball directly with `npm pack` in `packages/synthsr`.

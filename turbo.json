@@ -7,20 +7,33 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     },
     "test:e2e": {
-      "dependsOn": ["build"],
-      "outputs": ["playwright-report/**"]
+      "dependsOn": [
+        "build"
+      ],
+      "outputs": [
+        "playwright-report/**"
+      ]
     },
     "lint": {}
-  }
+  },
+  "globalPassThroughEnv": [
+    "TMPDIR"
+  ]
 }

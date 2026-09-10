@@ -16,4 +16,5 @@ function assets(){return {name:'syncro-assets',async generateBundle(){
  try {const packed=JSON.parse(execFileSync('npm',['pack','--ignore-scripts','--json','--pack-destination',temporary],{cwd:new URL('../../packages/syncro/',import.meta.url),encoding:'utf8'}));
  this.emitFile({type:'asset',fileName:'downloads/'+packed[0].filename,source:await readFile(join(temporary,packed[0].filename))});}finally{await rm(temporary,{recursive:true,force:true});}
 }};}
-export default neurodeskViteConfig({appId:'syncro',plugins:[assets(),isolationFallback()],build:{target:'esnext'},optimizeDeps:{exclude:['onnxruntime-web']},server:{host:'127.0.0.1',port:5175},preview:{host:'127.0.0.1',port:5175}});
+const packageVersion=JSON.parse(await readFile(new URL('../../packages/syncro/package.json',import.meta.url),'utf8')).version;
+export default neurodeskViteConfig({appId:'syncro',define:{__SYNCRO_PACKAGE_VERSION__:JSON.stringify(packageVersion)},plugins:[assets(),isolationFallback()],build:{target:'esnext'},optimizeDeps:{exclude:['onnxruntime-web']},server:{host:'127.0.0.1',port:5175},preview:{host:'127.0.0.1',port:5175}});

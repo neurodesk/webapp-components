@@ -98,12 +98,12 @@
 <template id="standaloneContent">
   <div class="nd-dialog-highlight"><strong>Run SYNcro from a terminal</strong><p>Install the versioned package and process NIfTI images from the command line. Brain extraction uses SynthStrip with native ONNX Runtime.</p></div>
   <h3>Download</h3>
-  <div class="nd-command"><code id="downloadCommand">curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-0.1.4.tgz</code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="downloadCommand" aria-label="Copy download command">Copy</button></div>
+  <div class="nd-command"><code id="downloadCommand">curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-__PACKAGE_VERSION__.tgz</code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="downloadCommand" aria-label="Copy download command">Copy</button></div>
   <h3>Install</h3>
-  <div class="nd-command"><code id="installCommand">ONNXRUNTIME_NODE_INSTALL=skip npm install -g --prefix "$HOME/.local" ./neurodesk-syncro-0.1.4.tgz</code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="installCommand" aria-label="Copy install command">Copy</button></div>
+  <div class="nd-command"><code id="installCommand">ONNXRUNTIME_NODE_INSTALL=skip npm install -g --prefix "$HOME/.local" ./neurodesk-syncro-__PACKAGE_VERSION__.tgz</code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="installCommand" aria-label="Copy install command">Copy</button></div>
   <h3>Run</h3>
   <div class="nd-command"><code id="runCommand">"$HOME/.local/bin/syncro" input.nii.gz results --threads 4</code><button class="nd-btn nd-btn-secondary nd-btn-sm" type="button" data-copy-target="runCommand" aria-label="Copy run command">Copy</button></div>
-  <p><a id="packageLink" href="downloads/neurodesk-syncro-0.1.4.tgz" download>Download the npm package · 0.1.4</a></p>
+  <p><a id="packageLink" href="downloads/neurodesk-syncro-__PACKAGE_VERSION__.tgz" download>Download the npm package · __PACKAGE_VERSION__</a></p>
   <span id="copyStatus" class="nd-sr-only" role="status" aria-live="polite"></span>
 </template>
 
