@@ -14,7 +14,7 @@
   <aside id="qcPanel" aria-label="Image quality metrics">
     <section class="control-section" aria-labelledby="inputHeading">
       <h2 id="inputHeading">1. Input image</h2>
-      <p>Choose NIfTI or DICOM files, or a DICOM folder. Files stay in this browser.</p>
+      <p>The included T1w sample loads automatically. Replace it with NIfTI or DICOM files; images stay in this browser.</p>
       <div class="upload-actions">
         <label class="upload-button" for="niftiInput">Choose NIfTI / DICOM</label>
         <input id="niftiInput" type="file" data-neurodesk-input="image" multiple hidden />
@@ -43,7 +43,12 @@
       <p class="qc-empty">Metrics appear here after processing finishes.</p>
     </div>
     </details>
-    <button id="aboutBtn" class="qc-about" type="button">About</button>
+    <div class="qc-actions">
+      <button id="saveBtn" class="qc-about" type="button" disabled>Save</button>
+    </div>
+    <button id="aboutBtn" type="button" hidden>About</button>
+    <button id="citeBtn" type="button" hidden>Cite</button>
+    <button id="privacyBtn" type="button" hidden>Privacy</button>
   </aside>
 
   <main id="canvas-container">
@@ -51,17 +56,14 @@
   </main>
 
   <footer>
-    <div class="footer">
-      <table class="footer">
-        <tr>
-          <th id="location">Drag &amp; drop a NIfTI image or a folder of DICOM files</th>
-          <th>
-            <div id="loadingCircle" class="loading-circle"></div>
-            <label id="statusMsg" class="hidden"></label>
-          </th>
-        </tr>
-      </table>
+    <div class="status-row">
+      <span id="location">Drag &amp; drop a NIfTI image or a folder of DICOM files</span>
+      <span><span id="loadingCircle" class="loading-circle" aria-hidden="true"></span><label id="statusMsg" class="hidden"></label></span>
     </div>
+    <details class="nd-workflow-disclosure console-container">
+      <summary>Technical log <span class="console-actions"><button id="copyLogBtn" type="button">Copy</button><button id="clearLogBtn" type="button">Clear</button></span></summary>
+      <div id="consoleOutput" class="nd-console-output" aria-live="polite"></div>
+    </details>
   </footer>
 
   <dialog id="aboutDialog">
@@ -72,7 +74,7 @@
       <ul>
         <li><strong>Segmentation</strong> — a
           <a href="https://github.com/neuroneural/brainchop" target="_blank" rel="noopener">brainchop</a>
-          deep-learning model (TensorFlow.js) parcellates the brain into 17 gray/white-matter and
+          deep-learning model (MindGrab) parcellates the brain into 17 gray/white-matter and
           subcortical regions, shown as a colour overlay on your scan (adjust with the <strong>Opacity</strong>
           slider)</li>
         <li><strong>Quality metrics</strong> — <a href="https://github.com/rordenlab/niimath" target="_blank"
@@ -86,13 +88,14 @@
         <em>MRIQC: Advancing the automatic prediction of image quality in MRI from unseen sites.</em>
         PLoS One 12(9):e0184661.
         <a href="https://pubmed.ncbi.nlm.nih.gov/28945803/" target="_blank" rel="noopener">PMID: 28945803</a>.
-        With a masked background the CNR omits the air-noise term, so values are relative, not
-        comparable to MRIQC normative data.</small></p>
-      <p><small>Licensed <strong>BSD-2-Clause</strong>. Requires a browser with WebGPU (recent desktop
-        Chrome, Edge, or Safari).</small></p>
+        Values are an MRIQC-style approximation, not MRIQC normative values.</small></p>
+      <p><small>Licensed <strong>BSD-2-Clause</strong>. Requires a recent WebGPU-capable desktop browser.</small></p>
       <button autofocus id="closeAboutBtn" value="default">Close</button>
     </form>
   </dialog>
+
+  <dialog id="citeDialog" class="nd-app-dialog"><form method="dialog" class="nd-app-dialog__panel"><h2>How to cite BrowserQC</h2><p>Cite the MRIQC methods paper (Esteban et al., 2017) and the NiiVue, niimath, dcm2niix, and MindGrab software used in your analysis.</p><button>Close</button></form></dialog>
+  <dialog id="privacyDialog" class="nd-app-dialog"><form method="dialog" class="nd-app-dialog__panel"><h2>Privacy</h2><p>BrowserQC processes scans locally in your browser. It does not upload your images, segmentations, or quality reports.</p><button>Close</button></form></dialog>
 
   <script type="module" src="/src/main.ts"></script>
 </body>

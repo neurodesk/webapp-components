@@ -1,14 +1,13 @@
 {
   "schema_version": 1,
   "app": "browserqc",
-  "repository": "sbollmann/neurodesk-webapps-assets",
-  "revision": "3fac5b45eb5cd38190a49ad3a1dc422b016bc938",
-  "base_url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/3fac5b45eb5cd38190a49ad3a1dc422b016bc938/browserqc/",
+  "repository": "neurodeskorg/webapps",
+  "revision": "12eb1069c34097b7c0881b22e1f7e4ed953aa5cc",
+  "base_url": "https://huggingface.co/datasets/neurodeskorg/webapps/resolve/12eb1069c34097b7c0881b22e1f7e4ed953aa5cc/browserqc/",
   "license": "NOASSERTION",
   "assets": [
-    {"filename":"t1_crop.nii.gz","bytes":8131654,"sha256":"8f01b6b91f3e96cf8f8527094521ba1ab75df47ac475c6ab180a6f5d0ae1925f"},
-    {"filename":"models/model16chan18cls/colormap.json","bytes":608,"sha256":"10ebff5980dd2afe1a1407dd951d1258dfc95fec51641bab9b4a9b88d76808c5"},
-    {"filename":"models/model16chan18cls/model.bin","bytes":348872,"sha256":"955ee31dd99d90fb92ee351881aebaceb7b2497eadc0232ef4128eb20f45a191"},
-    {"filename":"models/model16chan18cls/model.json","bytes":16120,"sha256":"758fdd73d1d10d01342c0633e7d146a5f0ee31eb7ffee196ca9271e72dea1ffb"}
+    {"filename":"t1_crop.nii.gz","bytes":8788862,"sha256":"1a91502c8997981a1103cc5f2a3ada12c79dfb0498047f9e931fa358bb953886"},
+    {"filename":"avg152T1.nii.gz","bytes":567546,"sha256":"e8f5440f0dcec1a4d44384acbdf19c8e6cf94c032c3356ef91c4441fee3aaea8"},
+    {"filename":"t1_crop.json","bytes":474,"sha256":"5201efd81abd53a7adc5b698517894ed8b9ca1cb5ed57b30a075ba1010bb4da8"}
   ]
 }

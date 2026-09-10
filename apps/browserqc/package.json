@@ -1,13 +1,13 @@
 {
   "name": "browserqc",
   "private": true,
-  "version": "1.0.7",
+  "version": "0.1.20260909",
   "type": "module",
   "license": "BSD-2-Clause",
-  "description": "Automated MRI quality control, entirely in the browser. No data leaves your machine. brainchop deep-learning segmentation (TensorFlow.js) + niimath MRIQC-style metrics + NiiVue.",
+  "description": "Automated MRI quality control, entirely in the browser. No data leaves your machine.",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "dev": "node scripts/copy-brainchop.mjs && vite --force",
+    "build": "node scripts/copy-brainchop.mjs && tsc --noEmit && vite build && node ../../scripts/theme-app-dist.mjs --app browserqc",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
@@ -18,10 +18,9 @@
     "@neurodesk/webapp-components": "workspace:*",
     "@neurodesk/runtime-support": "workspace:*",
     "@niivue/dcm2niix": "^1.2.0",
-    "@niivue/niivue": "1.0.0-rc.9",
-    "@niivue/nv-ext-image-processing": "^1.0.0-rc.10",
-    "@tensorflow/tfjs": "^4.22.0",
-    "gl-matrix": "^3.4.4"
+    "@brainchop/mindgrab": "0.1.20260813",
+    "@niivue/niimath": "1.4.20260909",
+    "@niivue/niivue": "1.0.0-rc.11"
   },
   "devDependencies": {
     "@webgpu/types": "^0.1.52",

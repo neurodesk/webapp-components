@@ -9,6 +9,9 @@ dist/
 playwright-report/
 test-results/
 apps/*/public/brainchop/
+exes/*/dist/
+exes/*/models/
+exes/*/target/
 
 # dwi2trx ships the small dtifit-enabled niimath runtime, including its WASM.
 !apps/dwi2trx/vendor/
@@ -56,3 +59,6 @@ apps/*/web/dcm2niix/
 apps/*/web/nifti-js/
 apps/qsmbly/dcm2niix/
 apps/qsmbly/nifti-js/
+audit_*.md
+plan_*.md
+*_plan.md
