@@ -1,0 +1,380 @@
+:root {
+  --bg: var(--nd-color-bg);
+  --panel: var(--nd-color-surface-elevated);
+  --border: var(--nd-color-border);
+  --accent: var(--nd-color-primary);
+  --muted: var(--nd-color-text-muted);
+  --text: var(--nd-color-text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  color: var(--text);
+  background: var(--bg);
+}
+
+#controls {
+  overflow-y: auto;
+  padding: var(--nd-space-md);
+}
+
+/* Same compact cards and touch sizing as SYNcro's workflow sidebar. */
+#controls .nd-sidebar-section {
+  width: 100%;
+  margin-bottom: var(--nd-space-sm);
+  border: 1px solid var(--nd-color-border);
+  border-radius: var(--nd-radius-md);
+}
+
+#controls .nd-section-title {
+  min-height: 44px;
+  padding: var(--nd-space-sm) var(--nd-space-md);
+}
+
+#controls .nd-section-content {
+  padding: 0 var(--nd-space-md) var(--nd-space-md);
+}
+
+.workflow-section .row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--nd-space-sm);
+}
+
+#controls button,
+#controls select,
+#controls input {
+  min-height: 44px;
+  font-size: 16px;
+}
+
+#controls button,
+#controls select,
+#controls input:not([type="range"]) {
+  color: var(--nd-color-text);
+  background: var(--nd-color-surface-elevated);
+  border: 1px solid var(--nd-color-border);
+  border-radius: var(--nd-radius-sm);
+}
+
+#controls button:hover:not(:disabled) {
+  background: var(--nd-color-border);
+}
+
+.section-help {
+  margin: 0 0 var(--nd-space-sm);
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.workflow-section input[type="number"] {
+  width: 6.5em;
+}
+
+#maskFitBtn,
+#trackBtn {
+  width: 100%;
+}
+
+#canvas-container {
+  position: relative;
+  min-height: 0;
+}
+
+#gl1 {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#dropOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 25%, rgba(0, 0, 0, 0.6));
+  border: 3px dashed var(--accent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nd-space-sm);
+}
+
+.statusrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.status {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Spinning busy indicator shown beside the status text during slow work
+   (mindgrab brain extraction, the dtifit tensor fit, DICOM conversion). */
+.spinner {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.status.error {
+  color: #ff6b6b;
+}
+
+/* Live voxel readout (NiiVue location/intensity), right-aligned. */
+.location {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+#status .console-container {
+  width: 100%;
+}
+
+/* About dialog. */
+#aboutDlg,
+.message-dialog {
+  max-width: 32rem;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 24px;
+  line-height: 1.5;
+}
+#aboutDlg h2,
+.message-dialog h2 {
+  margin: 0 0 8px;
+}
+#aboutDlg a,
+.message-dialog a {
+  color: var(--accent);
+}
+#aboutDlg button,
+.message-dialog button {
+  margin-top: 8px;
+}
+#aboutDlg::backdrop,
+.message-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* Gradient sampling-scheme viewer: an independent, resizable NiiVue render. */
+#vecDlg {
+  width: min(80vw, 900px);
+  height: min(80vh, 760px);
+  max-width: 90vw;
+  max-height: 90vh;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+}
+/* Only when open — scoping to [open] preserves the UA `dialog:not([open])
+   { display: none }`, so a closed dialog stays hidden (an ID rule with a bare
+   `display` would override it and show the dialog on load). */
+#vecDlg[open] {
+  display: flex;
+  flex-direction: column; /* head (auto) + body (fills) — no fixed-header math */
+}
+#vecDlg::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+.vecdlg-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.vecdlg-info {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.vecdlg-spacer {
+  margin-left: auto;
+}
+.vecdlg-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+#vecCanvas {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: block;
+  background: #000;
+}
+.vecdlg-hint {
+  margin: 0;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+.vecdlg-hint a {
+  color: var(--accent);
+}
+.vecdlg-hint.error {
+  color: #ff6b6b;
+}
+
+/* Diffusion vector-set generator: a controls sidebar + connectome preview. */
+#genVecDlg {
+  width: min(92vw, 1040px);
+  height: min(86vh, 800px);
+  max-width: 94vw;
+  max-height: 92vh;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+}
+/* Only when open (see #vecDlg[open] above) so a closed dialog stays hidden. */
+#genVecDlg[open] {
+  display: flex;
+  flex-direction: column; /* head (auto) + body (fills) — no fixed-header math */
+}
+#genVecDlg::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+#genVecDlg .vecdlg-head {
+  flex-wrap: wrap;
+}
+.genvec-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.genvec-side {
+  flex: none;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+.genvec-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.genvec-shells {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.genvec-shell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.genvec-shell input[type="number"] {
+  width: 6em;
+  padding: 4px 6px;
+}
+.genvec-shellbtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.genvec-add {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+}
+.genvec-params {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 8px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+}
+.genvec-params input[type="range"] {
+  width: 100%;
+}
+.genvec-params input[type="number"] {
+  width: 6em;
+}
+.genvec-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.genvec-view {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+#genVecCanvas {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: block;
+  background: #000;
+}
+
+@media (max-width: 600px) {
+  #genVecDlg {
+    width: calc(100vw - 16px);
+    height: calc(100vh - 16px);
+    max-width: none;
+    max-height: none;
+  }
+  .vecdlg-head {
+    flex-wrap: wrap;
+  }
+  .genvec-body {
+    flex-direction: column;
+  }
+  .genvec-side {
+    width: auto;
+    max-height: 42%;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+}

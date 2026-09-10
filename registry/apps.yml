@@ -347,3 +347,22 @@ apps:
       shared_runtime: false
       browser_test: true
       release: true
+  - id: dwi2trx
+    path: dwi2trx
+    title: dwi2trx
+    description: Browser-native diffusion tensor fitting and GPU streamline tractography.
+    category: quantitative-imaging
+    keywords: [diffusion MRI, DTI, tractography, TRX, WebGPU, DICOM]
+    legacy_domain: null
+    runtime: vite-webgpu
+    model_manifest: null
+    asset_manifest_schema: null
+    source: neurodesk/webapps@local
+    license: NOASSERTION
+    maintainers: [neurodesk]
+    support_status: experimental
+    shell: imaging-workspace
+    ci:
+      toolchains: [node]
+      shared_runtime: false
+      release: false

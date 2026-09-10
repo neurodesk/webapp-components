@@ -8,6 +8,13 @@ dist/
 .turbo/
 playwright-report/
 test-results/
+apps/*/public/brainchop/
+
+# dwi2trx ships the small dtifit-enabled niimath runtime, including its WASM.
+!apps/dwi2trx/vendor/
+!apps/dwi2trx/vendor/niimath/
+!apps/dwi2trx/vendor/niimath/dist/
+!apps/dwi2trx/vendor/niimath/dist/**
 
 # WASM files (downloaded by per-app setup.sh)
 apps/*/web/wasm/

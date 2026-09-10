@@ -51,7 +51,12 @@ dist/
   <one directory per registry app>/
 ```
 
-Individual packages use `pnpm --filter <id> dev|build|test`.
+Individual packages use `pnpm --filter <id> dev|build|test`. To run one app with
+hot reload, for example dwi2trx:
+
+```bash
+npx pnpm@11.7.0 --filter dwi2trx dev
+```
 
 ## Deployment
 
