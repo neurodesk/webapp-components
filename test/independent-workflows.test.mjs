@@ -55,7 +55,7 @@ test('native packages share one gated publisher while signing stays isolated', a
 });
 
 test('native and independent test workflows pin actions and discard checkout credentials', async () => {
-  for (const name of ['synthsr-native', 'sct-full-tests']) {
+  for (const name of ['synthsr-native', 'syncro-native', 'sct-full-tests']) {
     const flow = await workflow(name);
     for (const job of Object.values(flow.jobs)) {
       for (const step of job.steps) {
@@ -65,4 +65,26 @@ test('native and independent test workflows pin actions and discard checkout cre
       }
     }
   }
+});
+
+test('SYNcro portable builds use target runners and one gated publisher', async () => {
+  const flow=await workflow('syncro-native');
+  assert.deepEqual(flow.permissions,{contents:'read'});
+  assert.equal(flow.jobs.release.if,"github.event_name == 'workflow_dispatch' && inputs.publish_release");
+  assert.deepEqual(flow.jobs.release.needs,['portable']);
+  assert.deepEqual(
+    flow.jobs.portable.strategy.matrix.include.map(entry=>entry.platform).sort(),
+    ['linux-x64','windows-x64'],
+  );
+  assert.ok(!JSON.stringify(flow.jobs.portable).includes('secrets.'));
+  assert.match(JSON.stringify(flow.jobs.portable),/portable_release\.py package/);
+  assert.match(JSON.stringify(flow.jobs.portable),/portable_release\.py verify/);
+  const steps=flow.jobs.release.steps;
+  const target=steps.findIndex(step=>step.name==='Check release target');
+  const verify=steps.findIndex(step=>step.name==='Check portable release assets');
+  const publish=steps.findIndex(step=>step.name==='Attach verified release assets');
+  assert.ok(target>=0&&target<verify&&verify<publish);
+  assert.match(steps[target].run,/git rev-parse/);
+  assert.match(steps[target].run,/GITHUB_SHA/);
+  assert.equal(flow.jobs.release.permissions.contents,'write');
 });

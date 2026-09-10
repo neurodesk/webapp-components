@@ -21,6 +21,8 @@
     "README.md",
     "LICENSE",
     "NOTICE",
+    "release.json",
+    "release.mjs",
     "validation/README.md",
     "validation/results"
   ],

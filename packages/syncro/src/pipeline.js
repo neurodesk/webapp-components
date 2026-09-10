@@ -1,5 +1,6 @@
 import {readVolume,writeVolume,gaussian} from '../../synthsr/src/index.js';
 import * as nifti from 'nifti-reader-js';
+import packageJson from '../package.json' with {type:'json'};
 export function asBuffer(bytes) {return bytes instanceof ArrayBuffer?bytes:bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);}
 // Validate annotations before the shared scalar reader converts to float32.
 // Otherwise uint32/float64 categories could round silently into a valid label.
@@ -38,7 +39,7 @@ export function thresholdBinary(volume) {
 // Inference and filesystem/runtime ownership stay in injected adapters.
 export async function runSyncro({input,additional=[],template,synthesize,extractBrain,registration,brainExtractor='synthstrip',ct=false,onProgress=()=>{},onStage=()=>{}}) {
   if(!['mindgrab','synthstrip'].includes(brainExtractor))throw new Error('Brain extractor must be mindgrab or synthstrip.');
-  const start=performance.now(),timings={},outputs={},provenance={version:'0.1.4',ct,stages:{}};
+  const start=performance.now(),timings={},outputs={},provenance={version:packageJson.version,ct,stages:{}};
   const volume=readVolume(asBuffer(input)),fixed=readVolume(asBuffer(template));
   const accompanying=additional.map((item,i)=>{
     const v=readAdditional(item.buffer,item.type||'image');

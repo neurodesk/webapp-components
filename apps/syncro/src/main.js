@@ -6,6 +6,7 @@ import { readVolume } from '@neurodesk/synthsr';
 import { readImageFiles } from '@neurodesk/runtime-support/dcm2niix-client';
 import { zipSync } from 'fflate';
 import { templateAsset } from '../../../packages/syncro/src/assets.js';
+import { configureNativeDownloads } from './native-release.js';
 import './styles.css';
 
 mountImagingWorkspace({
@@ -19,6 +20,7 @@ mountImagingWorkspace({
 });
 
 const $ = (id) => document.getElementById(id);
+configureNativeDownloads($('standaloneContent').content);
 const base = new URL(import.meta.env.BASE_URL, location.href);
 const viewerRegion = $('viewer');
 
