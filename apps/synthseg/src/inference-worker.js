@@ -72,7 +72,7 @@ self.onmessage = async ({ data: job }) => {
       loadModel: () => modelBytes(job.model),
       createSession: createBrowserSession,
       onProgress: progress,
-      runtime: { app: 'SynthSeg web 0.1.20260910', ...browserRuntime() },
+      runtime: { app: 'SynthSeg web 0.2.20260910', ...browserRuntime() },
     });
     self.postMessage({ type: 'result', buffer, provenance }, [buffer]);
   } catch (error) {

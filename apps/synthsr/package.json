@@ -1,6 +1,6 @@
 {
   "name": "synthsr",
-  "version": "0.2.20260910",
+  "version": "0.3.20260910",
   "private": true,
   "type": "module",
   "scripts": {

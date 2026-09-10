@@ -1,5 +1,11 @@
 # musclemap
 
+## 1.5.20260910
+
+### Minor Changes
+
+- Release the complete application catalog after integrating BrowserQC, dwi2trx and SynthSeg. Preserve shared interface behavior and publish bundles with synchronized date versions.
+
 ## 1.4.20260910
 
 ### Changes
