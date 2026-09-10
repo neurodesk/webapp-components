@@ -30,30 +30,39 @@ pub fn blur(post: &mut [f32], d: &[usize; 3], threads: usize) {
     let voxels = d[0] * d[1] * d[2];
     let strides = [d[1] * d[2], d[2], 1];
     let per = N.div_ceil(threads.max(1));
+    // wasm32 has no threads, so a single-threaded run must not reach std::thread::spawn.
+    if threads <= 1 {
+        for chunk in post.chunks_mut(per * voxels) {
+            blur_chunk(chunk, d, &strides, k, voxels);
+        }
+        return;
+    }
     std::thread::scope(|s| {
         for chunk in post.chunks_mut(per * voxels) {
-            s.spawn(move || {
-                let mut tmp = vec![0f32; voxels];
-                for dst in chunk.chunks_mut(voxels) {
-                    for axis in 0..3 {
-                        let (n, stride) = (d[axis], strides[axis]);
-                        for (i, t) in tmp.iter_mut().enumerate() {
-                            let pos = i / stride % n;
-                            let mut v = dst[i] * k[1];
-                            if pos > 0 {
-                                v += dst[i - stride] * k[0];
-                            }
-                            if pos + 1 < n {
-                                v += dst[i + stride] * k[0];
-                            }
-                            *t = v;
-                        }
-                        dst.copy_from_slice(&tmp);
-                    }
-                }
-            });
+            s.spawn(move || blur_chunk(chunk, d, &strides, k, voxels));
         }
     });
+}
+
+fn blur_chunk(chunk: &mut [f32], d: &[usize; 3], strides: &[usize; 3], k: [f32; 2], voxels: usize) {
+    let mut tmp = vec![0f32; voxels];
+    for dst in chunk.chunks_mut(voxels) {
+        for axis in 0..3 {
+            let (n, stride) = (d[axis], strides[axis]);
+            for (i, t) in tmp.iter_mut().enumerate() {
+                let pos = i / stride % n;
+                let mut v = dst[i] * k[1];
+                if pos > 0 {
+                    v += dst[i - stride] * k[0];
+                }
+                if pos + 1 < n {
+                    v += dst[i + stride] * k[0];
+                }
+                *t = v;
+            }
+            dst.copy_from_slice(&tmp);
+        }
+    }
 }
 
 /// post = 0.5 * (post + flipped_back_and_reordered(other)); `other` came from the x-flipped input.

@@ -1,0 +1,20 @@
+# Browser pre/post-processing for SynthSeg: the CLI's Rust modules (../../../exes/synthseg/src)
+# compiled to wasm32. Standalone workspace so `cargo build` here never joins a parent one.
+[package]
+name = "synthseg-wasm"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+flate2 = "1"
+
+[profile.release]
+opt-level = 3
+lto = true
+panic = "abort"
+
+[workspace]
