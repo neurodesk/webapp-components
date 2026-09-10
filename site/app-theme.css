@@ -565,6 +565,11 @@
   stroke: none !important;
 }
 
+.nd-app-bar__action[title$="neuroimaging infrastructure"] svg {
+  fill: currentColor !important;
+  stroke: none !important;
+}
+
 [data-neurodesk-top-bar-overlay] {
   flex-direction: column !important;
 }

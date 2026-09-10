@@ -1,6 +1,6 @@
 # Repository instructions
 
-This repository stores source code only. Large validation datasets and models belong on [https://huggingface.co/datasets/neurodeskorg/webapps](https://huggingface.co/datasets/neurodeskorg/webapps). Version patch numbers typically use the release date as `YYYYMMDD` (e.g., `0.1.20260808`).
+This repository stores source code only. Large validation datasets and models belong on [https://huggingface.co/datasets/neurodeskorg/webapps](https://huggingface.co/datasets/neurodeskorg/webapps). Every app is versioned `MAJOR.MINOR.YYYYMMDD`: the patch is the UTC release date (e.g. `0.1.20260808`). Describe changes in a changeset (`pnpm changeset`), then run `pnpm release`, which sets the date versions, writes changelogs and synchronises embedded version strings (`scripts/lib/app-versions.mjs`); `test/app-versions.test.mjs` rejects any other scheme. Keep scratch files off `/tmp`: `TMPDIR` points at the storage volume and turbo passes it through.
 
 ## Interface changes and new applications
 
@@ -9,7 +9,7 @@ Before changing UI, adding controls, or scaffolding an app, read [the design sys
 - Build every sidebar, viewer, console, status bar and dialog from the classes in `@neurodesk/webapp-components/styles/imaging-workspace.css` and the builders in `@neurodesk/webapp-components/ui` (`renderFileField`, `renderViewerToolbar`, `renderConsole`, `createInfoDialog`, `StageResultList`). Start from `templates/app-template`, which is the complete canonical layout.
 - Do not write app CSS for those regions, hardcode colours, override `--nd-color-*` tokens, set `color-scheme`, or add `<dialog>` markup. If the vocabulary lacks something, add it to the shared stylesheet with a test, then use it. `test/design-system.test.mjs` fails on each of these.
 - Keep sources readable: one rule or statement per line. Minified app HTML, CSS or JS hides drift from review.
-- About and Cite content is data in `registry/app-information.yml` (packages under the hood, a paper per implemented method, builder credits). The shared shell renders it; apps never write citation markup. When an app gains a method, add its paper there and to `test/app-information.test.mjs`.
+- About and Cite content is data in `registry/app-information.yml` (the lightNIIng ecosystem statement and link live under `shared`) (packages under the hood, a paper per implemented method, builder credits). The shared shell renders it; apps never write citation markup. When an app gains a method, add its paper there and to `test/app-information.test.mjs`.
 
 - Keep one shared application bar. Register app-specific About, Cite and Privacy handlers through the shell's control contract. If an app ships a command-line package, register its Standalone instructions through the optional shell control instead of placing them in the workflow sidebar.
 - Keep the current task visible. Put optional settings, technical logs and inactive output controls in accessible collapsible sections.

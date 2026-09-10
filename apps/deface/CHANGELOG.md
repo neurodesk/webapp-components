@@ -1,5 +1,11 @@
 # deface
 
+## 1.0.20260910
+
+### Changes
+
+- Adopt MAJOR.MINOR.YYYYMMDD versioning, link every app to the lightNIIng ecosystem (lightniing.org) from the app bar and About dialog, and keep build scratch files off the shared /tmp volume.
+
 ## 1.0.9
 
 ### Patch Changes

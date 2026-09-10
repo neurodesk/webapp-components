@@ -1,5 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
+const PACKAGE_VERSION=JSON.parse(await readFile(new URL('../../../packages/syncro/package.json',import.meta.url),'utf8')).version;
 test.beforeEach(async({page})=>{await page.route('**/MNI152_T1_1mm_brain.nii.gz',async route=>route.fulfill({body:await readFile(new URL('../../../packages/syncro/data/MNI152_T1_1mm_brain.nii.gz',import.meta.url))}));});
 function scan(name,translation=0){
  const buffer=Buffer.alloc(352+4096);
@@ -98,7 +99,7 @@ test('compact help, standalone commands and result switching remain reachable',a
  await expect(page.locator('#info')).toBeVisible();
  await expect(page.locator('#infoTitle')).toHaveText('Standalone');
  await expectCentered(page,page.locator('#info'));
- await expect(page.locator('#downloadCommand')).toContainText('curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-0.1.4.tgz');
+ await expect(page.locator('#downloadCommand')).toContainText(`curl -LO https://webapps.neurodesk.org/syncro/downloads/neurodesk-syncro-${PACKAGE_VERSION}.tgz`);
  await page.locator('[data-copy-target="downloadCommand"]').click();
  expect(await page.evaluate(()=>window.copiedText)).toContain('curl -LO');
  await page.locator('#info').getByRole('button',{name:'Close'}).click();
@@ -144,6 +145,6 @@ test('compact help, standalone commands and result switching remain reachable',a
  await expect(cite.locator('a[href="https://doi.org/10.1038/s41592-023-02145-x"]')).toHaveCount(1);
  await cite.locator('.nd-app-dialog__close').click();
  await page.locator('.nd-app-bar').getByRole('button',{name:'About',exact:true}).click();
- await expect(page.locator('#info [data-neurodesk-app-info="about"]')).toContainText('lightning.org');
+ await expect(page.locator('#info [data-neurodesk-app-info="about"]')).toContainText('lightniing.org');
  await expect(page.locator('#info [data-neurodesk-app-info="about"]')).toContainText('Neurodesk team');
 });

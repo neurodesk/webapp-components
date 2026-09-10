@@ -4,7 +4,7 @@ import test from 'node:test';
 import { nativeDownloads } from '../src/native-release.js';
 import { nativeReleaseVersion } from '../scripts/package-plugin.mjs';
 
-const version = '0.2.20260910';
+const version = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8')).version;
 const downloads = nativeDownloads(version);
 
 test('native downloads use the Cargo release tag and platform asset names', () => {

@@ -320,8 +320,8 @@ try {
       if (!/v\d+\.\d+/.test(identity)) failures.push(`${app.id}: top bar is missing a version`);
       const hasStandalone = await page.locator('[data-neurodesk-control="standalone"]').count() > 0;
       const expectedActions = hasStandalone
-        ? 'About Cite Standalone Privacy Light More Apps GitHub'
-        : 'About Cite Privacy Light More Apps GitHub';
+        ? 'About Cite Standalone Privacy Light More Apps lightNIIng GitHub'
+        : 'About Cite Privacy Light More Apps lightNIIng GitHub';
       if (actions.replace(/\s+/g, ' ').trim() !== expectedActions) {
         failures.push(`${app.id}: top-bar actions are out of contract: ${actions.replace(/\s+/g, ' ').trim()}`);
       }

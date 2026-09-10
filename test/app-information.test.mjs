@@ -53,7 +53,8 @@ test('every registered app has app information with packages and cited methods',
 
 test('the shared statements say who builds the apps and which ecosystem they belong to', () => {
   assert.match(information.shared.builder, /Neurodesk team/);
-  assert.equal(information.shared.ecosystem, 'This app is part of the lightning.org ecosystem, which aims to make neuroimaging tools widely available for clinical translation.');
+  assert.equal(information.shared.ecosystem, 'This app is part of the lightNIIng ecosystem (lightniing.org), which aims to make neuroimaging tools widely available for clinical translation.');
+  assert.equal(information.shared.ecosystem_url, 'https://lightniing.org');
   assert.equal(information.shared.platform_citation.doi, '10.1038/s41592-023-02145-x');
   assert.match(information.shared.platform_citation.reference, /Renton/);
 });
@@ -132,7 +133,9 @@ test('the shell About action appends the packages, builder and ecosystem block t
   assert.match(block.textContent, /QSM\.rs/);
   assert.match(block.textContent, /Ashley Stewart/);
   assert.match(block.textContent, /Neurodesk team/);
-  assert.match(block.textContent, /lightning\.org ecosystem, which aims to make neuroimaging tools widely available for clinical translation/);
+  assert.match(block.textContent, /lightNIIng ecosystem \(lightniing\.org\), which aims to make neuroimaging tools widely available for clinical translation/);
+  assert.ok(block.querySelector('a[href="https://lightniing.org"]'), 'About links to lightniing.org');
+  assert.ok(window.document.querySelector('.nd-app-bar a[href="https://lightniing.org"]'), 'app bar links to lightniing.org');
   assert.equal(overlay.querySelectorAll('[data-neurodesk-app-info="about"]').length, 1);
   window.document.querySelector('.nd-app-bar [data-neurodesk-shell-control="about"]').click();
   await new Promise((resolve) => setTimeout(resolve, 20));
@@ -146,5 +149,5 @@ test('the shell About fallback uses registry paragraphs when the app has no Abou
   assert.ok(dialog?.hasAttribute('open'));
   assert.match(dialog.textContent, /OME-Zarr/);
   assert.match(dialog.textContent, /zarrita/);
-  assert.match(dialog.textContent, /lightning\.org/);
+  assert.match(dialog.textContent, /lightniing\.org/);
 });

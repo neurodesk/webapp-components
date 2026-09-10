@@ -25,7 +25,8 @@
     "test:deployed": "node test/deployed-site.smoke.mjs",
     "lint": "turbo run lint",
     "new-app": "node scripts/new-app.mjs",
-    "release": "changeset version && pnpm install --lockfile-only"
+    "release": "node scripts/release-apps.mjs",
+    "release:dry-run": "node scripts/release-apps.mjs --dry-run"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0",

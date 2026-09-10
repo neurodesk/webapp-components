@@ -53,7 +53,13 @@ bindInfoTooltips(document);
 
 const info = createInfoDialog({ id: 'info', titleId: 'infoTitle', bodyId: 'infoBody' });
 $('aboutBtn').onclick = () => info.open('About SYNcro', $('aboutContent'));
-$('standaloneBtn').onclick = () => info.open('Standalone', $('standaloneContent'), { wide: true });
+$('standaloneBtn').onclick = () => {
+  info.open('Standalone', $('standaloneContent'), { wide: true });
+  for (const node of info.body.querySelectorAll('code, a#packageLink')) {
+    node.textContent = node.textContent.replaceAll('__PACKAGE_VERSION__', __SYNCRO_PACKAGE_VERSION__);
+    if (node.href !== undefined) node.setAttribute('href', node.getAttribute('href').replaceAll('__PACKAGE_VERSION__', __SYNCRO_PACKAGE_VERSION__));
+  }
+};
 $('privacyBtn').onclick = () => info.open('Privacy', $('privacyContent'));
 info.body.addEventListener('click', async (event) => {
   const button = event.target.closest('[data-copy-target]');

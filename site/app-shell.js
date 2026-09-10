@@ -34,6 +34,7 @@ import { resolveShellAdapter } from './shell-adapters/index.js';
     standalone: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3M13 15h4"/></svg>',
     theme: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
     apps: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
+    ecosystem: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>',
     github: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.86c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.35 1.09 2.92.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0 1 12 6.84a9.6 9.6 0 0 1 2.5.34c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>',
   };
 
@@ -96,6 +97,16 @@ import { resolveShellAdapter } from './shell-adapters/index.js';
     return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`;
   }
 
+  // The ecosystem sentence with its project name and domain linked. The domain
+  // is linked first so the name replacement cannot touch the generated href.
+  function ecosystemHtml() {
+    const { ecosystem, ecosystem_name: name, ecosystem_url: url } = information.shared;
+    const domain = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    let html = escapeHtml(ecosystem).replace(escapeHtml(domain), linkHtml(url, domain));
+    if (name && !html.includes(`>${escapeHtml(name)}<`)) html = html.replace(escapeHtml(name), linkHtml(url, name));
+    return html;
+  }
+
   // Shared About block: what runs under the hood, who builds the web app and
   // the ecosystem the app belongs to. Rendered identically for every app.
   function aboutInformationHtml() {
@@ -106,7 +117,7 @@ import { resolveShellAdapter } from './shell-adapters/index.js';
     return `<section class="nd-app-info" data-neurodesk-app-info="about">`
       + `<h3>Under the hood</h3><ul>${packages}</ul>`
       + `<h3>About this app</h3>${builders}<p>${escapeHtml(information.shared.builder)}</p>`
-      + `<p>${escapeHtml(information.shared.ecosystem).replace('lightning.org', linkHtml(information.shared.ecosystem_url, 'lightning.org'))}</p>`
+      + `<p>${ecosystemHtml()}</p>`
       + `</section>`;
   }
 
@@ -240,6 +251,7 @@ import { resolveShellAdapter } from './shell-adapters/index.js';
         return toggle;
       })(),
       createLink('More Apps', 'apps', metadata.moreAppsHref, 'More Neurodesk web apps'),
+      ...(information?.shared?.ecosystem_url ? [createLink(information.shared.ecosystem_name || 'lightNIIng', 'ecosystem', information.shared.ecosystem_url, `${information.shared.ecosystem_name || 'lightNIIng'} neuroimaging infrastructure`)] : []),
       createLink('GitHub', 'github', metadata.sourceHref, 'View this app on GitHub'),
     );
     bar.append(identity, navigation);

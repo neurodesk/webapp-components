@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
 import { synthesize, resolveModel, defaultThreads } from '../src/node.js';
-const help=`SynthSR 0.2.20260910 — native brain image synthesis (Node.js 22+)
+import { PACKAGE_VERSION } from '../src/version.js';
+const help=`SynthSR ${PACKAGE_VERSION} — native brain image synthesis (Node.js 22+)
 
 Usage:
   synthsr INPUT.nii[.gz] [OUTPUT.nii[.gz]] [options]
@@ -34,7 +35,7 @@ try {
     tiled:{type:'boolean'},force:{type:'boolean'},quiet:{type:'boolean'},help:{type:'boolean',short:'h'},version:{type:'boolean',short:'v'},
   }});
   if(values.help){console.log(help);}
-  else if(values.version){console.log('0.2.20260910');}
+  else if(values.version){console.log(PACKAGE_VERSION);}
   else {
     let last='';
     const onProgress=(_,message)=>{if(!values.quiet&&message!==last){console.error(message);last=message;}};

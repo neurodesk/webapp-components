@@ -21,10 +21,11 @@ export async function loadAppInformation(registry, path = appInformationPath) {
   const data = parse(await readFile(path, 'utf8'));
   const errors = [];
   const shared = data?.shared ?? {};
-  for (const key of ['builder', 'ecosystem', 'ecosystem_url']) {
+  for (const key of ['builder', 'ecosystem', 'ecosystem_name', 'ecosystem_url']) {
     if (!text(shared[key])) errors.push(`shared.${key} must be a non-empty string`);
   }
-  if (!/lightning\.org/.test(shared.ecosystem ?? '')) errors.push('shared.ecosystem must name the lightning.org ecosystem');
+  if (!/lightNIIng/.test(shared.ecosystem ?? '') || !/lightniing\.org/.test(shared.ecosystem ?? '')) errors.push('shared.ecosystem must name the lightNIIng ecosystem and its domain lightniing.org');
+  if (shared.ecosystem_url !== 'https://lightniing.org') errors.push('shared.ecosystem_url must be https://lightniing.org');
   if (!/clinical translation/.test(shared.ecosystem ?? '')) errors.push('shared.ecosystem must state the clinical-translation aim');
   if (!/Neurodesk/.test(shared.builder ?? '')) errors.push('shared.builder must name Neurodesk');
   validateCitation(shared.platform_citation, 'shared.platform_citation', errors);

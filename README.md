@@ -72,11 +72,16 @@ capacity thresholds and migration trigger.
 
 ## Releases
 
-The manual `release-apps` workflow accepts selected or Git-affected catalog apps,
-then tests, builds, and publishes an independent standalone bundle for each app.
-Tags use `<app>-v<version>` and all point to the same validated monorepo commit.
-Each release includes that app's static browser bundle; large model weights remain
-on Hugging Face and are fetched at runtime.
+Apps are versioned `MAJOR.MINOR.YYYYMMDD`; the patch is the UTC release date.
+Describe a change with `pnpm changeset`, then run `pnpm release` to set the date
+versions, write changelog entries and synchronise embedded version strings
+(`pnpm release:dry-run` previews the plan; `--same-day` republishes a version
+already dated today). After the change is merged, the manual `release-apps`
+workflow accepts selected or Git-affected catalog apps, then tests, builds, and
+publishes an independent standalone bundle for each app. Tags use
+`<app>-v<version>` and all point to the same validated monorepo commit. Each
+release includes that app's static browser bundle; large model weights remain on
+Hugging Face and are fetched at runtime.
 
 ## Adding an app
 

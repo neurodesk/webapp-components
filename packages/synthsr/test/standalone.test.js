@@ -17,7 +17,7 @@ test('standalone manifest matches the browser model pin',async()=>{
 });
 test('CLI help/version work without native inference; unknown flags fail',async()=>{
   const {stdout}=await exec(process.execPath,[cli,'--help']);assert.match(stdout,/download-model/);
-  assert.equal((await exec(process.execPath,[cli,'--version'])).stdout.trim(),'0.2.20260910');
+  assert.equal((await exec(process.execPath,[cli,'--version'])).stdout.trim(),JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8')).version);
   await assert.rejects(exec(process.execPath,[cli,'--typo']),error=>error.code===1&&error.stderr.includes('Unknown option'));
 });
 test('offline mode and invalid local weights fail without downloading',async()=>{
