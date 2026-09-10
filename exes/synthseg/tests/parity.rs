@@ -24,8 +24,10 @@ fn npy_f32(path: &Path) -> Vec<f32> {
     let b = fs::read(path).unwrap();
     let hlen = u16::from_le_bytes([b[8], b[9]]) as usize + 10;
     b[hlen..]
-        .chunks_exact(4)
-        .map(|c| f32::from_le_bytes(c.try_into().unwrap()))
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .map(|c| f32::from_le_bytes(*c))
         .collect()
 }
 
