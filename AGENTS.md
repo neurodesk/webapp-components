@@ -75,5 +75,7 @@ FreeSurfer goldens from Hugging Face into `SYNTHSEG_REFERENCE_DIR`.
 `exes/synthsr/src/nifti.rs` and `src/volume.rs` are line-for-line ports of
 `packages/synthsr/src/volume.js` and must stay bit-identical (f64 math, f32
 storage): change the JS and the Rust together. `exes/synthsr/src/metal.rs`
-mirrors `packages/synthsr/src/gpu-conv3d.js` and `gpu-session.js` the same
-way.
+mirrors the shared WebGPU executor in
+`packages/runtime-support/src/gpu-unet/` the same way;
+`exes/synthseg/src/metal.rs` mirrors that same executor including its `Concat`
+and `Softmax` kernels and the padded classifier head.

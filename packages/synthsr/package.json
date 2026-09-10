@@ -29,6 +29,7 @@
     "lint": "node --check src/index.js && node --check src/node.js && node --check bin/synthsr.js"
   },
   "dependencies": {
+    "@neurodesk/runtime-support": "workspace:*",
     "nifti-reader-js": "0.8.0",
     "onnxruntime-node": "1.29.0"
   },

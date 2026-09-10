@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 test('blocked FP32 Conv3D matches an independent CPU convolution',async({page})=>{
   await page.goto('./');
   test.skip(!await page.evaluate(async()=>!!await navigator.gpu?.requestAdapter()),'No WebGPU adapter');
-  const source=(await readFile(new URL('../../../packages/synthsr/src/gpu-conv3d.js',import.meta.url),'utf8')).replaceAll('export function','function');
+  const source=(await readFile(new URL('../../../packages/runtime-support/src/gpu-unet/conv3d.js',import.meta.url),'utf8')).replaceAll('export function','function');
   const result=await page.evaluate(async(source)=>{
     const body=async()=>{
       const adapter=await navigator.gpu.requestAdapter(),device=await adapter.requestDevice();
