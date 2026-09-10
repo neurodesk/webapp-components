@@ -1,4 +1,8 @@
-import { findApp, loadAppsRegistry } from './apps-registry.mjs';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { findApp, loadAppsRegistry, repoRoot } from './apps-registry.mjs';
+import { loadAppInformation, appInformationPayload } from './app-information.mjs';
+import { injectCompositeTheme } from './composite-theme.mjs';
 
 // The one production header policy for every deployable. The composite root
 // `_headers` (scripts/build-site.mjs) serves COEP `credentialless`, so the
@@ -27,6 +31,32 @@ function emitHeadersFile() {
   };
 }
 
+const fsUrl = (path) => `@fs/${path.replaceAll('\\', '/').replace(/^\/+/, '')}`;
+
+function injectDevShell({ app, version, measurementId, information }) {
+  return {
+    name: 'neurodesk-dev-shell',
+    apply: 'serve',
+    transformIndexHtml(html) {
+      return injectCompositeTheme(html, {
+        appId: app.id,
+        shell: app.shell || 'static-html',
+        title: app.title,
+        description: app.description,
+        version,
+        information,
+        measurementId,
+        href: fsUrl(join(repoRoot, 'site', 'app-theme.css')),
+        themeHref: fsUrl(join(repoRoot, 'site', 'theme.js')),
+        shellHref: fsUrl(join(repoRoot, 'site', 'app-shell.js')),
+        analyticsHref: 'data:text/javascript,export function initAnalytics(){return Object.freeze({enabled:false,reason:"development"})}',
+        moreAppsHref: '/',
+        iconHref: fsUrl(join(repoRoot, 'site', 'neurodesk-logo.svg')),
+      });
+    },
+  };
+}
+
 const isPlainObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 
 function mergeConfig(defaults, overrides) {
@@ -51,11 +81,17 @@ function mergeConfig(defaults, overrides) {
 export async function neurodeskViteConfig({ appId, base, ...overrides }) {
   const registry = await loadAppsRegistry();
   const app = findApp(registry, appId);
+  const appPackage = JSON.parse(await readFile(join(repoRoot, 'apps', app.id, 'package.json'), 'utf8'));
   return mergeConfig({
     base: process.env.WEBAPPS_BASE_PATH || base || `/${app.path}/`,
     worker: { format: 'es' },
     server: { headers: { ...isolationHeaders } },
     preview: { headers: { ...isolationHeaders } },
-    plugins: [emitHeadersFile()],
+    plugins: [emitHeadersFile(), injectDevShell({
+      app,
+      information: appInformationPayload(await loadAppInformation(registry), app.id),
+      version: appPackage.version,
+      measurementId: registry.site.analytics.measurement_id,
+    })],
   }, overrides);
 }

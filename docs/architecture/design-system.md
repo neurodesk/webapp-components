@@ -133,7 +133,7 @@ an implemented method has no paper or an app has no entry.
 | App | State |
 | --- | --- |
 | SynthSR, SYNcro | Rebuilt on the vocabulary; app CSS is empty. |
-| App template (`pnpm new-app`) | Canonical example; `docs/architecture/examples/app-template` mirrors it. |
+| App template (`pnpm new-app`) | Canonical example; Documentation links to this executable template. |
 | NiiMath | Uses shared sections; picker and buttons still app-styled. Ratcheted. |
 | Deface, BrowserQC | Own palette (`--bg`, `--accent`) and `.upload-button` pair. Ratcheted; migrate the picker to `.nd-file` and delete the palette. |
 | SurfAnnotate, ZARRo | Specialist sidebars with their own panel styling. Ratcheted; migrate section titles and buttons first. |

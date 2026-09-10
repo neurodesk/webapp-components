@@ -12,6 +12,7 @@
 # linked) and /usr/local/lib/synthsr/libwebgpu_dawn.dylib, the Dawn WebGPU-on-Metal
 # runtime that ORT's WebGPU provider loads via @rpath.
 set -eu
+set -o pipefail
 
 [ "$(uname -s)" = Darwin ] && [ "$(uname -m)" = arm64 ] || { echo "package_macos.sh requires Apple Silicon macOS" >&2; exit 2; }
 
@@ -67,7 +68,7 @@ for bin in "$staged_dawn" "$staged"; do
 	fi
 	codesign --verify --strict --verbose=2 "$bin"
 done
-"$staged" --self-check >/dev/null
+"$staged" --self-check | sed "s/^/  /"
 
 pkgbuild --root "$payload/root" --identifier "$identifier" --version "$version" --install-location / "$payload/component.pkg"
 if [ -n "$installer_identity" ]; then

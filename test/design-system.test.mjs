@@ -20,8 +20,8 @@ const shellApps = registry.apps.filter((app) => app.shell === 'imaging-workspace
 // line counts as an upper bound. Migrating an app to the vocabulary removes it
 // from this map; adding an app here is not allowed.
 const LEGACY_CSS_RATCHET = new Map(Object.entries({
-  browserqc: { colourLiterals: 27, cssLines: 318 },
-  deface: { colourLiterals: 13, cssLines: 210 },
+  browserqc: { colourLiterals: 0, cssLines: 72 },
+  deface: { colourLiterals: 0, cssLines: 0 },
   niimath: { colourLiterals: 9, cssLines: 155 },
   surfannotate: { colourLiterals: 58, cssLines: 912 },
   zarro: { colourLiterals: 40, cssLines: 1223 },
@@ -166,12 +166,8 @@ test('vocabulary apps build their interface from the shared classes', async () =
   assert.deepEqual(failures, []);
 });
 
-test('the app template is the canonical vocabulary example and its docs mirror matches', async () => {
+test('the app template is the canonical vocabulary example', async () => {
   const template = join(repoRoot, 'templates', 'app-template');
-  const mirror = join(repoRoot, 'docs', 'architecture', 'examples', 'app-template');
-  for (const file of ['index.html', 'src/main.js']) {
-    assert.equal(await readFile(join(mirror, file), 'utf8'), await readFile(join(template, file), 'utf8'), `docs mirror of ${file} is stale`);
-  }
   const html = await readFile(join(template, 'index.html'), 'utf8');
   for (const marker of ['class="nd-sidebar-section"', 'class="nd-file"', 'nd-btn nd-btn-primary', 'class="nd-viewer-canvas-wrapper"', 'class="nd-status-text"']) {
     assert.ok(html.includes(marker), `template lacks ${marker}`);

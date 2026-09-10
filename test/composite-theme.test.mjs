@@ -1,6 +1,8 @@
+import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { injectCompositeTheme } from '../scripts/lib/composite-theme.mjs';
+import { neurodeskViteConfig } from '../scripts/lib/vite-app-config.mjs';
 
 const document = '<!doctype html><html lang="en"><head><title>Example</title></head><body></body></html>';
 const metadata = {
@@ -120,4 +122,20 @@ test('rejects invalid app ids and incomplete documents', () => {
   assert.throws(() => injectCompositeTheme(document, { ...metadata, title: '' }), /title must be a non-empty string/);
   assert.throws(() => injectCompositeTheme('<html><body></body></html>', metadata), /missing <\/head>/);
   assert.throws(() => injectCompositeTheme(document, { ...metadata, url: 'example/' }), /url must be an absolute/);
+});
+
+test('shared Vite development config injects the production shell contract', async () => {
+  const config = await neurodeskViteConfig({ appId: 'deface' });
+  const plugin = config.plugins.find(({ name }) => name === 'neurodesk-dev-shell');
+  const themed = plugin.transformIndexHtml(document);
+
+  assert.equal(plugin.apply, 'serve');
+  assert.match(themed, /data-neurodesk-app="deface"/);
+  assert.match(themed, /href="@fs\/.*\/site\/app-theme\.css"/);
+  assert.match(themed, /src="@fs\/.*\/site\/app-shell\.js"/);
+  const pkg = JSON.parse(await readFile(new URL('../apps/deface/package.json', import.meta.url), 'utf8'));
+  assert.ok(themed.includes(`data-app-version="${pkg.version}"`));
+  assert.match(themed, /data-neurodesk-app-information/);
+  assert.match(themed, /lightniing.org/);
+  assert.match(themed, /data-analytics-href="data:text\/javascript/);
 });

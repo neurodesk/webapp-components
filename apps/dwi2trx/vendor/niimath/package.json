@@ -1,0 +1,20 @@
+{
+  "name": "@niivue/niimath",
+  "version": "1.2.0-dtifit.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./niimath.js": "./dist/niimath.js"
+  },
+  "license": "BSD-2-Clause",
+  "description": "dtifit-enabled WASM runtime vendored for dwi2trx.",
+  "files": [
+    "dist/"
+  ]
+}

@@ -1,13 +1,14 @@
-# Vendored niimath (BSD-only, unreleased fast-deface build)
+# Vendored niimath (BSD-only, frozen fast-deface build)
 
 These are the built artifacts of a **BSD-2-only** WASM build of niimath, vendored
 once in `@neurodesk/runtime-support` and imported by apps as
 `@neurodesk/runtime-support/niimath`.
 
-Vendored because this build carries niimath's new fast affine `-deface` engine
-(`-cost fast` default with Hellinger fallback; `-cost hel` for the exhaustive engine),
-which is **newer than the npm release** (`@niivue/niimath@1.3.2`, no fast deface).
-**Delete this directory and depend on `@niivue/niimath` from npm once `1.4.0` publishes.**
+This frozen build carries niimath's fast affine `-deface` engine (`-cost fast`
+default with Hellinger fallback; `-cost hel` for the exhaustive engine) and is
+retained only for the currently validated Deface workflow. BrowserQC uses the
+pinned npm release `@niivue/niimath@1.4.20260909`. Once Deface has matching
+parity evidence for that release, switch it to npm and delete this directory.
 
 ## Files
 

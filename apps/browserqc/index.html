@@ -12,8 +12,9 @@
 
 <body>
   <aside id="qcPanel" aria-label="Image quality metrics">
-    <section class="control-section" aria-labelledby="inputHeading">
-      <h2 id="inputHeading">1. Input image</h2>
+    <details class="nd-sidebar-section" id="inputSection" open>
+      <summary class="nd-section-title">1. Input image</summary>
+      <div class="nd-section-content">
       <label class="nd-file" id="inputDropZone">
         <input id="niftiInput" type="file" data-neurodesk-input="image" multiple aria-label="Choose NIfTI or DICOM files" />
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -21,56 +22,51 @@
       </label>
       <label class="nd-btn nd-btn-secondary nd-btn-sm nd-btn-block">Choose DICOM folder<input id="dicomInput" type="file" data-neurodesk-input="image" webkitdirectory multiple hidden /></label>
       <select id="dicomPick" class="hidden" aria-label="Pick a converted NIfTI series"></select>
-    </section>
-    <section class="control-section processing-summary" aria-labelledby="processingHeading">
-      <h2 id="processingHeading">2. Automatic processing</h2>
-      <p>Choose an image to start segmentation and quality measurements automatically.</p>
-    </section>
-    <details class="nd-workflow-disclosure control-section" aria-labelledby="resultsHeading" id="resultsSection">
-    <summary class="qc-head">
-      <h2 id="resultsHeading" class="qc-title">3. Image quality
-        <span class="qc-titlesub">MRIQC-style</span>
-      </h2>
-
-    </summary>
-    <div class="qc-opacity">
+    </div>
+    </details>
+    <details class="nd-sidebar-section" id="processingSection" open>
+      <summary class="nd-section-title">2. Automatic processing</summary>
+      <div class="nd-section-content">
+      <p class="nd-hint">Choose an image to start segmentation and quality measurements automatically.</p>
+    </div>
+    </details>
+    <details class="nd-sidebar-section" id="resultsSection">
+      <summary class="nd-section-title">3. Image quality</summary>
+      <div class="nd-section-content">
+    <div class="nd-field">
       <label for="ovlSlider">Opacity</label>
       <input type="range" min="0" max="255" value="128" id="ovlSlider" aria-label="Segmentation overlay opacity" />
     </div>
     <div id="qcBody">
       <p class="qc-empty">Metrics appear here after processing finishes.</p>
     </div>
+      <button id="saveBtn" class="nd-btn nd-btn-secondary" type="button" disabled>Download QC report</button>
+      </div>
     </details>
-    <button id="aboutBtn" class="qc-about" type="button">About</button>
+    <button id="aboutBtn" type="button" hidden>About</button>
+    <button id="privacyBtn" type="button" hidden>Privacy</button>
   </aside>
 
   <main id="canvas-container">
-    <canvas id="gl1"></canvas>
+    <div class="nd-viewer-canvas-wrapper">
+      <canvas id="gl1" aria-label="MRI viewer"></canvas>
+      <p id="emptyState" class="nd-viewer-empty" hidden>Image viewer unavailable. See the status below.</p>
+    </div>
+    <div class="nd-viewer-info"><span id="location" class="nd-viewer-info-primary">Choose an image to begin.</span></div>
   </main>
 
-  <footer>
-    <div class="footer">
-      <table class="footer">
-        <tr>
-          <th id="location">Drag &amp; drop a NIfTI image or a folder of DICOM files</th>
-          <th>
-            <div id="loadingCircle" class="loading-circle"></div>
-            <label id="statusMsg" class="hidden"></label>
-          </th>
-        </tr>
-      </table>
-    </div>
+  <footer id="status">
+    <span class="nd-status-label">Status</span>
+    <span id="statusMsg" class="nd-status-text" role="status" aria-live="polite">Ready</span>
+    <progress id="loadingCircle" aria-label="Processing progress" max="1" value="0"></progress>
   </footer>
 
-  <dialog id="aboutDialog">
-    <form method="dialog">
-      <h3>BrowserQC</h3>
-      <p>Automated MRI quality control, <strong>entirely in your browser</strong> — no upload, no server.
+  <template id="aboutContent"><p>Automated MRI quality control, <strong>entirely in your browser</strong> — no upload, no server.
         Drag in a NIfTI image (or a folder of DICOM files) and it runs automatically.</p>
       <ul>
         <li><strong>Segmentation</strong> — a
           <a href="https://github.com/neuroneural/brainchop" target="_blank" rel="noopener">brainchop</a>
-          deep-learning model (TensorFlow.js) parcellates the brain into 17 gray/white-matter and
+          deep-learning model (MindGrab) parcellates the brain into 17 gray/white-matter and
           subcortical regions, shown as a colour overlay on your scan (adjust with the <strong>Opacity</strong>
           slider)</li>
         <li><strong>Quality metrics</strong> — <a href="https://github.com/rordenlab/niimath" target="_blank"
@@ -80,17 +76,11 @@
       <p>Rendering uses <a href="https://niivue.com/" target="_blank" rel="noopener">NiiVue</a>;
         DICOM import uses <a href="https://github.com/rordenlab/dcm2niix" target="_blank" rel="noopener">dcm2niix</a>.
       </p>
-      <p><small>The image-quality metrics follow <strong>MRIQC</strong>: Esteban et al. (2017)
-        <em>MRIQC: Advancing the automatic prediction of image quality in MRI from unseen sites.</em>
-        PLoS One 12(9):e0184661.
-        <a href="https://pubmed.ncbi.nlm.nih.gov/28945803/" target="_blank" rel="noopener">PMID: 28945803</a>.
-        With a masked background the CNR omits the air-noise term, so values are relative, not
-        comparable to MRIQC normative data.</small></p>
-      <p><small>Licensed <strong>BSD-2-Clause</strong>. Requires a browser with WebGPU (recent desktop
-        Chrome, Edge, or Safari).</small></p>
-      <button autofocus id="closeAboutBtn" value="default">Close</button>
-    </form>
-  </dialog>
+      <p>Quality measurements are an MRIQC-style approximation, not MRIQC normative values.</p>
+      <p><small>Licensed <strong>BSD-2-Clause</strong>. Requires a recent WebGPU-capable desktop browser.</small></p></template>
+
+
+  <template id="privacyContent"><p>BrowserQC processes scans locally in your browser. It does not upload your images, segmentations, or quality reports.</p></template>
 
   <script type="module" src="/src/main.ts"></script>
 </body>

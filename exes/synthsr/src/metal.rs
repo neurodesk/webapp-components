@@ -349,6 +349,7 @@ impl Session {
         let queue = device.new_command_queue();
         let opts = CompileOptions::new();
         opts.set_fast_math_enabled(false); // keep IEEE FP32 like the WGSL executor
+                                           // Metal buffers need at least 16 bytes; never read past a shorter slice.
         let upload = |v: &[f32]| {
             let mut padding = [0.0f32; 4];
             let data = if v.len() < padding.len() {

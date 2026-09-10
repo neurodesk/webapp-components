@@ -10,6 +10,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
+    "allowJs": true,
+    "checkJs": false,
     "skipLibCheck": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,

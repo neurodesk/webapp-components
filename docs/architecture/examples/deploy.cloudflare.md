@@ -15,8 +15,8 @@ pnpm exec wrangler pages project create musclemap --production-branch=production
 ```
 
 Then, in the dashboard (or via API), add the **custom domain** `musclemap.neurodesk.org` to that
-project. Each app also ships a `wrangler.toml` (see the app template) so `wrangler pages deploy`
-resolves the project name and output dir locally without flags.
+project. The registry and deployment workflow select the project and output directory; apps do not
+need local deployment configuration.
 
 ## Repo secrets / variables
 
@@ -40,9 +40,9 @@ This keeps `main` as always-staging and makes production explicit, tag-gated, an
 
 ## Cross-origin isolation in production
 
-Each scaffolded app ships [`public/_headers`](./app-template/public/_headers), which Vite copies to
-`dist/_headers` and Cloudflare serves at the edge (or use the COI service worker
-`coi-serviceworker.js`, already in MuscleMap). The app's Playwright test asserts
+The canonical Vite configuration emits `dist/_headers` and supplies the same policy to local dev
+and preview servers. Cloudflare serves that file at the edge (or use the COI service worker
+where required). The app's Playwright test asserts
 `crossOriginIsolated === true`, a worker loads, and the app boots.
 
 ## Local dry run

@@ -679,3 +679,59 @@ apps:
         title: NiiVue
         reference: "NiiVue Contributors. NiiVue: a WebGL2 medical image viewer [Computer software]."
         url: https://github.com/niivue/niivue
+  dwi2trx:
+    packages:
+      - name: NiiVue
+        url: https://github.com/niivue/niivue
+        role: volume and tractogram viewer
+      - name: GPUStreamlines
+        url: https://github.com/dipy/GPUStreamlines
+        role: WebGPU streamline tracking
+      - name: niimath (WebAssembly)
+        url: https://github.com/rordenlab/niimath
+        role: affine registration and face voxel removal
+      - name: MindGrab (brainchop)
+        url: https://github.com/neuroneural/brainchop
+        role: optional deep-learning brain extraction on WebGPU
+      - name: dcm2niix (WebAssembly)
+        url: https://github.com/rordenlab/dcm2niix
+        role: DICOM to NIfTI conversion
+    citations:
+      - group: Defacing
+        title: niimath
+        reference: "Rorden C, Webster M, Drake C, et al. niimath and fslmaths:
+          replication as a method to enhance testing and improve tool quality.
+          Aperture Neuro. 2024;4."
+        doi: 10.52294/001c.94384
+        code: https://github.com/rordenlab/niimath
+      - group: Brain extraction
+        title: MindGrab
+        reference: "Fani A, Nassar M, Ghosh S, et al. MindGrab for BrainChop: fast and
+          accurate skull stripping for command line and browser. arXiv. 2025."
+        url: https://arxiv.org/abs/2506.11860
+      - group: DICOM conversion
+        title: dcm2niix
+        reference: "Li X, Morgan PS, Ashburner J, Smith J, Rorden C. The first step for
+          neuroimaging data analysis: DICOM to NIfTI conversion. Journal of
+          Neuroscience Methods. 2016;264:47–56."
+        doi: 10.1016/j.jneumeth.2016.03.001
+      - group: Diffusion tensor fitting
+        title: Diffusion tensor imaging
+        reference: Basser PJ, Mattiello J, LeBihan D. MR diffusion tensor spectroscopy
+          and imaging. Biophysical Journal. 1994;66(1):259–267.
+        doi: 10.1016/S0006-3495(94)80775-1
+      - group: Streamline tracking
+        title: GPUStreamlines
+        reference: "DIPY contributors. GPUStreamlines: GPU tractography implementation."
+        url: https://github.com/dipy/GPUStreamlines
+      - group: Gradient scheme generation
+        title: Multishell sampling
+        reference: Caruyer E, Lenglet C, Sapiro G, Deriche R. Design of multishell
+          sampling schemes with uniform coverage in diffusion MRI. Magnetic
+          Resonance in Medicine. 2013;69(6):1534–1540.
+        url: https://pmc.ncbi.nlm.nih.gov/articles/PMC5381389/
+      - group: Gradient scheme generation
+        title: Uniform directions for multi-shell diffusion MRI
+        reference: Winkler AM. Uniform directions for multi-shell diffusion MRI. 2025.
+        url: https://brainder.org/2025/05/05/15656/
+
