@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { injectCompositeTheme } from '../scripts/lib/composite-theme.mjs';
@@ -132,6 +133,9 @@ test('shared Vite development config injects the production shell contract', asy
   assert.match(themed, /data-neurodesk-app="deface"/);
   assert.match(themed, /href="@fs\/.*\/site\/app-theme\.css"/);
   assert.match(themed, /src="@fs\/.*\/site\/app-shell\.js"/);
-  assert.match(themed, /data-app-version="1\.0\.8"/);
+  const pkg = JSON.parse(await readFile(new URL('../apps/deface/package.json', import.meta.url), 'utf8'));
+  assert.ok(themed.includes(`data-app-version="${pkg.version}"`));
+  assert.match(themed, /data-neurodesk-app-information/);
+  assert.match(themed, /lightniing.org/);
   assert.match(themed, /data-analytics-href="data:text\/javascript/);
 });

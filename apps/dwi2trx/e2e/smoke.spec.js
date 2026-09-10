@@ -49,3 +49,20 @@ test("a web worker loads and responds", async ({ page }) => {
   });
   expect(ok).toBe(true);
 });
+
+test('vector generator preserves settings across closing and downloads a scheme', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#viewSection').evaluate((section) => { section.open = true; });
+  await page.locator('#genVecBtn').click();
+  const dialog = page.locator('#genVecDlg');
+  await expect(dialog).toBeVisible();
+  await dialog.locator('#genVecShells input').first().fill('12');
+  await dialog.getByRole('button', { name: 'Close', exact: true }).click();
+  await page.locator('#genVecBtn').click();
+  await expect(dialog.locator('#genVecShells input').first()).toHaveValue('12');
+  await expect(dialog.locator('#genVecSaveBtn')).toBeEnabled({ timeout: 60000 });
+  const downloadPromise = page.waitForEvent('download');
+  await dialog.locator('#genVecSaveBtn').click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/\.dvs$/);
+});

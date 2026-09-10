@@ -15,11 +15,11 @@ import NiiVueGPU, {
   SLICE_TYPE,
 } from '@niivue/niivue'
 import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-imaging-workspace'
-import { bindFileDrop } from '@neurodesk/webapp-components/ui'
+import { bindFileDrop, createInfoDialog, renderConsole } from '@neurodesk/webapp-components/ui'
 import '@neurodesk/webapp-components/styles/imaging-workspace.css'
 import { readImageFiles, traverseDataTransferItems } from '@neurodesk/runtime-support/dcm2niix-client'
 import { Niimath } from '@niivue/niimath'
-import { CSF_LABELS, WM_LABELS, bindSidecar, renderQc } from './qc'
+import { CSF_LABELS, WM_LABELS, bindSidecar, readQcReport, renderQc } from './qc'
 import type { QcMetrics, QcReport } from './qc'
 
 const ASSET_BASE_URL = 'https://huggingface.co/datasets/neurodeskorg/webapps/resolve/12eb1069c34097b7c0881b22e1f7e4ed953aa5cc/browserqc/'
@@ -29,11 +29,11 @@ const TEMPLATE_URL = `${ASSET_BASE_URL}avg152T1.nii.gz`
 mountImagingWorkspace({
   controls: '#qcPanel',
   viewer: '#canvas-container',
-  status: 'body > footer',
+  status: '#status',
   title: 'BrowserQC',
   subtitle: 'Automated MRI quality control in your browser',
   mark: 'Q',
-  controlsContract: { about: '#aboutBtn', cite: '#citeBtn', privacy: '#privacyBtn' },
+  controlsContract: { about: '#aboutBtn', privacy: '#privacyBtn' },
 })
 
 function $<T extends HTMLElement>(id: string): T {
@@ -47,18 +47,17 @@ const locationEl = $('location')
 const loadingCircle = $('loadingCircle')
 const statusMsg = $<HTMLLabelElement>('statusMsg')
 const aboutBtn = $<HTMLButtonElement>('aboutBtn')
-const aboutDialog = $<HTMLDialogElement>('aboutDialog')
-const citeBtn = $<HTMLButtonElement>('citeBtn')
-const citeDialog = $<HTMLDialogElement>('citeDialog')
+const aboutDialog = createInfoDialog({ id: 'aboutDialog' })
 const privacyBtn = $<HTMLButtonElement>('privacyBtn')
-const privacyDialog = $<HTMLDialogElement>('privacyDialog')
+const privacyDialog = createInfoDialog({ id: 'privacyDialog' })
 const saveBtn = $<HTMLButtonElement>('saveBtn')
 const dicomPick = $<HTMLSelectElement>('dicomPick')
 const niftiInput = $<HTMLInputElement>('niftiInput')
 const dicomInput = $<HTMLInputElement>('dicomInput')
 const ovlSlider = $<HTMLInputElement>('ovlSlider')
 const qcBody = $('qcBody')
-const consoleOutput = $('consoleOutput')
+const technicalLog = renderConsole({ outputId: 'consoleOutput', copyId: 'copyLogBtn', clearId: 'clearLogBtn' })
+$('canvas-container').appendChild(technicalLog.root)
 
 // --- NiiVue setup ---
 // The NiiVue constructor is GPU-free; attachTo() acquires the WebGPU device and
@@ -129,17 +128,11 @@ function setStatus(msg: string): void {
   // The footer cell ellipsizes; expose the full text (esp. long failures) on hover.
   statusMsg.title = msg
   statusMsg.classList.toggle('hidden', msg === '')
-  if (msg) {
-    const line = document.createElement('div')
-    line.textContent = `${new Date().toLocaleTimeString()} ${msg}`
-    consoleOutput.append(line)
-    consoleOutput.scrollTop = consoleOutput.scrollHeight
-  }
+  if (msg) technicalLog.log(msg)
 }
 function spin(on: boolean): void {
-  // Toggle visibility (not display) so the spinner's box stays reserved and the
-  // status bar height never changes — see .loading-circle in style.css.
-  loadingCircle.style.visibility = on ? 'visible' : 'hidden'
+  if (on) loadingCircle.removeAttribute('value')
+  else loadingCircle.setAttribute('value', '0')
 }
 
 // --- Serial task queue (load / drop / segment must not overlap) ---
@@ -211,7 +204,13 @@ async function runNiimathQc(t1: File, seg: File): Promise<QcReport> {
         reject(new Error(d.message))
         return
       }
-      if (d && 'blob' in d) void (d.blob as Blob).text().then((text) => resolve(JSON.parse(text) as QcReport), reject)
+      if (d && 'blob' in d) {
+        if (!(d.blob instanceof Blob)) {
+          reject(new Error('QC worker returned an invalid report file.'))
+          return
+        }
+        void readQcReport(d.blob).then(resolve, reject)
+      }
     }
     worker.postMessage({
       blob: t1, // staged in MEMFS under t1.name
@@ -242,7 +241,7 @@ async function computeQc(segBytes: Uint8Array): Promise<void> {
     'niimath --qc --air',
   )
   if (bidsMeta) report.bids_meta = bidsMeta
-  Object.assign(report.provenance as object, { segmentation: 'mindgrab 16chan18cls (Subcortical + GWM)' })
+  report.provenance.segmentation = 'mindgrab 16chan18cls (Subcortical + GWM)'
   lastReport = report
   saveBtn.disabled = false
   renderQc(qcBody, report as QcMetrics)
@@ -329,8 +328,11 @@ async function handleDrop(filesPromise: Promise<File[]>): Promise<void> {
     if (sidecar) {
       try { dropMeta = JSON.parse(await sidecar.text()) } catch { setStatus(`Ignoring invalid JSON sidecar: ${sidecar.name}`) }
     }
-    const hasImage = files.some((file) => DIRECT_VOLUME_RE.test(file.name))
-    ;({ bind: bidsMeta, staged: stagedSidecar } = bindSidecar(dropMeta, stagedSidecar, hasImage))
+    ;({ bind: bidsMeta, staged: stagedSidecar } = bindSidecar(dropMeta, stagedSidecar, files))
+    if (files.every((file) => file.name.toLowerCase().endsWith('.json'))) {
+      setStatus(sidecar && dropMeta ? `Sidecar staged: ${sidecar.name}. Choose its image next.` : 'No valid JSON sidecar found.')
+      return
+    }
     dcmConverted = []
     dicomPick.classList.add('hidden')
     // Fast-path a single obvious volume file straight to segmentation.
@@ -375,6 +377,8 @@ async function init(): Promise<void> {
   const noWebGpu =
     'This browser/GPU can’t initialize WebGPU — BrowserQC needs a recent desktop Chrome, Edge, or Safari.'
   if (!navigator.gpu) {
+    document.querySelector('.nd-viewer-canvas-wrapper > [role="alert"]')?.remove()
+    $('emptyState').hidden = false
     setStatus(noWebGpu)
     return
   }
@@ -385,6 +389,8 @@ async function init(): Promise<void> {
     // console.error gate stays meaningful) so a non-WebGPU init bug isn't silently
     // mislabeled.
     console.warn('BrowserQC: WebGPU init failed', err)
+    document.querySelector('.nd-viewer-canvas-wrapper > [role="alert"]')?.remove()
+    $('emptyState').hidden = false
     setStatus(noWebGpu)
     return
   }
@@ -422,11 +428,8 @@ dicomPick.addEventListener(
   },
   ac,
 )
-aboutBtn.addEventListener('click', () => aboutDialog.showModal(), ac)
-citeBtn.addEventListener('click', () => citeDialog.showModal(), ac)
-privacyBtn.addEventListener('click', () => privacyDialog.showModal(), ac)
-$('copyLogBtn').addEventListener('click', () => void navigator.clipboard?.writeText(consoleOutput.textContent ?? ''), ac)
-$('clearLogBtn').addEventListener('click', () => consoleOutput.replaceChildren(), ac)
+aboutBtn.addEventListener('click', () => aboutDialog.open('BrowserQC', $('aboutContent')), ac)
+privacyBtn.addEventListener('click', () => privacyDialog.open('Privacy', $('privacyContent')), ac)
 saveBtn.addEventListener('click', () => {
   if (!lastReport) return
   const url = URL.createObjectURL(new Blob([`${JSON.stringify(lastReport, null, 2)}\n`], { type: 'application/json' }))

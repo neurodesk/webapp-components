@@ -7,7 +7,7 @@
 
 import '@neurodesk/webapp-components/styles/imaging-workspace.css'
 import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-imaging-workspace'
-import { ConsoleOutput } from '@neurodesk/webapp-components/ui'
+import { createInfoDialog, renderConsole, renderViewerToolbar } from '@neurodesk/webapp-components/ui'
 import NiiVueGPU, { SHOW_RENDER, SLICE_TYPE } from '@niivue/niivue'
 import { cropB0Volume, fitTensor } from './dwi2trx/dtifit'
 import {
@@ -54,7 +54,7 @@ mountImagingWorkspace({
   title: 'dwi2trx',
   subtitle: 'Diffusion tensor fitting and GPU streamline tractography',
   mark: 'D',
-  controlsContract: { about: '#aboutBtn', cite: '#citeBtn', privacy: '#privacyBtn' },
+  controlsContract: { about: '#aboutBtn', privacy: '#privacyBtn' },
 })
 
 const $ = <T extends HTMLElement>(id: string): T => {
@@ -62,6 +62,28 @@ const $ = <T extends HTMLElement>(id: string): T => {
   if (!el) throw new Error(`missing #${id}`)
   return el as T
 }
+
+const dialogs = [
+  ['aboutDlg', 'About dwi2trx'],
+  ['privacyDlg', 'Privacy'],
+  ['largeInputDlg', 'Dataset too large for the browser'],
+  ['vecDlg', 'Gradient sampling scheme'],
+  ['genVecDlg', 'Generate diffusion vectors'],
+]
+for (const [id, title] of dialogs) {
+  const dialog = createInfoDialog({ id })
+  dialog.title.textContent = title
+  dialog.setContent($(id + 'Content'))
+  if (id === 'vecDlg' || id === 'genVecDlg') dialog.root.classList.add('nd-dialog-wide')
+}
+const consoleView = renderConsole({ outputId: 'consoleOutput' })
+$('canvas-container').append(consoleView.root)
+const toolbar = renderViewerToolbar({
+  views: [], window: false, overlay: false, colormap: false, download: false, screenshot: false,
+  actions: [$('sliceType')],
+})
+$('canvas-container').prepend(toolbar.root)
+$('viewSection').querySelector('label[for="sliceType"]')?.remove()
 
 const maskFitBtn = $<HTMLButtonElement>('maskFitBtn')
 const showVecBtn = $<HTMLButtonElement>('showVecBtn')
@@ -86,7 +108,6 @@ const genVecSimultaneous = $<HTMLInputElement>('genVecSimultaneous')
 const genVecAlpha = $<HTMLInputElement>('genVecAlpha')
 const genVecAlphaVal = $<HTMLSpanElement>('genVecAlphaVal')
 const genVecB0 = $<HTMLInputElement>('genVecB0')
-const chooseBtn = $<HTMLButtonElement>('chooseBtn')
 const filePicker = $<HTMLInputElement>('filePicker')
 const trackBtn = $<HTMLButtonElement>('trackBtn')
 const saveBtn = $<HTMLButtonElement>('saveBtn')
@@ -101,18 +122,13 @@ const maxAngleIn = $<HTMLInputElement>('maxAngle')
 const seedDensityIn = $<HTMLInputElement>('seedDensity')
 const aboutBtn = $<HTMLButtonElement>('aboutBtn')
 const aboutDlg = $<HTMLDialogElement>('aboutDlg')
-const citeBtn = $<HTMLButtonElement>('citeBtn')
-const citeDlg = $<HTMLDialogElement>('citeDlg')
 const privacyBtn = $<HTMLButtonElement>('privacyBtn')
 const privacyDlg = $<HTMLDialogElement>('privacyDlg')
 const largeInputDlg = $<HTMLDialogElement>('largeInputDlg')
 const largeInputSummary = $<HTMLParagraphElement>('largeInputSummary')
 const faSlider = $<HTMLInputElement>('faSlider')
 const statusEl = $<HTMLSpanElement>('statusText')
-const technicalLog = new ConsoleOutput({ element: 'consoleOutput', mirrorToConsole: false })
-const copyLogBtn = $<HTMLButtonElement>('copyLogBtn')
-const clearLogBtn = $<HTMLButtonElement>('clearLogBtn')
-const spinnerEl = $<HTMLSpanElement>('spinner')
+const technicalLog = consoleView.console
 const locationEl = $<HTMLDivElement>('location')
 const dropOverlay = $<HTMLDivElement>('dropOverlay')
 const tensorSection = $<HTMLDetailsElement>('tensorSection')
@@ -142,7 +158,9 @@ function setStatus(msg: string, error = false): void {
 /** Show/hide the spinning busy indicator beside the status text during slow
  *  work (mindgrab, the dtifit fit, DICOM conversion). */
 function busy(on: boolean): void {
-  spinnerEl.classList.toggle('hidden', !on)
+  const progress = $<HTMLProgressElement>('progress')
+  if (on) progress.removeAttribute('value')
+  else progress.value = 0
 }
 
 /** Keep the Save-GE state and tooltip together. GE documents 6–300 rows, while
@@ -189,11 +207,11 @@ function render(): void {
 
 /** Switch the active scientific result (caller triggers the matching view via syncView). */
 function gotoTab(step: Step): void {
+  $('emptyState').hidden = Boolean(state.input)
   state.step = step
   render()
 }
 
-chooseBtn.addEventListener('click', () => filePicker.click())
 maskFitBtn.addEventListener('click', () => {
   void runFit()
 })
@@ -211,12 +229,7 @@ sliceTypeSel.addEventListener('change', () => {
   nv.drawScene()
 })
 aboutBtn.addEventListener('click', () => aboutDlg.showModal())
-citeBtn.addEventListener('click', () => citeDlg.showModal())
 privacyBtn.addEventListener('click', () => privacyDlg.showModal())
-copyLogBtn.addEventListener('click', () => {
-  void technicalLog.copyToClipboard()
-})
-clearLogBtn.addEventListener('click', () => technicalLog.clear())
 showVecBtn.addEventListener('click', () => {
   void showVectors()
 })
@@ -552,7 +565,7 @@ function renderShellRows(): void {
   genVecShells.replaceChildren()
   genShells.forEach((sh, i) => {
     const row = document.createElement('div')
-    row.className = 'genvec-shell'
+    row.className = 'nd-row'
 
     const count = document.createElement('input')
     count.type = 'number'
@@ -745,18 +758,18 @@ window.addEventListener('dragover', (e) => e.preventDefault())
 window.addEventListener('drop', (e) => e.preventDefault())
 
 const main = $<HTMLElement>('canvas-container')
-main.addEventListener('dragover', () => dropOverlay.classList.remove('hidden'))
+main.addEventListener('dragover', () => dropOverlay.hidden = false)
 main.addEventListener('dragleave', (e) => {
   // Only hide when the cursor actually leaves the container, not on child crossings.
   if (!main.contains(e.relatedTarget as Node))
-    dropOverlay.classList.add('hidden')
+    dropOverlay.hidden = true
 })
 main.addEventListener('drop', (e) => {
   void handleDrop(e as DragEvent)
 })
 
 function handleDrop(e: DragEvent): void {
-  dropOverlay.classList.add('hidden')
+  dropOverlay.hidden = true
   const dt = e.dataTransfer
   if (!dt) return
   // collectFiles must read dt.items synchronously (they expire after the event),
@@ -790,6 +803,7 @@ function beginLoad(): { seq: number; controller: AbortController } {
 async function loadInputFiles(filesPromise: Promise<File[]>): Promise<void> {
   const { seq, controller } = beginLoad()
   // A new load invalidates later workflow results.
+  $('emptyState').hidden = false
   state.input = undefined
   state.maps = undefined
   state.tracts = undefined
@@ -884,6 +898,7 @@ async function loadInput(
   label: string,
 ): Promise<void> {
   if (seq !== loadSeq) return // superseded by a newer load
+  $('emptyState').hidden = true
   state.input = { ...r, source }
   state.maps = undefined // new input invalidates any prior tensor fit
   state.tracts = undefined

@@ -17,9 +17,8 @@ import NiiVueGPU, {
   SLICE_TYPE,
 } from '@niivue/niivue'
 import { mountImagingWorkspace } from '@neurodesk/webapp-components/core/mount-imaging-workspace'
-import { bindFileDrop } from '@neurodesk/webapp-components/ui'
+import { bindFileDrop, createInfoDialog, renderConsole } from '@neurodesk/webapp-components/ui'
 import '@neurodesk/webapp-components/styles/imaging-workspace.css'
-import { ConsoleOutput } from '@neurodesk/webapp-components/ui'
 import { readImageFiles, traverseDataTransferItems } from '@neurodesk/runtime-support/dcm2niix-client'
 import { Niimath } from '@neurodesk/runtime-support/niimath'
 import type { MindgrabInferer } from './mindgrab/index'
@@ -37,7 +36,7 @@ mountImagingWorkspace({
   title: 'Deface',
   subtitle: 'Privacy-preserving MRI defacing in your browser',
   mark: 'D',
-  controlsContract: { about: '#aboutBtn', cite: '#citeBtn', privacy: '#privacyBtn' },
+  controlsContract: { about: '#aboutBtn', privacy: '#privacyBtn' },
 })
 
 function $<T extends HTMLElement>(id: string): T {
@@ -54,15 +53,15 @@ const methodSelect = $<HTMLSelectElement>('methodSelect')
 const applyBtn = $<HTMLButtonElement>('applyBtn')
 const saveBtn = $<HTMLButtonElement>('saveBtn')
 const aboutBtn = $<HTMLButtonElement>('aboutBtn')
-const aboutDialog = $<HTMLDialogElement>('aboutDialog')
-const citeDialog = $<HTMLDialogElement>('citeDialog')
-const privacyDialog = $<HTMLDialogElement>('privacyDialog')
+const aboutDialog = createInfoDialog({ id: 'aboutDialog' })
+const privacyDialog = createInfoDialog({ id: 'privacyDialog' })
 const dicomPick = $<HTMLSelectElement>('dicomPick')
 const niftiInput = $<HTMLInputElement>('niftiInput')
 const dicomInput = $<HTMLInputElement>('dicomInput')
 const methodDescription = $('methodDescription')
-const webgpuDialog = $<HTMLDialogElement>('webgpuDialog')
-const technicalLog = new ConsoleOutput({ element: 'consoleOutput', mirrorToConsole: false })
+const webgpuDialog = createInfoDialog({ id: 'webgpuDialog' })
+const technicalLog = renderConsole({ outputId: 'consoleOutput', copyId: 'copyLogBtn', clearId: 'clearLogBtn' })
+$('viewer').appendChild(technicalLog.root)
 
 // --- NiiVue setup ---
 // The NiiVue constructor is GPU-free; attachTo() acquires the WebGPU device and
@@ -185,9 +184,8 @@ function setStatus(msg: string): void {
   if (msg) technicalLog.log(msg, msg.startsWith('Failed') ? 'error' : 'info')
 }
 function spin(on: boolean): void {
-  // Toggle visibility (not display) so the spinner's box stays reserved and the
-  // status bar height never changes — see .loading-circle in style.css.
-  loadingCircle.style.visibility = on ? 'visible' : 'hidden'
+  if (on) loadingCircle.removeAttribute('value')
+  else loadingCircle.setAttribute('value', '0')
 }
 
 // --- Button gating ---
@@ -308,7 +306,7 @@ async function runDeface(): Promise<void> {
       // unavailable-device case returns null (not a throw) → dialog, no reset.
       const inferer = await getMaskInferer()
       if (!inferer) {
-        webgpuDialog.showModal()
+        webgpuDialog.open('MindGrab needs WebGPU', $('webgpuContent'))
         setStatus('mindgrab needs WebGPU (shader-f16) — try an allineate method.')
         return
       }
@@ -492,6 +490,8 @@ async function init(): Promise<void> {
   const noWebGpu =
     'This browser/GPU can’t initialize WebGPU — deface needs a recent desktop Chrome, Edge, or Safari.'
   if (!navigator.gpu) {
+    document.querySelector('.nd-viewer-canvas-wrapper > [role="alert"]')?.remove()
+    $('emptyState').hidden = false
     setStatus(noWebGpu)
     return
   }
@@ -502,6 +502,8 @@ async function init(): Promise<void> {
     // console.error gate stays meaningful) so a non-WebGPU init bug isn't silently
     // mislabeled. Either way return fail-closed: sourceFile/refFiles stay unset.
     console.warn('deface: WebGPU init failed', err)
+    document.querySelector('.nd-viewer-canvas-wrapper > [role="alert"]')?.remove()
+    $('emptyState').hidden = false
     setStatus(noWebGpu)
     return
   }
@@ -542,11 +544,8 @@ dicomPick.addEventListener(
 )
 applyBtn.addEventListener('click', () => enqueue(runDeface), ac)
 saveBtn.addEventListener('click', () => void runSave(), ac)
-aboutBtn.addEventListener('click', () => aboutDialog.showModal(), ac)
-$<HTMLButtonElement>('citeBtn').addEventListener('click', () => citeDialog.showModal(), ac)
-$<HTMLButtonElement>('privacyBtn').addEventListener('click', () => privacyDialog.showModal(), ac)
-$<HTMLButtonElement>('copyLogBtn').addEventListener('click', () => void technicalLog.copyToClipboard(), ac)
-$<HTMLButtonElement>('clearLogBtn').addEventListener('click', () => technicalLog.clear(), ac)
+aboutBtn.addEventListener('click', () => aboutDialog.open('Deface', $('aboutContent')), ac)
+$<HTMLButtonElement>('privacyBtn').addEventListener('click', () => privacyDialog.open('Privacy', $('privacyContent')), ac)
 niftiInput.addEventListener('change', () => {
   const files = Array.from(niftiInput.files ?? [])
   if (files.length > 0) enqueue(() => handleDrop(Promise.resolve(files)))

@@ -6,22 +6,24 @@
 
 import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { gunzipSync } from 'node:zlib'
 import { fitTensor } from './dtifit.ts'
 
 const asFile = (path: string, name: string) =>
   new File([readFileSync(path)], name)
 
-const fixture = 'public/dwi.nii.gz'
+const fixtureDir = process.env.DWI2TRX_FIXTURE_DIR || 'public'
+const fixture = join(fixtureDir, 'dwi.nii.gz')
 if (!existsSync(fixture)) {
   console.log('dtifit.test.ts: skipped (optional DWI fixture is hosted with release data)')
   process.exit(0)
 }
 
 const input = {
-  nifti: asFile('public/dwi.nii.gz', 'dwi.nii.gz'),
-  bval: asFile('public/dwi.bval', 'dwi.bval'),
-  bvec: asFile('public/dwi.bvec', 'dwi.bvec'),
+  nifti: asFile(fixture, 'dwi.nii.gz'),
+  bval: asFile(join(fixtureDir, 'dwi.bval'), 'dwi.bval'),
+  bvec: asFile(join(fixtureDir, 'dwi.bvec'), 'dwi.bvec'),
   directions: 21,
   source: 'sample' as const,
 }

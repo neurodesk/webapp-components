@@ -1,120 +1,116 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./src/style.css" />
-  <link rel="icon" href="./favicon.ico" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./src/style.css">
+
   <title>dwi2trx</title>
 </head>
 
 <body>
   <header id="controls">
-    <details class="nd-sidebar-section workflow-section" id="inputSection" open>
+    <details class="nd-sidebar-section" id="inputSection" open="">
       <summary class="nd-section-title">1 · Input DWI</summary>
       <div class="nd-section-content">
-        <p class="section-help">The included example loads automatically. Replace it with a NIfTI + bval + bvec set, or a DICOM folder.</p>
-        <div class="row">
-          <button type="button" id="chooseBtn" title="Pick a NIfTI + bval + bvec triple, or DICOM files">Choose files…</button>
-          <input type="file" id="filePicker" data-neurodesk-input="image" multiple hidden />
-          <button type="button" id="showVecBtn" disabled title="Inspect the diffusion gradient sampling scheme (bvec/bval) in 3D">Show vectors</button>
-          <button type="button" id="maskFitBtn" disabled title="Brain-extract the b0 with mindgrab (WebGPU), then fit the tensor">Mask + fit tensor</button>
+        <p class="nd-hint">The included example loads automatically. Replace it with a NIfTI + bval + bvec set, or a DICOM folder.</p>
+        <div class="nd-section-content">
+
+          <label class="nd-file">
+<input type="file" id="filePicker" data-neurodesk-input="image" multiple="">
+<span>Choose or drop NIfTI + bval + bvec, or DICOM files</span></label>
+          <button type="button" id="showVecBtn" disabled="" title="Inspect the diffusion gradient sampling scheme (bvec/bval) in 3D" class="nd-btn nd-btn-secondary nd-btn-sm">Show vectors</button>
+          <button type="button" id="maskFitBtn" disabled="" title="Brain-extract the b0 with mindgrab (WebGPU), then fit the tensor" class="nd-btn nd-btn-primary">Mask + fit tensor</button>
         </div>
       </div>
     </details>
-    <details class="nd-sidebar-section workflow-section nd-step-disabled" id="tensorSection">
+    <details class="nd-sidebar-section" id="tensorSection">
       <summary class="nd-section-title">2 · Tensor maps</summary>
-      <div class="nd-section-content" inert>
-        <div class="row">
+      <div class="nd-section-content" inert="">
+        <div class="nd-section-content">
           <label for="displayMode">Display</label>
           <select id="displayMode" title="How to display the tensor maps">
             <option value="0">FA</option>
             <option value="1">V1</option>
             <option value="2">V1 modulated by FA</option>
             <option value="3">V1 (isV1SliceShader)</option>
-            <option value="4" selected>V1 modulated by FA (isV1SliceShader)</option>
+            <option value="4" selected="">V1 modulated by FA (isV1SliceShader)</option>
           </select>
           <label for="faSlider">FA floor</label>
-          <input type="range" min="0" max="100" value="10" class="slider" id="faSlider"
-            title="Hide voxels below this fractional-anisotropy threshold" />
-          <button type="button" id="saveMapsBtn" disabled title="Download the FA + V1 NIfTI maps">Save maps</button>
+          <input type="range" min="0" max="100" value="10" class="slider" id="faSlider" title="Hide voxels below this fractional-anisotropy threshold">
+          <button type="button" id="saveMapsBtn" disabled="" title="Download the FA + V1 NIfTI maps" class="nd-btn nd-btn-secondary nd-btn-sm">Save maps</button>
         </div>
       </div>
     </details>
-    <details class="nd-sidebar-section workflow-section nd-step-disabled" id="trackingSection">
+    <details class="nd-sidebar-section" id="trackingSection">
       <summary class="nd-section-title">3 · Streamlines</summary>
-      <div class="nd-section-content" inert>
-        <div class="row">
+      <div class="nd-section-content" inert="">
+        <div class="nd-section-content">
           <label for="seedFa" title="Seed streamlines only where FA ≥ this">Seed FA</label>
-          <input type="number" id="seedFa" min="0" max="1" step="0.05" value="0.25" />
+          <input type="number" id="seedFa" min="0" max="1" step="0.05" value="0.25">
           <label for="stopFa" title="Stop a streamline where FA falls below this">Stop FA</label>
-          <input type="number" id="stopFa" min="0" max="1" step="0.05" value="0.10" />
+          <input type="number" id="stopFa" min="0" max="1" step="0.05" value="0.10">
           <label for="stepSize" title="Integration step size, in voxels">Step</label>
-          <input type="number" id="stepSize" min="0.1" max="2" step="0.1" value="0.5" />
+          <input type="number" id="stepSize" min="0.1" max="2" step="0.1" value="0.5">
           <label for="maxAngle" title="Maximum turn angle per step, in degrees">Angle°</label>
-          <input type="number" id="maxAngle" min="10" max="90" step="5" value="60" />
+          <input type="number" id="maxAngle" min="10" max="90" step="5" value="60">
           <label for="seedDensity" title="Seeds per voxel along each axis (count = value³)">Density</label>
-          <input type="number" id="seedDensity" min="1" max="4" step="1" value="1" />
-          <button type="button" id="trackBtn">Generate streamlines</button>
+          <input type="number" id="seedDensity" min="1" max="4" step="1" value="1">
+          <button type="button" id="trackBtn" class="nd-btn nd-btn-secondary nd-btn-sm">Generate streamlines</button>
         </div>
-        <div class="row output-row">
+        <div class="nd-section-content">
           <label for="fiberColor">Fiber color</label>
           <select id="fiberColor" title="How to colour the streamlines">
-            <option value="local" selected>Local direction</option>
+            <option value="local" selected="">Local direction</option>
             <option value="global">Global direction</option>
             <option value="fixed">Fixed</option>
           </select>
-          <button type="button" id="saveBtn" disabled>Save TRX</button>
+          <button type="button" id="saveBtn" disabled="" class="nd-btn nd-btn-secondary nd-btn-sm">Save TRX</button>
         </div>
       </div>
     </details>
-    <details class="nd-sidebar-section workflow-section" id="viewSection">
+    <details class="nd-sidebar-section" id="viewSection">
       <summary class="nd-section-title">View and tools</summary>
       <div class="nd-section-content">
-        <div class="row">
+        <div class="nd-section-content">
           <label for="sliceType">View</label>
         <select id="sliceType" title="How to display the volume">
           <option value="0">Axial</option>
           <option value="1">Coronal</option>
           <option value="2">Sagittal</option>
-          <option value="3" selected>A+C+S+R</option>
+          <option value="3" selected="">A+C+S+R</option>
           <option value="4">Render</option>
         </select>
-        <button type="button" id="genVecBtn" title="Generate a uniform multi-shell diffusion vector set for Siemens, GE, or Philips">Generate Vectors</button>
+        <button type="button" id="genVecBtn" title="Generate a uniform multi-shell diffusion vector set for Siemens, GE, or Philips" class="nd-btn nd-btn-secondary nd-btn-sm">Generate Vectors</button>
         </div>
       </div>
     </details>
     <button type="button" id="aboutBtn" hidden>About</button>
-    <button type="button" id="citeBtn" hidden>Cite</button>
+
     <button type="button" id="privacyBtn" hidden>Privacy</button>
   </header>
 
   <main id="canvas-container">
-    <canvas id="gl1"></canvas>
-    <div id="dropOverlay" class="hidden">Drop files to load</div>
-  </main>
+<div class="nd-viewer-canvas-wrapper">
+<canvas id="gl1">
+</canvas>
+<p id="emptyState" class="nd-viewer-empty">Load a diffusion MRI study to begin.</p>
+<div id="dropOverlay" class="nd-viewer-notice" hidden>Drop files to load</div>
+</div>
+
+
+  <div class="nd-viewer-info" id="location">
+</div>
+</main>
 
   <footer id="status">
-    <div class="statusrow">
-      <span class="spinner hidden" id="spinner" aria-hidden="true"></span>
-      <span class="status" id="statusText">Ready · load a diffusion MRI study</span>
-    </div>
-    <div class="location" id="location"></div>
-    <details class="nd-sidebar-section console-container">
-      <summary class="nd-section-title">Technical log</summary>
-      <div class="nd-section-content">
-        <div class="console-actions">
-          <button type="button" id="copyLogBtn">Copy</button>
-          <button type="button" id="clearLogBtn">Clear</button>
-        </div>
-        <div id="consoleOutput" class="nd-console-output" aria-live="polite"></div>
-      </div>
-    </details>
-  </footer>
+<span class="nd-status-label">Status</span>
+<span id="statusText" class="nd-status-text" role="status">Ready · load a diffusion MRI study</span>
+<progress id="progress" max="1" value="0" aria-label="Processing progress"></progress>
+</footer>
 
-  <dialog id="aboutDlg">
-    <h2><a href="https://github.com/tee-ar-ex/dwi2trx/tree/main" target="_blank" rel="noopener">dwi2trx</a></h2>
+  <template id="aboutDlgContent">
+
     <p>A browser-only diffusion-MRI pipeline: load a DWI, fit the diffusion tensor, track streamlines, and save a TRX tractogram. Everything runs client-side — no data leaves your machine.</p>
     <p>It is built on
       <a href="https://github.com/niivue/niivue" target="_blank" rel="noopener">NiiVue</a> (visualization),
@@ -122,98 +118,100 @@
       <a href="https://github.com/rordenlab/niimath" target="_blank" rel="noopener">niimath</a> (image processing),
       <a href="https://www.npmjs.com/package/@brainchop/mindgrab" target="_blank" rel="noopener">brainchop</a>'s mindgrab (masking), and
       <a href="https://github.com/dipy/GPUStreamlines" target="_blank" rel="noopener">GPUStreamlines</a> to extract tracts from diffusion data.</p>
-    <p><strong>Show vectors</strong> plots the diffusion gradient scheme (bvec/bval) in 3D — each direction as a ball at its b-vector, sized by how many samples repeat it and coloured by b-value. Inspecting it reveals the sampling distribution: whole- vs half-sphere coverage and single- vs multi-shell acquisitions. For why this matters, see the
+    <p>
+<strong>Show vectors</strong> plots the diffusion gradient scheme (bvec/bval) in 3D — each direction as a ball at its b-vector, sized by how many samples repeat it and coloured by b-value. Inspecting it reveals the sampling distribution: whole- vs half-sphere coverage and single- vs multi-shell acquisitions. For why this matters, see the
       <a href="https://fsl.fmrib.ox.ac.uk/fsl/docs/diffusion/eddy/index.html" target="_blank" rel="noopener">FSL eddy documentation</a> and Winkler's
       <a href="https://brainder.org/2025/05/05/15656/" target="_blank" rel="noopener">Uniform directions for multi-shell diffusion MRI</a>.</p>
-    <form method="dialog"><button class="nd-app-dialog__close" type="submit">Close</button></form>
-  </dialog>
 
-  <dialog id="citeDlg" class="message-dialog">
-    <h2>How to cite dwi2trx</h2>
-    <p>Cite the methods and scientific software used in your analysis, including NiiVue, dcm2niix, niimath, mindgrab, and GPUStreamlines.</p>
-    <p>See the <a href="https://github.com/neurodesk/webapps/tree/main/apps/dwi2trx" target="_blank" rel="noopener">source and documentation</a> for current dependency and version details.</p>
-    <form method="dialog"><button class="nd-app-dialog__close" type="submit">Close</button></form>
-  </dialog>
+  </template>
 
-  <dialog id="privacyDlg" class="message-dialog">
-    <h2>Privacy</h2>
+
+
+  <template id="privacyDlgContent">
+
     <p>dwi2trx processes your imaging data locally in your browser. The app does not upload your DWI, gradients, tensor maps, or tractograms.</p>
-    <form method="dialog"><button class="nd-app-dialog__close" type="submit">Close</button></form>
-  </dialog>
 
-  <dialog id="largeInputDlg" class="message-dialog" aria-labelledby="largeInputTitle">
-    <h2 id="largeInputTitle">Dataset too large for the browser</h2>
+  </template>
+
+  <template id="largeInputDlgContent">
+
     <p id="largeInputSummary"></p>
     <p>dwi2trx runs entirely in your browser. JavaScript and WebAssembly require contiguous in-memory arrays and currently cannot process an input this large, even when the computer has substantially more physical RAM.</p>
     <p>For this exceptional dataset, use a native diffusion-MRI pipeline or split/crop the acquisition before loading it. No data was uploaded or processed.</p>
-    <form method="dialog"><button type="submit">Close</button></form>
-  </dialog>
+
+  </template>
 
   <!-- Gradient sampling-scheme viewer: an independent NiiVue render of the
        bvec/bval as a ball connectome. Rotate to inspect; Esc / Close dismisses. -->
-  <dialog id="vecDlg" aria-label="Gradient sampling scheme">
-    <div class="vecdlg-head">
+  <template id="vecDlgContent">
+    <div class="nd-field">
       <strong>Gradient sampling scheme</strong>
       <span class="vecdlg-spacer"></span>
       <label for="vecShowAntipodal" title="Preview the equivalent opposite direction as a smaller node; these nodes are not part of the loaded data.">
-        <input type="checkbox" id="vecShowAntipodal" />
+        <input type="checkbox" id="vecShowAntipodal">
         Show antipodal
       </label>
       <label for="vecScale" title="Scale the node radii">Node size</label>
-      <input type="range" id="vecScale" min="0.2" max="4" step="0.1" value="1" title="Scale the node radii" />
-      <form method="dialog"><button type="submit">Close</button></form>
+      <input type="range" id="vecScale" min="0.2" max="4" step="0.1" value="1" title="Scale the node radii">
+
     </div>
     <div class="vecdlg-body">
-      <canvas id="vecCanvas"></canvas>
-      <p class="vecdlg-hint" id="vecInfo">Reading gradients…</p>
+      <canvas id="vecCanvas" class="dwi2trx-vector-canvas">
+</canvas>
+      <p class="nd-hint" id="vecInfo">Reading gradients…</p>
     </div>
-  </dialog>
+  </template>
 
   <!-- Diffusion vector-set generator: uniform multi-shell directions (antipodal
        electrostatic repulsion), previewed as a connectome and saved in scanner
        vector formats. -->
-  <dialog id="genVecDlg" aria-label="Generate diffusion vectors">
-    <div class="vecdlg-head">
+  <template id="genVecDlgContent">
+    <div class="nd-field">
       <strong>Generate diffusion vectors</strong>
       <span class="vecdlg-spacer"></span>
       <label for="genVecShowAntipodal" title="Preview the equivalent opposite direction as a smaller node; these nodes are not saved.">
-        <input type="checkbox" id="genVecShowAntipodal" />
+        <input type="checkbox" id="genVecShowAntipodal">
         Show antipodal
       </label>
       <label for="genVecScale" title="Scale the node radii">Node size</label>
-      <input type="range" id="genVecScale" min="0.2" max="4" step="0.1" value="1" title="Scale the node radii" />
-      <button type="button" id="genVecSaveBtn" disabled title="Download a Siemens .dvs vector set">Save Siemens</button>
-      <button type="button" id="genVecSaveDatBtn" disabled title="Download a GE tensor .dat vector set">Save GE</button>
-      <button type="button" id="genVecSavePhilipsBtn" disabled title="Download a Philips dti_vectors_input.txt vector set. Each shell is optimized separately, so directions differ between b-values — Philips FiberTrak needs the same directions for every b-value, so process these acquisitions externally.">Save Philips</button>
-      <form method="dialog"><button type="submit">Close</button></form>
+      <input type="range" id="genVecScale" min="0.2" max="4" step="0.1" value="1" title="Scale the node radii">
+      <button type="button" id="genVecSaveBtn" disabled="" title="Download a Siemens .dvs vector set" class="nd-btn nd-btn-secondary nd-btn-sm">Save Siemens</button>
+      <button type="button" id="genVecSaveDatBtn" disabled="" title="Download a GE tensor .dat vector set" class="nd-btn nd-btn-secondary nd-btn-sm">Save GE</button>
+      <button type="button" id="genVecSavePhilipsBtn" disabled="" title="Download a Philips dti_vectors_input.txt vector set. Each shell is optimized separately, so directions differ between b-values — Philips FiberTrak needs the same directions for every b-value, so process these acquisitions externally." class="nd-btn nd-btn-secondary nd-btn-sm">Save Philips</button>
+
     </div>
     <div class="genvec-body">
       <div class="genvec-side">
         <div class="genvec-label">Shells (directions × b-value)</div>
-        <div class="genvec-shells" id="genVecShells"></div>
-        <div class="genvec-shellbtns">
-          <button type="button" id="genVecAddShell" class="genvec-add">+ Add shell</button>
-          <button type="button" id="genVecDelShell" class="genvec-add" title="Remove the last shell">− Remove shell</button>
+        <div class="genvec-shells" id="genVecShells">
+</div>
+        <div class="nd-row">
+          <button type="button" id="genVecAddShell" class="nd-btn nd-btn-secondary nd-btn-sm">+ Add shell</button>
+          <button type="button" id="genVecDelShell" class="nd-btn nd-btn-secondary nd-btn-sm" title="Remove the last shell">− Remove shell</button>
         </div>
-        <div class="genvec-params">
-          <label class="genvec-check" for="genVecSimultaneous" title="Checked: simultaneous Winkler optimization (α applies) with duty-cycle ordering. Unchecked: incremental Caruyer behavior (no α), preserving useful truncated prefixes.">
-            <input type="checkbox" id="genVecSimultaneous" checked />
+        <div class="nd-field">
+          <label class="nd-check" for="genVecSimultaneous" title="Checked: simultaneous Winkler optimization (α applies) with duty-cycle ordering. Unchecked: incremental Caruyer behavior (no α), preserving useful truncated prefixes.">
+            <input type="checkbox" id="genVecSimultaneous" checked="">
             Simultaneous optimization
           </label>
           <label for="genVecAlpha" title="Balance per-shell uniformity (1) against whole-scheme uniformity (0)">Uniformity α: <span id="genVecAlphaVal">0.75</span></label>
-          <input type="range" id="genVecAlpha" min="0.5" max="1" step="0.05" value="0.75" />
+          <input type="range" id="genVecAlpha" min="0.5" max="1" step="0.05" value="0.75">
           <label for="genVecB0" title="Insert a b0 before every N directions (0 = one leading b0 only)">b0 every</label>
-          <input type="number" id="genVecB0" min="0" max="100" step="1" value="12" />
+          <input type="number" id="genVecB0" min="0" max="100" step="1" value="12">
         </div>
       </div>
       <div class="genvec-view">
-        <canvas id="genVecCanvas"></canvas>
-        <p class="vecdlg-hint" id="genVecInfo">Set shell counts and b-values to generate a scheme.</p>
+        <canvas id="genVecCanvas" class="dwi2trx-vector-canvas">
+</canvas>
+        <p class="nd-hint" id="genVecInfo">Set shell counts and b-values to generate a scheme.</p>
       </div>
     </div>
-  </dialog>
+  </template>
 
-  <script type="module" src="./src/main.ts"></script>
+  <script type="module" src="./src/main.ts">
+</script>
+
+
+
 </body>
-
 </html>

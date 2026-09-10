@@ -20,8 +20,8 @@ const shellApps = registry.apps.filter((app) => app.shell === 'imaging-workspace
 // line counts as an upper bound. Migrating an app to the vocabulary removes it
 // from this map; adding an app here is not allowed.
 const LEGACY_CSS_RATCHET = new Map(Object.entries({
-  browserqc: { colourLiterals: 27, cssLines: 318 },
-  deface: { colourLiterals: 13, cssLines: 210 },
+  browserqc: { colourLiterals: 0, cssLines: 72 },
+  deface: { colourLiterals: 0, cssLines: 0 },
   niimath: { colourLiterals: 9, cssLines: 155 },
   surfannotate: { colourLiterals: 58, cssLines: 912 },
   zarro: { colourLiterals: 40, cssLines: 1223 },

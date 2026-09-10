@@ -14,6 +14,7 @@
 //         SMOKE_FULL=1 npm run test:e2e            (also the slow Hellinger path)
 //         DEFACE_EXPECT_WEBGPU_FALLBACK=1 ...      (GPU-less box outside CI)
 import { chromium } from 'playwright'
+import { mkdir } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { runVitePreviewSmoke } from '../../../test-utils/vite-preview-smoke.mjs'
@@ -33,6 +34,7 @@ const waitStatus = (page, m, timeout) =>
 
 await runVitePreviewSmoke({
   chromium,
+  port: Number(process.env.SMOKE_PORT || 4173),
   root: join(here, '..'),
   basePath: '/deface/',
   fallbackEnvVar: 'DEFACE_EXPECT_WEBGPU_FALLBACK',
@@ -41,13 +43,29 @@ await runVitePreviewSmoke({
     if (await page.locator('.nd-app-bar').count() !== 1) await fail('shared application bar is missing or duplicated', page)
     await page.click('[data-neurodesk-shell-control="about"]')
     if (!(await page.isVisible('#aboutDialog'))) await fail('About dialog did not open', page)
-    await page.click('#closeAboutBtn')
+    await page.click('#aboutDialog .nd-dialog-close')
     await page.click('[data-neurodesk-shell-control="cite"]')
-    if (!(await page.isVisible('#citeDialog'))) await fail('Cite dialog did not open', page)
-    await page.click('#citeDialog button')
+    if (!(await page.isVisible('dialog[open]'))) await fail('Cite dialog did not open', page)
+    await page.click('dialog[open] button[aria-label="Close"]')
     await page.click('[data-neurodesk-shell-control="privacy"]')
     if (!(await page.isVisible('#privacyDialog'))) await fail('Privacy dialog did not open', page)
-    await page.click('#privacyDialog button')
+    await page.click('#privacyDialog .nd-dialog-close')
+
+    const artifacts = join(process.env.TMPDIR || here, 'review-deface')
+    await mkdir(artifacts, { recursive: true })
+    const consoleToggle = page.locator('#technicalLog [data-disclosure-toggle]')
+    await consoleToggle.click()
+    if (await consoleToggle.getAttribute('aria-expanded') !== 'true') await fail('Technical log did not expand', page)
+    await page.click('#clearLogBtn')
+    await consoleToggle.click()
+    for (const [name, width, height] of [['desktop', 1280, 960], ['phone', 320, 568]]) {
+      await page.setViewportSize({ width, height })
+      await page.screenshot({ path: join(artifacts, `${name}.png`), fullPage: true })
+      await page.click('[data-neurodesk-theme-toggle]')
+      await page.screenshot({ path: join(artifacts, `${name}-light.png`), fullPage: true })
+      await page.click('[data-neurodesk-theme-toggle]')
+    }
+    await page.setViewportSize({ width: 1280, height: 960 })
 
     // GitHub's Linux runners do not expose a usable WebGPU adapter. Verify that
     // init() reaches its intended fallback instead of hanging or crashing: the
@@ -117,7 +135,7 @@ await runVitePreviewSmoke({
     if (!usedDialog) await page.screenshot({ path: join(here, 'smoke-mindgrab.png') })
     console.log(usedDialog ? '✓ mindgrab gated on missing WebGPU/f16 (dialog shown)' : '✓ mindgrab ran and displayed')
     if (usedDialog) {
-      await page.click('#webgpuDialog button') // dismiss so it doesn't mask later checks
+      await page.click('#webgpuDialog .nd-dialog-close') // dismiss so it doesn't mask later checks
     }
     // The mindgrab border/robustfov variants differ only by argv flags (`-close 1 8 0` vs
     // `-bin`, and an upstream `-robustfov` crop) — that morphology/crop behavior is niimath's
