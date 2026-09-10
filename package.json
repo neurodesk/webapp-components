@@ -13,6 +13,7 @@
     "build:site": "node scripts/build-site.mjs",
     "audit:interfaces": "node scripts/audit-interfaces.mjs",
     "audit:artifacts": "node scripts/audit-artifacts.mjs",
+    "audit:hf-assets": "node scripts/hf-webapp-assets.mjs check-references",
     "audit:convergence": "node scripts/audit-shared-imaging.mjs",
     "generate:mirrors": "node scripts/generate-distribution-mirrors.mjs",
     "test": "node --test test/*.test.mjs && turbo run test",

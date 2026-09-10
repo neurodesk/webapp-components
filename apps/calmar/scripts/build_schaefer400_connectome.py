@@ -62,7 +62,7 @@ def label_tables(labels):
     return parcel_labels, network_labels
 
 
-def upload_to_hf(paths: list[Path], token: str | None, repo_id: str, path_in_repo: str):
+def upload_to_hf(paths: list[Path], token: str | None, bucket_id: str, path_in_bucket: str):
     if token is None:
         token = os.environ.get("HF_TOKEN")
     if not token:
@@ -71,22 +71,16 @@ def upload_to_hf(paths: list[Path], token: str | None, repo_id: str, path_in_rep
         from huggingface_hub import HfApi
     except ImportError as exc:
         raise SystemExit("pip install huggingface_hub") from exc
-    if repo_id.startswith("datasets/"):
-        repo_id = repo_id[len("datasets/"):]
     api = HfApi(token=token)
+    additions = []
     for path in paths:
-        dst = f"{path_in_repo.rstrip('/')}/{path.name}"
-        print(f"Uploading {path} -> hf://datasets/{repo_id}/{dst}")
-        api.upload_file(
-            path_or_fileobj=str(path),
-            path_in_repo=dst,
-            repo_id=repo_id,
-            repo_type="dataset",
-            commit_message=f"Update Schaefer400 FC asset {path.name}",
-        )
+        dst = f"{path_in_bucket.rstrip('/')}/{path.name}"
+        print(f"Uploading {path} -> hf://buckets/{bucket_id}/{dst}")
+        additions.append((path, dst))
+    api.batch_bucket_files(bucket_id=bucket_id, add=additions)
 
 
-def main(n_subjects: int, upload: bool, hf_token: str | None, repo_id: str):
+def main(n_subjects: int, upload: bool, hf_token: str | None, bucket_id: str):
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     shard_dir = OUT_DIR / "shards"
     shard_dir.mkdir(parents=True, exist_ok=True)
@@ -169,7 +163,10 @@ def main(n_subjects: int, upload: bool, hf_token: str | None, repo_id: str):
         shards.append({
             "id": f"{start + 1:03d}-{end:03d}",
             "filename": f"connectomes/schaefer400/{shard_name}",
-            "sourceUrl": f"https://huggingface.co/datasets/sbollmann/lnm-webapp-models/resolve/main/connectomes/schaefer400/{shard_name}",
+            "sourceUrl": (
+                f"https://huggingface.co/buckets/{bucket_id}/resolve/"
+                f"lnm-webapp-models/staging/connectomes/schaefer400/{shard_name}"
+            ),
             "cacheKey": f"schaefer400-fc-dev155-4mm-{start + 1:03d}-{end:03d}-v1",
             "sizeBytes": shard_path.stat().st_size,
             "checksum": f"sha256:{sha256(shard_path)}",
@@ -211,8 +208,13 @@ def main(n_subjects: int, upload: bool, hf_token: str | None, repo_id: str):
     print(json.dumps(manifest_fragment, indent=2))
 
     if upload:
-        upload_to_hf([atlas4_path], hf_token, repo_id, "atlases")
-        upload_to_hf([index_path, *sorted(shard_dir.glob("*.bin"))], hf_token, repo_id, "connectomes/schaefer400")
+        upload_to_hf([atlas4_path], hf_token, bucket_id, "lnm-webapp-models/staging/atlases")
+        upload_to_hf(
+            [index_path, *sorted(shard_dir.glob("*.bin"))],
+            hf_token,
+            bucket_id,
+            "lnm-webapp-models/staging/connectomes/schaefer400",
+        )
 
 
 if __name__ == "__main__":
@@ -220,6 +222,6 @@ if __name__ == "__main__":
     parser.add_argument("--n-subjects", type=int, default=155)
     parser.add_argument("--upload", action="store_true")
     parser.add_argument("--hf-token", default=None)
-    parser.add_argument("--repo-id", default="datasets/sbollmann/lnm-webapp-models")
+    parser.add_argument("--bucket-id", default="neurodeskorg/webapps-bucket")
     args = parser.parse_args()
-    main(args.n_subjects, args.upload, args.hf_token, args.repo_id)
+    main(args.n_subjects, args.upload, args.hf_token, args.bucket_id)

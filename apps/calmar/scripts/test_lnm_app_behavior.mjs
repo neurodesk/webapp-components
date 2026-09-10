@@ -2994,7 +2994,7 @@ async function waitForMicrotaskCondition(predicate, message, attempts = 20) {
     },
     shards: [{
       id: '001-002',
-      sourceUrl: 'https://example.test/schaefer-fc-shard-001-002.bin',
+      filename: 'connectomes/schaefer400/schaefer-fc-shard-001-002.bin',
       cacheKey: 'schaefer-fc-shard-test',
       channelLabels: ['1', '2']
     }]
@@ -3089,8 +3089,9 @@ async function waitForMicrotaskCondition(predicate, message, attempts = 20) {
             }],
             connectomeAssets: [{
               id: 'schaefer400-fc-pack-development-n155-4mm',
-              sourceUrl: 'https://example.test/schaefer-fc.index.json',
-              indexSourceUrl: 'https://example.test/schaefer-fc.index.json',
+              sourceUrl: 'https://example.test/snapshot/connectomes/schaefer400/schaefer-fc.index.json',
+              indexFilename: 'connectomes/schaefer400/schaefer-fc.index.json',
+              indexSourceUrl: 'https://example.test/snapshot/connectomes/schaefer400/schaefer-fc.index.json',
               cacheKey: 'schaefer-fc-test',
               supportStatus: 'supported',
               atlasAssetId: 'schaefer400-7n-4mm',
@@ -3124,14 +3125,14 @@ async function waitForMicrotaskCondition(predicate, message, attempts = 20) {
         async arrayBuffer() { return schaeferAtlasBuffer; }
       };
     }
-    if (href === 'https://example.test/schaefer-fc.index.json') {
+    if (href === 'https://example.test/snapshot/connectomes/schaefer400/schaefer-fc.index.json') {
       return {
         ok: true,
         status: 200,
         async arrayBuffer() { return new TextEncoder().encode(JSON.stringify(fcIndex)).buffer; }
       };
     }
-    if (href === 'https://example.test/schaefer-fc-shard-001-002.bin') {
+    if (href === 'https://example.test/snapshot/connectomes/schaefer400/schaefer-fc-shard-001-002.bin') {
       return {
         ok: true,
         status: 200,
@@ -3204,9 +3205,13 @@ async function waitForMicrotaskCondition(predicate, message, attempts = 20) {
       'Schaefer FC map must weight the selected parcel channels');
     assert.equal(networkDownloadEl.disabled, false,
       'supported Schaefer FC must enable network-map download');
-    assert.ok(selectableAtlasFetched.includes('https://example.test/schaefer-fc.index.json'),
+    assert.ok(selectableAtlasFetched.includes(
+      'https://example.test/snapshot/connectomes/schaefer400/schaefer-fc.index.json'
+    ),
       'supported Schaefer FC must fetch the lazy index');
-    assert.ok(selectableAtlasFetched.includes('https://example.test/schaefer-fc-shard-001-002.bin'),
+    assert.ok(selectableAtlasFetched.includes(
+      'https://example.test/snapshot/connectomes/schaefer400/schaefer-fc-shard-001-002.bin'
+    ),
       'supported Schaefer FC must fetch the shard containing lesion-hit parcels');
     assert.ok(!selectableAtlasFetched.includes('https://example.test/schaefer-fc.bin'),
       'supported Schaefer FC must not fetch a whole-pack binary');

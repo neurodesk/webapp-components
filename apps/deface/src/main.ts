@@ -23,7 +23,7 @@ import { Niimath } from '@neurodesk/runtime-support/niimath'
 import type { MindgrabInferer } from './mindgrab/index'
 
 const ASSET_BASE_URL =
-  'https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/49b12b87f4e5def9672cf582b93ecd4a54273608/deface/'
+  'https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/deface/'
 const T1_URL = `${ASSET_BASE_URL}t1_crop.nii.gz`
 const MNI_URL = `${ASSET_BASE_URL}avg152T1.nii.gz`
 const MASK_URL = `${ASSET_BASE_URL}avg152T1mask.nii.gz`

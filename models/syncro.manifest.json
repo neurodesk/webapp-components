@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "app": "syncro",
-  "repository": "sbollmann/neurodesk-webapps-assets",
-  "revision": "e0a056b3d6b2b075bab5b780281af17fc9d6421d",
-  "base_url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/e0a056b3d6b2b075bab5b780281af17fc9d6421d/syncro/",
+  "bucket": "neurodeskorg/webapps-bucket",
+  "prefix": "neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/syncro",
+  "base_url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/syncro/",
   "license": "Mixed; see individual assets and upstream licenses",
   "preprocessing_contract": {
     "source": "packages/synthstrip/src/index.js",

@@ -5,8 +5,8 @@ const https = require('node:https');
 const path = require('node:path');
 const fixtures = require('./batch-parity-fixtures.cjs');
 
-const DEFAULT_HF_DATASET_REPO = 'sbollmann/sct-webapp-data';
-const DEFAULT_HF_REVISION = 'main';
+const DEFAULT_HF_BUCKET_ID = 'neurodeskorg/webapps-bucket';
+const DEFAULT_HF_BUCKET_SNAPSHOT = 'sct-webapp-data/55c9462a14bc9c84cf093c348cffda9148099df9';
 const DEFAULT_MAX_DOWNLOAD_RETRIES = 3;
 const DEFAULT_RETRY_BASE_DELAY_MS = 250;
 const MAX_DOWNLOAD_REDIRECTS = 5;
@@ -43,14 +43,14 @@ async function ensureSctBatchFixtures(rootDir, options = {}) {
   const targets = force ? required : missingSctFixturePaths(rootDir);
   if (targets.length === 0) return { downloaded: false };
 
-  const repoId = options.repoId || process.env.SCT_HF_DATASET_REPO || DEFAULT_HF_DATASET_REPO;
-  const revision = options.revision || process.env.SCT_HF_REVISION || DEFAULT_HF_REVISION;
+  const bucketId = options.bucketId || process.env.SCT_HF_BUCKET_ID || DEFAULT_HF_BUCKET_ID;
+  const snapshot = options.snapshot || process.env.SCT_HF_BUCKET_SNAPSHOT || DEFAULT_HF_BUCKET_SNAPSHOT;
   for (const filePath of targets) {
     const relativePath = path.relative(rootDir, filePath).split(path.sep).join('/');
     if (SCT_TESTING_DATA_FIXTURE_MAP[relativePath]) {
       await downloadSctTestingDataFile(SCT_TESTING_DATA_FIXTURE_MAP[relativePath], filePath);
     } else {
-      await downloadHfFile(repoId, revision, relativePath, filePath);
+      await downloadHfFile(bucketId, snapshot, relativePath, filePath);
     }
   }
 
@@ -58,11 +58,11 @@ async function ensureSctBatchFixtures(rootDir, options = {}) {
   if (missing.length) {
     throw new Error(`Hugging Face fixture download did not produce required files:\n${missing.map(filePath => `- ${path.relative(rootDir, filePath)}`).join('\n')}`);
   }
-  return { downloaded: true, repoId, revision, count: targets.length };
+  return { downloaded: true, bucketId, snapshot, count: targets.length };
 }
 
-function downloadHfFile(repoId, revision, relativePath, destination) {
-  const url = `https://huggingface.co/datasets/${repoId}/resolve/${encodeURIComponent(revision)}/${relativePath}`;
+function downloadHfFile(bucketId, snapshot, relativePath, destination) {
+  const url = `https://huggingface.co/buckets/${bucketId}/resolve/${snapshot}/${relativePath}`;
   return download(url, destination);
 }
 
@@ -143,8 +143,8 @@ function downloadAttempt(url, destination, redirectCount, retryCount, settings) 
 }
 
 module.exports = {
-  DEFAULT_HF_DATASET_REPO,
-  DEFAULT_HF_REVISION,
+  DEFAULT_HF_BUCKET_ID,
+  DEFAULT_HF_BUCKET_SNAPSHOT,
   SCT_TESTING_DATA_FIXTURE_MAP,
   download,
   ensureSctBatchFixtures,
@@ -157,7 +157,7 @@ if (require.main === module) {
   const rootDir = path.resolve(__dirname, '..');
   ensureSctBatchFixtures(rootDir, { force: process.argv.includes('--force') }).then(result => {
     if (result.downloaded) {
-      console.log(`Downloaded ${result.count} SCT fixture file(s) from ${result.repoId}@${result.revision}`);
+      console.log(`Downloaded ${result.count} SCT fixture file(s) from ${result.bucketId}/${result.snapshot}`);
     } else {
       console.log('SCT fixture files are already present');
     }

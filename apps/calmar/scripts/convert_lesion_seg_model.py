@@ -22,8 +22,8 @@ Usage (one-shot):
   pip install --user --extra-index-url https://download.pytorch.org/whl/cpu \\
       torch onnx onnxruntime safetensors monai huggingface_hub
   python3 scripts/convert_lesion_seg_model.py
-  HF_TOKEN=... hf upload sbollmann/lnm-webapp-models /tmp/lnm_seg_onnx/lnm-stroke-lesion.onnx \\
-      models/lnm-stroke-lesion.onnx --repo-type dataset
+  hf cp /tmp/lnm_seg_onnx/lnm-stroke-lesion.onnx \\
+      hf://buckets/neurodeskorg/webapps-bucket/lnm-webapp-models/staging/models/lnm-stroke-lesion.onnx
 
 The exported model is then registered in web/models/manifest.json as the
 'lnm-stroke-lesion' modelAsset.

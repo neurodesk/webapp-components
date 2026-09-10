@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "app": "seedseg",
-  "repository": "sbollmann/neurodesk-webapps-assets",
-  "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11",
-  "base_url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/seedseg/",
+  "bucket": "neurodeskorg/webapps-bucket",
+  "prefix": "neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/seedseg",
+  "base_url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/seedseg/",
   "license": "NOASSERTION",
   "preprocessing_contract": "3D consensus inference; see apps/seedseg/web/js/inference-worker.js",
   "assets": [

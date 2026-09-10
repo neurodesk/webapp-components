@@ -96,7 +96,7 @@ Generated browser data uses this shape:
 - `apps/musclemap/model-sources/` contains the hand-maintained descriptor and verbatim upstream JSON files.
 - `apps/musclemap/scripts/generate_model_contracts.mjs` validates the source and generates browser, manifest, and plugin views.
 - `apps/musclemap/scripts/model_release.py` acquires, verifies, converts, and validates model candidates from the descriptor.
-- `apps/musclemap/scripts/publish_model.mjs` uploads a selected passing candidate and records the immutable publication receipt.
+- `apps/musclemap/scripts/publish_model.py` uploads a selected passing candidate to a content-addressed Storage Bucket prefix and records the publication receipt.
 - `apps/musclemap/web/js/app/model-catalog.generated.js` is the browser's generated scientific contract.
 - `apps/musclemap/web/js/app/config.js` owns non-scientific UI and runtime defaults and re-exports active models.
 - `apps/musclemap/web/js/app/labels.js` owns color generation and label helpers over generated label data.
@@ -127,9 +127,9 @@ Tiles can run more than once when they intersect multiple blocks. This costs tim
 
 ## Release states
 
-`staged` means the source contract exists but the browser cannot select it; the separate publication receipt records whether its candidate has reached an immutable remote revision. `active` means the generated runtime catalog can expose it. `retired` preserves an older contract and its own immutable asset revision for rollback and imported-map attribution.
+`staged` means the source contract exists but the browser cannot select it; the separate publication receipt records whether its candidate has reached a content-addressed remote prefix. `active` means the generated runtime catalog can expose it. `retired` preserves an older contract and its own content-addressed asset prefix for rollback and imported-map attribution.
 
-Activation is one repository change. The generator refuses a partial activation. Rollback activates the prior checked-in descriptor and immutable asset revision. It never deletes a remote asset.
+Activation is one repository change. The generator refuses a partial activation. Rollback activates the prior checked-in descriptor and content-addressed asset prefix. It never deletes a remote asset.
 
 ## Synthesis decision
 

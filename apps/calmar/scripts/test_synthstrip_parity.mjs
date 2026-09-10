@@ -43,8 +43,8 @@ const CLINICAL_T1 = path.join(ROOT, 'tests/fixtures/ds004884-mini/T1.nii.gz');
 const MODEL_CACHE_DIR = path.join(ROOT, 'web/models/_dev_cache');
 const MODEL_CACHE = path.join(MODEL_CACHE_DIR, 'synthstrip.onnx');
 const MODEL_URL =
-  'https://huggingface.co/datasets/sbollmann/lnm-webapp-models' +
-  '/resolve/main/models/synthstrip.onnx';
+  'https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/' +
+  'lnm-webapp-models/6fd71cdb20e094c10312b42779abee8375f4142e/models/synthstrip.onnx';
 
 async function ensureModel() {
   try {

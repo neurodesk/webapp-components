@@ -45,9 +45,12 @@ function validateRelease(release, packageJson) {
     fail(`appVersion ${release.appVersion} does not match package version ${packageJson.version}`);
   }
   assertHex(release.upstream?.revision, 40, 'upstream.revision');
-  assertHex(release.publication?.revision, 40, 'publication.revision');
-  if (!release.publication?.baseUrl?.includes(`/resolve/${release.publication.revision}/`)) {
-    fail('publication.baseUrl must contain the immutable publication revision');
+  if (!release.publication?.bucket || !release.publication?.prefix) {
+    fail('publication.bucket and publication.prefix are required');
+  }
+  const expectedBaseUrl = `https://huggingface.co/buckets/${release.publication.bucket}/resolve/${release.publication.prefix}`;
+  if (release.publication.baseUrl !== expectedBaseUrl) {
+    fail(`publication.baseUrl must equal ${expectedBaseUrl}`);
   }
   if (!Array.isArray(release.models) || release.models.length === 0) fail('models must not be empty');
 
@@ -77,6 +80,9 @@ function validateRelease(release, packageJson) {
       assertHex(model.asset.sha256, 64, `${model.id}.asset.sha256`);
       if (!Number.isInteger(model.asset.bytes) || model.asset.bytes <= 0) fail(`${model.id}.asset.bytes must be positive`);
       if (model.asset.url && !model.asset.url.startsWith('https://')) fail(`${model.id}.asset.url must use HTTPS`);
+      if ((model.status === 'legacy' || model.status === 'retired') && !model.asset.url) {
+        fail(`${model.id} ${model.status} asset must retain an explicit URL`);
+      }
       if (!model.asset.validationReport) fail(`${model.id}.asset.validationReport is required`);
       if (model.asset.parts) {
         if (!Array.isArray(model.asset.parts) || model.asset.parts.length === 0) {
@@ -138,8 +144,7 @@ async function loadModel(releaseModel, release) {
   const modelVersion = Number(config.model.version) === 0 ? '0.0' : String(config.model.version);
   const asset = releaseModel.asset ? {
     revision: releaseModel.asset.revision,
-    url: releaseModel.asset.url ||
-      `https://huggingface.co/datasets/${release.publication.repository}/resolve/${releaseModel.asset.revision}/musclemap/${releaseModel.filename}`,
+    url: releaseModel.asset.url || `${release.publication.baseUrl}/${releaseModel.filename}`,
     bytes: releaseModel.asset.bytes,
     sha256: releaseModel.asset.sha256,
     precision: releaseModel.asset.precision,
@@ -249,8 +254,8 @@ function renderManifest(release, models) {
   return `${JSON.stringify({
     schema_version: 1,
     app: 'musclemap',
-    repository: release.publication.repository,
-    revision: release.publication.revision,
+    bucket: release.publication.bucket,
+    prefix: release.publication.prefix,
     base_url: `${release.publication.baseUrl}/`,
     license: release.upstream.license,
     upstream_revision: release.upstream.revision,

@@ -8,6 +8,16 @@ function validateScientificManifest(app, manifest) {
   if (manifest.schema_version !== 1) errors.push('schema_version must be 1');
   if (manifest.app !== app.id) errors.push(`app must equal ${app.id}`);
   if (!Array.isArray(manifest.assets)) errors.push('assets must be an array');
+  if (manifest.base_url) {
+    if (!manifest.bucket) errors.push('bucket is required when base_url is set');
+    if (!manifest.prefix) errors.push('prefix is required when base_url is set');
+    const expectedBaseUrl = manifest.bucket && manifest.prefix
+      ? `https://huggingface.co/buckets/${manifest.bucket}/resolve/${manifest.prefix}/`
+      : null;
+    if (expectedBaseUrl && manifest.base_url !== expectedBaseUrl) {
+      errors.push(`base_url must equal ${expectedBaseUrl}`);
+    }
+  }
   for (const [index, asset] of (manifest.assets || []).entries()) {
     const label = `assets[${index}]`;
     if (!asset.filename) errors.push(`${label}.filename is required`);

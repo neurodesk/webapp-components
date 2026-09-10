@@ -22,7 +22,7 @@ import { Niimath } from '@neurodesk/runtime-support/niimath'
 import { CSF_LABELS, WM_LABELS, parseQcTsv, renderQc } from './qc'
 
 const ASSET_BASE_URL =
-  'https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/3fac5b45eb5cd38190a49ad3a1dc422b016bc938/browserqc/'
+  'https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/browserqc/'
 const T1_URL = `${ASSET_BASE_URL}t1_crop.nii.gz`
 
 mountImagingWorkspace({

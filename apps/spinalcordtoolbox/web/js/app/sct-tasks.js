@@ -1,8 +1,8 @@
 import { VERSION, MODEL_BASE_URL } from './config.js';
 
 export const SCT_STABLE_SOURCE = 'https://spinalcordtoolbox.com/stable/user_section/command-line/sct_deepseg.html';
-const HF_DATASET_ASSET_REVISION = '55c9462a14bc9c84cf093c348cffda9148099df9';
-const HF_DATASET_ASSET_BASE_URL = `https://huggingface.co/datasets/sbollmann/sct-webapp-data/resolve/${HF_DATASET_ASSET_REVISION}`;
+const HF_BUCKET_ASSET_BASE_URL = 'https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/' +
+  'sct-webapp-data/55c9462a14bc9c84cf093c348cffda9148099df9';
 
 export const TASK_STATUS = Object.freeze({
   SUPPORTED: 'supported',
@@ -128,7 +128,7 @@ export const SCT_TASKS = [
         sourceFormat: 'SCT model package',
         browserFormat: 'onnx',
         filename: 'sct-spinalcord.onnx',
-        downloadUrl: `${HF_DATASET_ASSET_BASE_URL}/web/models/sct-spinalcord.onnx`,
+        downloadUrl: `${HF_BUCKET_ASSET_BASE_URL}/web/models/sct-spinalcord.onnx`,
         conversionStatus: 'converted',
         checksum: 'sha256:5ada810b71b1ad6f445b805af899bd4f6c08f85045927450dc20d2395c1beddd',
         sizeBytes: 123468139,
@@ -210,7 +210,7 @@ export const SCT_TASKS = [
         sourceFormat: 'SCT model package',
         browserFormat: 'onnx',
         filename: 'sct-graymatter.onnx',
-        downloadUrl: `${HF_DATASET_ASSET_BASE_URL}/web/models/sct-graymatter.onnx`,
+        downloadUrl: `${HF_BUCKET_ASSET_BASE_URL}/web/models/sct-graymatter.onnx`,
         conversionStatus: 'converted',
         checksum: 'sha256:73c1d741aa2f2f38555e250b0d69b95ae72f8d69b56c162c424985660e705897',
         sizeBytes: 134270580,
@@ -248,7 +248,7 @@ export const SCT_TASKS = [
       {
         id: 'pam50-t2',
         filename: 'templates/PAM50/PAM50_t2.nii.gz',
-        downloadUrl: `${HF_DATASET_ASSET_BASE_URL}/web/models/templates/PAM50/PAM50_t2.nii.gz`,
+        downloadUrl: `${HF_BUCKET_ASSET_BASE_URL}/web/models/templates/PAM50/PAM50_t2.nii.gz`,
         sourceUrl: 'https://github.com/spinalcordtoolbox/PAM50',
         checksum: 'sha256:3e98b3275454e783a2683af0a6c895a9fa40c5c8da7eac9d6d478516fe85f0a8',
         sizeBytes: 24057343
@@ -256,7 +256,7 @@ export const SCT_TASKS = [
       {
         id: 'pam50-levels',
         filename: 'templates/PAM50/PAM50_levels.nii.gz',
-        downloadUrl: `${HF_DATASET_ASSET_BASE_URL}/web/models/templates/PAM50/PAM50_levels.nii.gz`,
+        downloadUrl: `${HF_BUCKET_ASSET_BASE_URL}/web/models/templates/PAM50/PAM50_levels.nii.gz`,
         sourceUrl: 'https://github.com/spinalcordtoolbox/PAM50',
         checksum: 'sha256:5e5b27aee46837abfdb85bffb01d5eb6c20f41ed7d308f5388fc86fd251942b6',
         sizeBytes: 129677
@@ -369,7 +369,7 @@ export const SCT_TASKS = [
         sourceFormat: 'SCT SCIsegV2 nnUNet region package',
         browserFormat: 'onnx',
         filename: 'sct-lesion-sci-t2.onnx',
-        downloadUrl: `${HF_DATASET_ASSET_BASE_URL}/web/models/sct-lesion-sci-t2.onnx`,
+        downloadUrl: `${HF_BUCKET_ASSET_BASE_URL}/web/models/sct-lesion-sci-t2.onnx`,
         conversionStatus: 'converted',
         checksum: 'sha256:3b28b46ac85345fd33f0ce393c6538370794fe9b5d1ffedeb5df88891bfa1cdb',
         sizeBytes: 123451938,
@@ -547,7 +547,7 @@ export const SCT_TASKS = [
         sourceFormat: 'TotalSpineSeg nnUNet package',
         browserFormat: 'onnx',
         filename: 'totalspineseg-step1.onnx',
-        downloadUrl: `${HF_DATASET_ASSET_BASE_URL}/web/models/totalspineseg-step1.onnx`,
+        downloadUrl: `${HF_BUCKET_ASSET_BASE_URL}/web/models/totalspineseg-step1.onnx`,
         conversionStatus: 'converted',
         checksum: 'sha256:22f2e6e0b7a028a80ddd8b211d5c732da8c23a6dbb059fb9d379a67b3f9ce74c',
         sizeBytes: 564385004,

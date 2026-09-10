@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "app": "niimath",
-  "repository": "sbollmann/neurodesk-webapps-assets",
-  "revision": "49b12b87f4e5def9672cf582b93ecd4a54273608",
-  "base_url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/49b12b87f4e5def9672cf582b93ecd4a54273608/niimath/",
+  "bucket": "neurodeskorg/webapps-bucket",
+  "prefix": "neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/niimath",
+  "base_url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/niimath/",
   "license": "NOASSERTION",
   "assets": [
     {"filename":"T1w7T.nii.gz","bytes":9886098,"sha256":"a2266104739ff6b847417119e85c51ceb1fcc57afd34ce2e836f738462bd4aca"},

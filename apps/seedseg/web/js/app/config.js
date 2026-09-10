@@ -1,7 +1,7 @@
 export const VERSION = '0.2.6';
 
 // Immutable model weights are published separately from the site artifact.
-export const MODEL_BASE_URL = 'https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/seedseg';
+export const MODEL_BASE_URL = 'https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/seedseg';
 
 export const MODELS = [
   { name: 'seedseg-model-seed42.onnx', label: 'Model 1 (seed 42)', seed: 42 },

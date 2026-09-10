@@ -33,8 +33,7 @@ without losing any modelled accuracy.
 Usage:
   pip install --user tensorflow tf2onnx voxelmorph
   python3 scripts/convert_registration_model.py
-  # then upload /tmp/lnm_synthmorph_svf.onnx to
-  # huggingface.co/datasets/sbollmann/lnm-webapp-models/models/lnm-synthmorph-mni-48x64x80.onnx
+  # then upload /tmp/lnm_synthmorph_svf.onnx to the bucket staging prefix
 """
 import argparse
 import hashlib
@@ -185,8 +184,8 @@ def main():
     sha = hashlib.sha256(open(out_path, "rb").read()).hexdigest()
     out_sz = os.path.getsize(out_path)
     grid = "x".join(map(str, input_dims))
-    print(f"\nUpload:  {out_path} -> "
-          f"sbollmann/lnm-webapp-models/models/lnm-synthmorph-mni-{grid}.onnx")
+    print(f"\nUpload:  {out_path} -> hf://buckets/neurodeskorg/webapps-bucket/"
+          f"lnm-webapp-models/staging/models/lnm-synthmorph-mni-{grid}.onnx")
     print(f"size:    {out_sz:,} bytes ({out_sz/1024/1024:.1f} MB)")
     print(f"sha256:  {sha}")
     print(f"browserRuntime.inputDims: {list(input_dims)}")

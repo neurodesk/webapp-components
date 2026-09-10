@@ -30,7 +30,7 @@ Without isolation CPU inference uses one thread. WebGPU inference runs in a dedi
 Large weights are excluded from Git and `dist/`. The manifest at
 `models/synthsr.manifest.json` pins the validated ONNX file by SHA-256 and immutable
 Hugging Face revision. The app downloads it from the public
-[`sbollmann/neurodesk-webapps-assets` dataset](https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/tree/f6efb00454c5b3a687b0967cee96cf4c77af8ab9/synthsr).
+[`neurodeskorg/webapps-bucket` Storage Bucket](https://huggingface.co/buckets/neurodeskorg/webapps-bucket/tree/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/synthsr).
 No authentication is required. Successful downloads are checksum-verified
 and cached using Cache Storage; cache/quota failures do not prevent inference.
 

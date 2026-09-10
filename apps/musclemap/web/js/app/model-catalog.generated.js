@@ -1,6 +1,6 @@
 export const APP_VERSION = "1.4.6";
 export const TARGET_APP_VERSION = "1.4.6";
-export const MODEL_BASE_URL = "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/musclemap";
+export const MODEL_BASE_URL = "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap";
 export const UPSTREAM_REVISION = "6e1e1eb6732337c13cab53bd5cc800c69024774f";
 export const MODEL_RELEASES = [
   {
@@ -60,7 +60,7 @@ export const MODEL_RELEASES = [
     },
     "asset": {
       "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11",
-      "url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/musclemap/musclemap-wholebody.onnx",
+      "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-wholebody.onnx",
       "bytes": 26888722,
       "sha256": "3bff6e22e54d3d7399247d5e71d6423c91bb636d86ab21e0dd929524afbc2bc7",
       "precision": "q8",
@@ -2170,7 +2170,7 @@ export const MODEL_RELEASES = [
     },
     "asset": {
       "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11",
-      "url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/musclemap/musclemap-abdomen.onnx",
+      "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-abdomen.onnx",
       "bytes": 38999828,
       "sha256": "f2e64dd67104422f94c29382136aa438835aaea7aadc91a917178732cfc15d41",
       "precision": "q8",
@@ -2330,7 +2330,7 @@ export const MODEL_RELEASES = [
     },
     "asset": {
       "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11",
-      "url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/musclemap/musclemap-forearm.onnx",
+      "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-forearm.onnx",
       "bytes": 26364376,
       "sha256": "48517f2aadc19183025dfe1a1952c24ae79d9a33fa5dd8154b46cf47fd87d3dd",
       "precision": "q8",
@@ -2463,7 +2463,7 @@ export const MODEL_RELEASES = [
     },
     "asset": {
       "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11",
-      "url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/musclemap/musclemap-leg.onnx",
+      "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-leg.onnx",
       "bytes": 39028867,
       "sha256": "3ad1c902998849ea66942863d157e1f8e608fb2c9d6b3230ee56de0e0840bcb4",
       "precision": "q8",
@@ -2677,7 +2677,7 @@ export const MODEL_RELEASES = [
     },
     "asset": {
       "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11",
-      "url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/musclemap/musclemap-pelvis.onnx",
+      "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-pelvis.onnx",
       "bytes": 39023986,
       "sha256": "34babe3b30a587dc4f67f44da44a6f89f7f66dcd2d128351ecf9356cbc0c32e4",
       "precision": "q8",
@@ -2882,7 +2882,7 @@ export const MODEL_RELEASES = [
     },
     "asset": {
       "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11",
-      "url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/musclemap/musclemap-thigh.onnx",
+      "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-thigh.onnx",
       "bytes": 39099153,
       "sha256": "2d1a607adfa0758516069e039717079a2340811e3d3c70a7e9621aa1564399f2",
       "precision": "q8",

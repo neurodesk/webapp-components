@@ -8,7 +8,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from huggingface_hub import CommitOperationAdd, HfApi, hf_hub_download
+from huggingface_hub import HfApi
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -25,8 +25,8 @@ def sha256(path):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Atomically publish a validated MuscleMap model")
-    parser.add_argument("--repo", default="sbollmann/neurodesk-webapps-assets")
+    parser = argparse.ArgumentParser(description="Publish a validated MuscleMap model to the Neurodesk bucket")
+    parser.add_argument("--bucket", default="neurodeskorg/webapps-bucket")
     parser.add_argument("--conversion-report", type=Path, default=DEFAULT_STAGE / "conversion-report.json")
     parser.add_argument("--fidelity-report", type=Path, default=DEFAULT_STAGE / "fidelity-report.json")
     parser.add_argument("--browser-report", type=Path, default=DEFAULT_STAGE / "browser-report.json")
@@ -35,16 +35,14 @@ def parse_args():
     return parser.parse_args()
 
 
-def verify_anonymous_download(repository, revision, candidate, local_directory):
-    downloaded = Path(hf_hub_download(
-        repo_id=repository,
-        repo_type="dataset",
-        filename="musclemap/musclemap-wholebody.onnx",
-        revision=revision,
+def verify_anonymous_download(bucket, prefix, candidate, local_directory):
+    downloaded = Path(local_directory) / "musclemap-wholebody.onnx"
+    HfApi(token=False).download_bucket_files(
+        bucket_id=bucket,
+        files=[(f"{prefix}/musclemap-wholebody.onnx", downloaded)],
+        raise_on_missing_files=True,
         token=False,
-        local_dir=local_directory,
-        force_download=True,
-    ))
+    )
     if downloaded.stat().st_size != candidate["bytes"] or sha256(downloaded) != candidate["sha256"]:
         raise ValueError("Anonymous download verification failed after publication")
 
@@ -80,22 +78,24 @@ def main():
     candidate_path = args.conversion_report.parent / candidate["path"]
     if candidate_path.stat().st_size != candidate["bytes"] or sha256(candidate_path) != candidate["sha256"]:
         raise ValueError("Candidate bytes do not match the validated reports")
+    prefix = f"neurodesk-webapps-assets/{candidate['sha256']}/musclemap"
 
     if args.receipt.exists():
         existing_receipt = json.loads(args.receipt.read_text())
         if (
             existing_receipt.get("status") == "published-and-anonymously-verified"
-            and existing_receipt.get("repository") == args.repo
+            and existing_receipt.get("bucket") == args.bucket
+            and existing_receipt.get("prefix") == prefix
             and existing_receipt.get("candidate") == candidate
         ):
             with tempfile.TemporaryDirectory(prefix="musclemap-verify-") as temporary_directory:
                 verify_anonymous_download(
-                    args.repo,
-                    existing_receipt["revision"],
+                    args.bucket,
+                    existing_receipt["prefix"],
                     candidate,
                     temporary_directory,
                 )
-            print(f"Existing publication remains verified at {existing_receipt['revision']}")
+            print(f"Existing publication remains verified at {existing_receipt['prefix']}")
             return
 
     token = os.environ.get("HF_TOKEN")
@@ -119,36 +119,27 @@ def main():
         provenance_path = Path(temporary_directory) / "musclemap-wholebody-v1.4-provenance.json"
         provenance_path.write_text(json.dumps(provenance, indent=2) + "\n")
         api = HfApi(token=token)
-        commit = api.create_commit(
-            repo_id=args.repo,
-            repo_type="dataset",
-            commit_message="Publish validated MuscleMap whole-body v1.4 model",
-            operations=[
-                CommitOperationAdd(
-                    path_in_repo="musclemap/musclemap-wholebody.onnx",
-                    path_or_fileobj=str(candidate_path),
-                ),
-                CommitOperationAdd(
-                    path_in_repo="musclemap/musclemap-wholebody-v1.4-provenance.json",
-                    path_or_fileobj=str(provenance_path),
-                ),
+        api.batch_bucket_files(
+            bucket_id=args.bucket,
+            add=[
+                (candidate_path, f"{prefix}/musclemap-wholebody.onnx"),
+                (provenance_path, f"{prefix}/musclemap-wholebody-v1.4-provenance.json"),
             ],
         )
-        revision = commit.oid
-        verify_anonymous_download(args.repo, revision, candidate, temporary_directory)
+        verify_anonymous_download(args.bucket, prefix, candidate, temporary_directory)
 
     receipt = {
         "schemaVersion": 1,
         "status": "published-and-anonymously-verified",
-        "repository": args.repo,
-        "revision": revision,
-        "assetPath": "musclemap/musclemap-wholebody.onnx",
-        "provenancePath": "musclemap/musclemap-wholebody-v1.4-provenance.json",
+        "bucket": args.bucket,
+        "prefix": prefix,
+        "assetPath": f"{prefix}/musclemap-wholebody.onnx",
+        "provenancePath": f"{prefix}/musclemap-wholebody-v1.4-provenance.json",
         "candidate": candidate,
     }
     args.receipt.parent.mkdir(parents=True, exist_ok=True)
     args.receipt.write_text(json.dumps(receipt, indent=2) + "\n")
-    print(f"Published and verified immutable revision {revision}; wrote {args.receipt}")
+    print(f"Published and verified immutable bucket prefix {prefix}; wrote {args.receipt}")
 
 
 if __name__ == "__main__":

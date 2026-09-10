@@ -38,14 +38,18 @@ test('every app has searchable category metadata', async () => {
   }
 });
 
-test('BrowserQC scientific assets are pinned to Hugging Face and not embedded', async () => {
+test('BrowserQC scientific assets use the pinned Hugging Face bucket prefix and are not embedded', async () => {
   const manifest = JSON.parse(
     await readFile(join(repoRoot, 'models', 'browserqc.manifest.json'), 'utf8'),
   );
   const source = await readFile(join(repoRoot, 'apps', 'browserqc', 'src', 'main.ts'), 'utf8');
 
-  assert.match(manifest.revision, /^[0-9a-f]{40}$/);
-  assert.ok(manifest.base_url.includes(`/resolve/${manifest.revision}/browserqc/`));
+  assert.equal(manifest.bucket, 'neurodeskorg/webapps-bucket');
+  assert.match(manifest.prefix, /^neurodesk-webapps-assets\/[0-9a-f]{40}\/browserqc$/);
+  assert.equal(
+    manifest.base_url,
+    `https://huggingface.co/buckets/${manifest.bucket}/resolve/${manifest.prefix}/`,
+  );
   assert.ok(source.includes(manifest.base_url));
 
   for (const asset of manifest.assets) {

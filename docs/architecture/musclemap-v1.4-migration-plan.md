@@ -163,10 +163,10 @@ The publishing command must:
 
 1. Refuse to run unless all local validation outputs are current for the exact source and derived digests.
 2. Read a short-lived credential only from the standard `HF_TOKEN` environment variable.
-3. Create one atomic Hugging Face dataset commit that replaces only the selected whole-body ONNX and adds its provenance sidecar. The unchanged regional assets remain available through the new revision.
-4. Capture the returned immutable dataset revision.
-5. Download the asset anonymously from that revision and verify its byte count and SHA-256.
-6. Regenerate the checked-in manifest and runtime catalog with the immutable URL.
+3. Upload the selected whole-body ONNX and provenance sidecar together under a content-addressed Hugging Face Storage Bucket prefix. The unchanged regional assets remain available under their existing prefix.
+4. Record the bucket and content-addressed prefix in the publication receipt.
+5. Download the asset anonymously from that prefix and verify its byte count and SHA-256.
+6. Regenerate the checked-in manifest and runtime catalog with the pinned bucket URL.
 
 Never pass the token as a command argument or write it to source, configuration, shell history, logs, browser code, or generated artifacts.
 
@@ -270,9 +270,9 @@ Gate: no stale `1.2.35`, `1.2.37`, `99 muscles`, MRI-only, bundled-model, or `NO
 Deliverables:
 
 - Run the gated publisher with a rotated short-lived credential supplied as `HF_TOKEN`.
-- Upload only the selected ONNX and provenance sidecar in one dataset commit.
-- Verify anonymous download size and SHA-256 from the returned immutable revision.
-- Regenerate and commit the manifest and runtime catalog with that revision.
+- Upload only the selected ONNX and provenance sidecar in one bucket batch under the candidate digest prefix.
+- Verify anonymous download size and SHA-256 from the recorded content-addressed prefix.
+- Regenerate and commit the manifest and runtime catalog with that prefix.
 - Change the whole-body descriptor from `staged` to `active` only in this atomic repository update.
 - Run the repository's manifest validation and a remote asset audit.
 
@@ -360,8 +360,8 @@ The team needs approved representative MR and CT validation inputs. Across the f
 | New class count triggers partial slice coverage | Bounded full-coverage tiling and threshold-crossing tests |
 | Sparse values overflow or are truncated | Explicit internal/external boundary and `uint16` round-trip tests |
 | Old and new label semantics are mixed | Stable label-space IDs and consolidation rejection |
-| CDN or cache serves wrong weights | Immutable revision, byte count, SHA-256 verification, checksum cache key |
-| Publication leaves a mixed asset set | One atomic dataset commit after validation; anonymous post-upload audit |
+| CDN or cache serves wrong weights | Content-addressed prefix, byte count, SHA-256 verification, checksum cache key |
+| Publication leaves a mixed asset set | One bucket batch under the candidate digest prefix; anonymous post-upload audit |
 | Token leaks | Environment-only short-lived credential, secret scans, and rotation |
 | Browser migration expands into a risky rewrite | Keep the worker structure unless a small extraction is needed for a tested invariant |
 

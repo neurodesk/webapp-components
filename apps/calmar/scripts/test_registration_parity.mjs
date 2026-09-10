@@ -50,8 +50,8 @@ const MODEL_CACHE = path.join(MODEL_CACHE_DIR, path.basename(MODEL_ASSET.filenam
 const MODEL_URL = MODEL_ASSET.sourceUrl;
 const REF_CACHE = path.join(MODEL_CACHE_DIR, 'lnm-mni160.nii.gz');
 const REF_URL =
-  'https://huggingface.co/datasets/sbollmann/lnm-webapp-models' +
-  '/resolve/main/templates/lnm-mni160.nii.gz';
+  'https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/' +
+  'lnm-webapp-models/6fd71cdb20e094c10312b42779abee8375f4142e/templates/lnm-mni160.nii.gz';
 
 async function ensureFile(cachePath, url, minBytes, label) {
   try {

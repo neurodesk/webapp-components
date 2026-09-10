@@ -56,10 +56,9 @@ NETWORK_NAMES = [
 
 
 def upload_to_hf(bin_path: str, idx_path: str, token: str | None = None,
-                 repo_id: str = "datasets/sbollmann/lnm-webapp-models",
-                 path_in_repo: str = "connectomes/"):
-    """Upload the FC pack + index to a Hugging Face dataset repo. Idempotent
-    overwrite at the same path. Requires HF_TOKEN env var or explicit token."""
+                 bucket_id: str = "neurodeskorg/webapps-bucket",
+                 path_in_bucket: str = "lnm-webapp-models/staging/connectomes/"):
+    """Upload the FC pack and index to the Hugging Face bucket staging prefix."""
     if token is None:
         token = os.environ.get("HF_TOKEN")
     if not token:
@@ -71,19 +70,12 @@ def upload_to_hf(bin_path: str, idx_path: str, token: str | None = None,
     except ImportError:
         raise SystemExit("pip install huggingface_hub")
     api = HfApi(token=token)
-    # repo_id form for datasets is "<org>/<name>"; strip the "datasets/" prefix.
-    if repo_id.startswith("datasets/"):
-        repo_id = repo_id[len("datasets/"):]
+    additions = []
     for src in [bin_path, idx_path]:
-        dst = path_in_repo + os.path.basename(src)
-        print(f"Uploading {src} -> hf://datasets/{repo_id}/{dst} ...")
-        api.upload_file(
-            path_or_fileobj=src,
-            path_in_repo=dst,
-            repo_id=repo_id,
-            repo_type="dataset",
-            commit_message=f"Update connectome pack ({os.path.basename(src)})"
-        )
+        dst = path_in_bucket + os.path.basename(src)
+        print(f"Uploading {src} -> hf://buckets/{bucket_id}/{dst} ...")
+        additions.append((src, dst))
+    api.batch_bucket_files(bucket_id=bucket_id, add=additions)
 
 
 DATASET_FETCHERS = {
@@ -180,7 +172,7 @@ def main(n_subjects: int = 30, do_upload: bool = False, dataset: str = "adhd"):
     print(f"Wrote {idx_path}")
     print(
         "\nNext: upload both files to "
-        "huggingface.co/datasets/sbollmann/lnm-webapp-models/connectomes/"
+        "hf://buckets/neurodeskorg/webapps-bucket/lnm-webapp-models/staging/connectomes/"
     )
 
     if do_upload:

@@ -2,8 +2,8 @@
 
 `atlas.nii.gz` is the **Yeo 7-network LiberalMask** parcellation at MNI152
 2 mm resolution, dims `99 × 117 × 95` int16. Same file the deployed app
-fetches at runtime from the Hugging Face dataset
-[`sbollmann/lnm-webapp-models`](https://huggingface.co/datasets/sbollmann/lnm-webapp-models)
+fetches at runtime from the Hugging Face Storage Bucket
+[`neurodeskorg/webapps-bucket`](https://huggingface.co/buckets/neurodeskorg/webapps-bucket/tree/lnm-webapp-models/6fd71cdb20e094c10312b42779abee8375f4142e)
 under the `atlasAssets[id="yeo7-2mm"]` manifest entry.
 
 This copy lives in the repo so Node integration tests can compute Yeo
@@ -37,5 +37,5 @@ cp web/models/_dev_cache/Yeo7_LiberalMask_2mm.nii.gz \
    tests/fixtures/yeo7-mini/atlas.nii.gz
 ```
 
-Or refetch from the Hugging Face dataset URL listed in
+Or refetch from the Hugging Face Storage Bucket URL listed in
 `web/models/manifest.json` under `atlasAssets[id="yeo7-2mm"].sourceUrl`.

@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "app": "vesselboost",
-  "repository": "sbollmann/neurodesk-webapps-assets",
-  "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11",
-  "base_url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/vesselboost/",
+  "bucket": "neurodeskorg/webapps-bucket",
+  "prefix": "neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/vesselboost",
+  "base_url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/vesselboost/",
   "license": "NOASSERTION",
   "preprocessing_contract": {
     "patch_size": [64, 64, 64],

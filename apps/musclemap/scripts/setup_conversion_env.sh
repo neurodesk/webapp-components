@@ -29,4 +29,4 @@ if [[ "$actual_python_version" != "$python_version" ]]; then
 fi
 
 "$env_dir/bin/python" -c \
-  'import monai, onnx, onnxruntime, torch; print(f"torch={torch.__version__} monai={monai.__version__} onnx={onnx.__version__} onnxruntime={onnxruntime.__version__}")'
+  'import huggingface_hub, monai, onnx, onnxruntime, torch; from huggingface_hub import HfApi; assert hasattr(HfApi, "batch_bucket_files"); print(f"torch={torch.__version__} monai={monai.__version__} onnx={onnx.__version__} onnxruntime={onnxruntime.__version__} huggingface_hub={huggingface_hub.__version__}")'

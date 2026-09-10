@@ -1,5 +1,5 @@
 export const NIIMATH_EXAMPLE_BASE_URL =
-  'https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/49b12b87f4e5def9672cf582b93ecd4a54273608/niimath/';
+  'https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/niimath/';
 
 const DEMO_BASE_URL = 'https://niivue.github.io/niivue-demo-images/';
 

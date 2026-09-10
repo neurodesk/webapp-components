@@ -24,7 +24,7 @@ const {
   getTaskTemplateAssetUrl
 } = await import(pathToFileURL(path.join(ROOT, 'web/js/app/sct-tasks.js')));
 
-const HOSTED_MODEL_URL_RE = /^https:\/\/huggingface\.co\/datasets\/sbollmann\/sct-webapp-data\/resolve\/[0-9a-f]{40}\/web\/models\/.+$/;
+const HOSTED_MODEL_URL_RE = /^https:\/\/huggingface\.co\/buckets\/neurodeskorg\/webapps-bucket\/resolve\/sct-webapp-data\/[0-9a-f]{40}\/web\/models\/.+$/;
 
 // Tasks offered in the segmentation dropdown must each have a primary model
 // asset. Without one, runInference() falls back to Config.MODEL.name.
@@ -78,7 +78,7 @@ assert.equal(getPrimaryModelAsset(spine)?.preprocessing?.modelAxisOrder, 'zyx', 
 assert.deepEqual(getPrimaryModelAsset(spine)?.output?.labelPriority, [1, 2, 3, 4, 5, 6, 7, 8, 9], 'spine must collapse TotalSpineSeg regions in nnU-Net regions_class_order');
 assert.equal(getPrimaryModelAsset(spine)?.output?.paddingMode, 'center-min-patch', 'spine must use nnU-Net centered padding for short axes');
 assert.equal(getPrimaryModelAsset(spine)?.output?.discPointRadius, 2, 'spine disc labels must use visible markers rather than one-voxel points');
-assert.match(getPrimaryModelAsset(spine)?.downloadUrl || '', /^https:\/\/huggingface\.co\/datasets\/sbollmann\/sct-webapp-data\/resolve\/[0-9a-f]{40}\/web\/models\/totalspineseg-step1\.onnx$/, 'spine ONNX must be hosted on the Hugging Face dataset at a pinned revision');
+assert.match(getPrimaryModelAsset(spine)?.downloadUrl || '', /^https:\/\/huggingface\.co\/buckets\/neurodeskorg\/webapps-bucket\/resolve\/sct-webapp-data\/[0-9a-f]{40}\/web\/models\/totalspineseg-step1\.onnx$/, 'spine ONNX must be hosted in the Hugging Face bucket at a pinned snapshot prefix');
 assert.equal(getTaskModelUrl(spine), getPrimaryModelAsset(spine)?.downloadUrl, 'spine runtime URL must resolve to the Hugging Face-hosted ONNX asset');
 assert.deepEqual(spine.outputStages?.map(stage => stage.id), ['spine_step1', 'spine_discs'], 'spine must declare TotalSpineSeg step-1 and disc-label stages');
 assert.equal(spine.outputStages?.find(stage => stage.id === 'spine_step1')?.visibleByDefault, true, 'TotalSpineSeg step-1 labels must be visible by default');

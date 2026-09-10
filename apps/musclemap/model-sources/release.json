@@ -8,9 +8,9 @@
     "license": "MIT"
   },
   "publication": {
-    "repository": "sbollmann/neurodesk-webapps-assets",
-    "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11",
-    "baseUrl": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/a8cdbf8c2874e1a2f617ecc6695244a0810eac11/musclemap"
+    "bucket": "neurodeskorg/webapps-bucket",
+    "prefix": "neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap",
+    "baseUrl": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap"
   },
   "models": [
     {
@@ -40,6 +40,7 @@
       },
       "asset": {
         "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11",
+        "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-wholebody.onnx",
         "bytes": 26888722,
         "sha256": "3bff6e22e54d3d7399247d5e71d6423c91bb636d86ab21e0dd929524afbc2bc7",
         "precision": "q8",
@@ -97,7 +98,7 @@
       "labelSpaceId": "musclemap-abdomen-v0.0",
       "config": { "path": "abdomen-v0.0.json", "bytes": 1091, "sha256": "2643f8c71558d55dcad8ee01f1d61caa208ee1a48845a3430511e2c6b9938005", "publishedBytes": 1120, "publishedMd5": "35e0efb873497ad063fee30fdd4ea69b", "publishedSha256": "9f284550378bf7837a98c03c717b21d8b941cec8ae8adf6a95485ea6568a68f4" },
       "source": { "record": "19631081", "doi": "10.5281/zenodo.19631081" },
-      "asset": { "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11", "bytes": 38999828, "sha256": "f2e64dd67104422f94c29382136aa438835aaea7aadc91a917178732cfc15d41", "precision": "q8", "validationReport": "legacy-provenance-not-recorded" }
+      "asset": { "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11", "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-abdomen.onnx", "bytes": 38999828, "sha256": "f2e64dd67104422f94c29382136aa438835aaea7aadc91a917178732cfc15d41", "precision": "q8", "validationReport": "legacy-provenance-not-recorded" }
     },
     {
       "id": "forearm",
@@ -109,7 +110,7 @@
       "labelSpaceId": "musclemap-forearm-v0.0",
       "config": { "path": "forearm-v0.0.json", "bytes": 821, "sha256": "68503ae1276cd75d7f23da8d25321ceb88ab751054aa33df132d07c2aea7a971", "publishedBytes": 849, "publishedMd5": "f80881b5372b0bba403f2f94f1a68e0b", "publishedSha256": "91958f6696386de138c83c8dd57817b229cc37490f9c9551e318e1196ce4bf42" },
       "source": { "record": "19633115", "doi": "10.5281/zenodo.19633115" },
-      "asset": { "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11", "bytes": 26364376, "sha256": "48517f2aadc19183025dfe1a1952c24ae79d9a33fa5dd8154b46cf47fd87d3dd", "precision": "q8", "validationReport": "legacy-provenance-not-recorded" }
+      "asset": { "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11", "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-forearm.onnx", "bytes": 26364376, "sha256": "48517f2aadc19183025dfe1a1952c24ae79d9a33fa5dd8154b46cf47fd87d3dd", "precision": "q8", "validationReport": "legacy-provenance-not-recorded" }
     },
     {
       "id": "leg",
@@ -121,7 +122,7 @@
       "labelSpaceId": "musclemap-leg-v0.0",
       "config": { "path": "leg-v0.0.json", "bytes": 1560, "sha256": "d506531930f82da47d0bf343a23b650131da50bc27ff086068a43f25c80fc7ea", "publishedBytes": 1595, "publishedMd5": "9da4d3ae4857a015f615649646e34bd1", "publishedSha256": "d62a6810ee056fb7cb239cac5cfdec981330756bc99fe9d162a7b7f9f50fbd8c" },
       "source": { "record": "19633057", "doi": "10.5281/zenodo.19633057" },
-      "asset": { "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11", "bytes": 39028867, "sha256": "3ad1c902998849ea66942863d157e1f8e608fb2c9d6b3230ee56de0e0840bcb4", "precision": "q8", "validationReport": "legacy-provenance-not-recorded" }
+      "asset": { "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11", "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-leg.onnx", "bytes": 39028867, "sha256": "3ad1c902998849ea66942863d157e1f8e608fb2c9d6b3230ee56de0e0840bcb4", "precision": "q8", "validationReport": "legacy-provenance-not-recorded" }
     },
     {
       "id": "pelvis",
@@ -133,7 +134,7 @@
       "labelSpaceId": "musclemap-pelvis-v0.0",
       "config": { "path": "pelvis-v0.0.json", "bytes": 1505, "sha256": "26b82585cb64635e1ddc48948075d64ea172ed52735115176e6a0e92940f29ab", "publishedBytes": 1539, "publishedMd5": "c8cba0118c5dfa5f870ff138187c1c55", "publishedSha256": "78d225099a67b8c225cc8f35b4bd1137e861a4db84a91924b4ca74b457070a89" },
       "source": { "record": "19632902", "doi": "10.5281/zenodo.19632902" },
-      "asset": { "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11", "bytes": 39023986, "sha256": "34babe3b30a587dc4f67f44da44a6f89f7f66dcd2d128351ecf9356cbc0c32e4", "precision": "q8", "validationReport": "legacy-provenance-not-recorded" }
+      "asset": { "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11", "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-pelvis.onnx", "bytes": 39023986, "sha256": "34babe3b30a587dc4f67f44da44a6f89f7f66dcd2d128351ecf9356cbc0c32e4", "precision": "q8", "validationReport": "legacy-provenance-not-recorded" }
     },
     {
       "id": "thigh",
@@ -145,7 +146,7 @@
       "labelSpaceId": "musclemap-thigh-v0.0",
       "config": { "path": "thigh-v0.0.json", "bytes": 2789, "sha256": "ceffc56269db84335e9873633ba8102bd962a344b07d11db49fe9846fbe1f5a3", "publishedBytes": 2840, "publishedMd5": "1f820178021a866103e901d7bfa0af68", "publishedSha256": "9d123314d744d21a0c6b8727479771c5fba43a564613bee3d72ec59de1c73025" },
       "source": { "record": "19633000", "doi": "10.5281/zenodo.19633000" },
-      "asset": { "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11", "bytes": 39099153, "sha256": "2d1a607adfa0758516069e039717079a2340811e3d3c70a7e9621aa1564399f2", "precision": "q8", "validationReport": "legacy-provenance-not-recorded" }
+      "asset": { "revision": "a8cdbf8c2874e1a2f617ecc6695244a0810eac11", "url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/musclemap/musclemap-thigh.onnx", "bytes": 39099153, "sha256": "2d1a607adfa0758516069e039717079a2340811e3d3c70a7e9621aa1564399f2", "precision": "q8", "validationReport": "legacy-provenance-not-recorded" }
     }
   ]
 }

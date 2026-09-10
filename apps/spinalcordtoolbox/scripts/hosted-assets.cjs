@@ -5,16 +5,16 @@ const fs = require('node:fs');
 const https = require('node:https');
 const path = require('node:path');
 
-const HF_DATASET_REPO_ID = 'sbollmann/sct-webapp-data';
-const HF_DATASET_ASSET_REVISION = '55c9462a14bc9c84cf093c348cffda9148099df9';
-const HF_DATASET_ASSET_BASE_URL = `https://huggingface.co/datasets/${HF_DATASET_REPO_ID}/resolve/${HF_DATASET_ASSET_REVISION}`;
+const HF_BUCKET_ID = 'neurodeskorg/webapps-bucket';
+const HF_BUCKET_SNAPSHOT = 'sct-webapp-data/55c9462a14bc9c84cf093c348cffda9148099df9';
+const HF_BUCKET_ASSET_BASE_URL = `https://huggingface.co/buckets/${HF_BUCKET_ID}/resolve/${HF_BUCKET_SNAPSHOT}`;
 const LFS_POINTER_PREFIX = Buffer.from('version https://git-lfs.github.com/spec/');
 
 const EXTRA_HOSTED_ASSETS = Object.freeze([
   {
     id: 'synthstrip',
     filename: 'synthstrip.onnx',
-    downloadUrl: `${HF_DATASET_ASSET_BASE_URL}/web/models/synthstrip.onnx`,
+    downloadUrl: `${HF_BUCKET_ASSET_BASE_URL}/web/models/synthstrip.onnx`,
     checksum: 'sha256:7b8eeecf3793a6c4510b9f5270ecc03d9c3262d26e08d568203a651ab4b84074',
     sizeBytes: 10294211
   }
@@ -143,9 +143,9 @@ function download(url, destination, redirectCount) {
 }
 
 module.exports = {
-  HF_DATASET_REPO_ID,
-  HF_DATASET_ASSET_REVISION,
-  HF_DATASET_ASSET_BASE_URL,
+  HF_BUCKET_ID,
+  HF_BUCKET_SNAPSHOT,
+  HF_BUCKET_ASSET_BASE_URL,
   EXTRA_HOSTED_ASSETS,
   assetDestination,
   collectHostedAssets,
@@ -161,7 +161,7 @@ if (require.main === module) {
   const assets = collectHostedAssets(manifest);
   ensureHostedAssets(rootDir, assets, { force: process.argv.includes('--force') }).then(results => {
     const count = results.filter(result => result.downloaded).length;
-    console.log(`Hosted assets ready: ${assets.length} checked, ${count} downloaded from ${HF_DATASET_REPO_ID}@${HF_DATASET_ASSET_REVISION}`);
+    console.log(`Hosted assets ready: ${assets.length} checked, ${count} downloaded from ${HF_BUCKET_ID}/${HF_BUCKET_SNAPSHOT}`);
   }).catch(error => {
     console.error(error);
     process.exitCode = 1;

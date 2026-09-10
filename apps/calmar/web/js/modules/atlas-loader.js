@@ -107,6 +107,23 @@ async function loadConnectomeIndex(manifestEntry, cache) {
   return JSON.parse(new TextDecoder('utf-8').decode(indexBuf));
 }
 
+function resolveIndexedAssetUrl(manifestEntry, filename) {
+  const indexFilename = manifestEntry.indexFilename || manifestEntry.filename;
+  if (!indexFilename || !filename) {
+    throw new Error(`Connectome ${manifestEntry.id} cannot resolve an indexed asset filename`);
+  }
+  const indexUrl = new URL(manifestEntry.indexSourceUrl);
+  const encodedIndexFilename = indexFilename.split('/').map(encodeURIComponent).join('/');
+  if (!indexUrl.pathname.endsWith(encodedIndexFilename)) {
+    throw new Error(`Connectome ${manifestEntry.id} index URL does not end with ${indexFilename}`);
+  }
+  const encodedFilename = filename.split('/').map(encodeURIComponent).join('/');
+  indexUrl.pathname = `${indexUrl.pathname.slice(0, -encodedIndexFilename.length)}${encodedFilename}`;
+  indexUrl.search = '';
+  indexUrl.hash = '';
+  return indexUrl.href;
+}
+
 // Phase 4: load a connectome pack (.bin + companion index.json) via the
 // same Cache Storage path the atlas-loader uses for atlases. Returns the
 // raw ArrayBuffer for the .bin plus the parsed index.
@@ -174,8 +191,9 @@ export async function loadConnectomeChannelsFromManifest(connectomeAssetId, chan
     const labels = (shard.channelLabels || []).map(id => String(id));
     const neededLabels = labels.filter(label => requested.has(label));
     if (neededLabels.length === 0) continue;
+    const shardUrl = resolveIndexedAssetUrl(manifestEntry, shard.filename);
     const arrayBuffer = await fetchCacheFirst(
-      shard.sourceUrl,
+      shardUrl,
       shard.cacheKey || `${manifestEntry.cacheKey}:shard:${shard.id || shards.length}`,
       cache,
       { onProgress, label: shard.id || connectomeAssetId }

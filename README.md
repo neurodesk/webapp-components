@@ -25,7 +25,7 @@ release eligibility, and scientific assets.
   composite site stores one copy below `dist/_runtime/` while standalone app builds
   remain self-contained.
 - Large model weights are never committed or copied into `dist/`. They are fetched
-  from `sbollmann/neurodesk-webapps-assets` on Hugging Face and cached by each app.
+  from the `neurodeskorg/webapps-bucket` Hugging Face Storage Bucket and cached by each app.
 
 The shared library is adopted incrementally behind parity tests. Scientific workers,
 preprocessing contracts, app-specific metrics, and pipeline definitions are not

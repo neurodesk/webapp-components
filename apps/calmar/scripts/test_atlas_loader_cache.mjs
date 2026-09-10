@@ -244,13 +244,15 @@ function restoreFetch() { globalThis.fetch = ORIG_FETCH; }
     shards: [
       {
         id: '001-002',
-        sourceUrl: 'https://example.com/schaefer-shard-a.bin',
+        filename: 'connectomes/schaefer400/schaefer-shard-a.bin',
+        sourceUrl: 'https://huggingface.co/datasets/sbollmann/old/resolve/main/shard-a.bin',
         cacheKey: 'schaefer-shard-a',
         channelLabels: ['1', '2']
       },
       {
         id: '003-004',
-        sourceUrl: 'https://example.com/schaefer-shard-b.bin',
+        filename: 'connectomes/schaefer400/schaefer-shard-b.bin',
+        sourceUrl: 'https://huggingface.co/datasets/sbollmann/old/resolve/main/shard-b.bin',
         cacheKey: 'schaefer-shard-b',
         channelLabels: ['3', '4']
       }
@@ -268,7 +270,8 @@ function restoreFetch() { globalThis.fetch = ORIG_FETCH; }
             connectomeAssets: [{
               id: 'schaefer400-test-pack',
               sourceUrl: 'https://example.com/schaefer-full.bin',
-              indexSourceUrl: 'https://example.com/schaefer-index.json',
+              indexFilename: 'connectomes/schaefer400/schaefer-index.json',
+              indexSourceUrl: 'https://example.com/snapshot/connectomes/schaefer400/schaefer-index.json',
               cacheKey: 'schaefer-test-pack',
               supportStatus: 'supported'
             }]
@@ -276,11 +279,11 @@ function restoreFetch() { globalThis.fetch = ORIG_FETCH; }
         }
       };
     }
-    if (href === 'https://example.com/schaefer-index.json') {
+    if (href === 'https://example.com/snapshot/connectomes/schaefer400/schaefer-index.json') {
       const payload = new TextEncoder().encode(JSON.stringify(index)).buffer;
       return { ok: true, status: 200, async arrayBuffer() { return payload; } };
     }
-    if (href === 'https://example.com/schaefer-shard-b.bin') {
+    if (href === 'https://example.com/snapshot/connectomes/schaefer400/schaefer-shard-b.bin') {
       const payload = new Uint8Array([1, 2, 3, 4]).buffer;
       return { ok: true, status: 200, async arrayBuffer() { return payload; } };
     }
@@ -295,10 +298,12 @@ function restoreFetch() { globalThis.fetch = ORIG_FETCH; }
       'lazy connectome loading must record the exact requested labels per shard');
     assert.ok(!fetched.includes('https://example.com/schaefer-full.bin'),
       'lazy connectome loading must not fetch the whole Schaefer pack');
-    assert.ok(!fetched.includes('https://example.com/schaefer-shard-a.bin'),
+    assert.ok(!fetched.includes('https://example.com/snapshot/connectomes/schaefer400/schaefer-shard-a.bin'),
       'lazy connectome loading must not fetch unrelated Schaefer shards');
-    assert.ok(fetched.includes('https://example.com/schaefer-shard-b.bin'),
-      'lazy connectome loading must fetch the shard containing the requested parcel');
+    assert.ok(fetched.includes('https://example.com/snapshot/connectomes/schaefer400/schaefer-shard-b.bin'),
+      'lazy connectome loading must resolve the requested shard against the migrated index URL');
+    assert.ok(!fetched.some(url => url.includes('huggingface.co/datasets/sbollmann/old')),
+      'lazy connectome loading must ignore stale absolute URLs embedded in migrated indices');
   } finally {
     restoreFetch();
     globalThis.caches = originalCaches;

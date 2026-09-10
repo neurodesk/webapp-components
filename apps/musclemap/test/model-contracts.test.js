@@ -112,3 +112,19 @@ test('v1.4 is the default whole-body model and v1.3 remains selectable as legacy
   assert.notEqual(wholeBodyModels[0].labelSpaceId, wholeBodyModels[1].labelSpaceId);
   assert.ok(MODELS.filter(model => model.status !== 'active').every(model => model.legacy));
 });
+
+test('legacy model assets retain explicit migrated URLs across future publications', async () => {
+  const release = JSON.parse(await readFile(
+    new URL('../model-sources/release.json', import.meta.url),
+    'utf8'
+  ));
+  const historical = release.models.filter(model => model.status === 'legacy' || model.status === 'retired');
+  assert.ok(historical.length > 0);
+  for (const model of historical) {
+    assert.equal(Object.hasOwn(model.asset, 'url'), true, `${model.id} must retain its own asset URL`);
+    assert.match(
+      model.asset.url,
+      new RegExp(`/buckets/neurodeskorg/webapps-bucket/resolve/.+/${model.filename}$`)
+    );
+  }
+});

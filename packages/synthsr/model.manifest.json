@@ -23,7 +23,7 @@
   "source_commit": "04ab5548f4609c2b44ca51b3f4bc319b585dafa7",
   "checkpoint_sha256": "a472f776e7b33b5ea6e10c801f55fee488f1477a208b3e6998dc1aec1d9c5f8b",
   "graph_optimization": "Decoder concat-convolutions split into two convolutions plus addition; no tiling",
-  "repository": "sbollmann/neurodesk-webapps-assets",
-  "revision": "f6efb00454c5b3a687b0967cee96cf4c77af8ab9",
-  "base_url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/f6efb00454c5b3a687b0967cee96cf4c77af8ab9/synthsr/"
+  "bucket": "neurodeskorg/webapps-bucket",
+  "prefix": "neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/synthsr",
+  "base_url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/synthsr/"
 }

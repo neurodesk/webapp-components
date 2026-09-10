@@ -171,6 +171,11 @@ assert.ok(deepIsles,
   "manifest must register 'lnm-deepisles-nvauto-browser-seed' as the DeepISLES candidate asset");
 assert.equal(deepIsles.supportStatus, 'benchmark-only',
   'DeepISLES candidate must not count as supported until gap analysis and browser budget gates pass');
+assert.equal(deepIsles.sourceUrl, null,
+  'DeepISLES must not advertise a runtime ONNX URL until the candidate is published');
+assert.match(deepIsles.trainingSourceUrl || '',
+  /buckets\/neurodeskorg\/webapps-bucket\/resolve\/isles26-nnunet-d507-topk10\/[0-9a-f]{40}\/export_manifest\.json$/,
+  'DeepISLES must retain a pinned link to its migrated training-source manifest');
 assert.equal(deepIsles.inputModality, 'DWI_ADC',
   'DeepISLES candidate must declare that it uses DWI/ADC rather than T1');
 assert.deepEqual(deepIsles.inputContrasts, ['ADC', 'TRACE'],

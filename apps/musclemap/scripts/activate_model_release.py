@@ -59,8 +59,11 @@ def main():
         raise ValueError("Browser report does not match the fidelity candidate")
     if upstream_report.get("candidate") != candidate:
         raise ValueError("Upstream parity report does not match the fidelity candidate")
-    if not isinstance(receipt.get("revision"), str) or len(receipt["revision"]) != 40:
-        raise ValueError("Publication receipt lacks an immutable 40-character revision")
+    if not isinstance(receipt.get("bucket"), str) or not isinstance(receipt.get("prefix"), str):
+        raise ValueError("Publication receipt lacks an immutable bucket prefix")
+    expected_prefix = f"neurodesk-webapps-assets/{candidate['sha256']}/musclemap"
+    if receipt["prefix"] != expected_prefix:
+        raise ValueError(f"Publication receipt prefix must equal {expected_prefix}")
 
     already_active = [
         model for model in release["models"]
@@ -69,7 +72,7 @@ def main():
     ]
     if already_active:
         expected_asset = {
-            "revision": receipt["revision"],
+            "revision": candidate["sha256"][:40],
             "bytes": candidate["bytes"],
             "sha256": candidate["sha256"],
             "precision": candidate["precision"],
@@ -77,13 +80,14 @@ def main():
         }
         if (
             len(already_active) != 1 or already_active[0].get("asset") != expected_asset or
-            release.get("publication", {}).get("revision") != receipt["revision"] or
+            release.get("publication", {}).get("bucket") != receipt["bucket"] or
+            release.get("publication", {}).get("prefix") != receipt["prefix"] or
             release.get("appVersion") != release.get("targetAppVersion") or
             package.get("version") != release.get("targetAppVersion")
         ):
             raise ValueError("The existing v1.4 activation does not match the publication receipt")
         subprocess.run(["node", str(SCRIPT_DIR / "generate_model_contracts.mjs"), "--check"], check=True)
-        print(f"MuscleMap v{release['targetAppVersion']} is already active at {receipt['revision']}")
+        print(f"MuscleMap v{release['targetAppVersion']} is already active at {receipt['prefix']}")
         return
 
     staged = [
@@ -94,11 +98,13 @@ def main():
         raise ValueError("Expected exactly one staged whole-body release")
     for model in release["models"]:
         if model["id"] == "wholebody" and model["status"] == "active":
+            if model.get("asset") and not model["asset"].get("url"):
+                model["asset"]["url"] = f"{release['publication']['baseUrl']}/{model['filename']}"
             model["status"] = "retired"
     staged_model = staged[0]
     staged_model["status"] = "active"
     staged_model["asset"] = {
-        "revision": receipt["revision"],
+        "revision": candidate["sha256"][:40],
         "bytes": candidate["bytes"],
         "sha256": candidate["sha256"],
         "precision": candidate["precision"],
@@ -108,12 +114,9 @@ def main():
     target_version = release["targetAppVersion"]
     release["appVersion"] = target_version
     release["publication"] = {
-        "repository": receipt["repository"],
-        "revision": receipt["revision"],
-        "baseUrl": (
-            f"https://huggingface.co/datasets/{receipt['repository']}/resolve/"
-            f"{receipt['revision']}/musclemap"
-        ),
+        "bucket": receipt["bucket"],
+        "prefix": receipt["prefix"],
+        "baseUrl": f"https://huggingface.co/buckets/{receipt['bucket']}/resolve/{receipt['prefix']}",
     }
     package["version"] = target_version
 
@@ -124,7 +127,7 @@ def main():
     release_temporary.replace(args.release)
     package_temporary.replace(args.package)
     subprocess.run(["node", str(SCRIPT_DIR / "generate_model_contracts.mjs")], check=True)
-    print(f"Activated MuscleMap v{target_version} at Hugging Face revision {receipt['revision']}")
+    print(f"Activated MuscleMap v{target_version} at Hugging Face bucket prefix {receipt['prefix']}")
 
 
 if __name__ == "__main__":

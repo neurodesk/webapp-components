@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "app": "browserqc",
-  "repository": "sbollmann/neurodesk-webapps-assets",
-  "revision": "3fac5b45eb5cd38190a49ad3a1dc422b016bc938",
-  "base_url": "https://huggingface.co/datasets/sbollmann/neurodesk-webapps-assets/resolve/3fac5b45eb5cd38190a49ad3a1dc422b016bc938/browserqc/",
+  "bucket": "neurodeskorg/webapps-bucket",
+  "prefix": "neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/browserqc",
+  "base_url": "https://huggingface.co/buckets/neurodeskorg/webapps-bucket/resolve/neurodesk-webapps-assets/e0a056b3d6b2b075bab5b780281af17fc9d6421d/browserqc/",
   "license": "NOASSERTION",
   "assets": [
     {"filename":"t1_crop.nii.gz","bytes":8131654,"sha256":"8f01b6b91f3e96cf8f8527094521ba1ab75df47ac475c6ab180a6f5d0ae1925f"},
