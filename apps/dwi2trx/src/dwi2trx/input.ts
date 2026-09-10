@@ -198,42 +198,18 @@ async function resolveTriple(
  * typical DWI emit NIfTI-1).
  */
 async function niftiVolumeCount(file: File): Promise<number> {
-  const buf = await readHeaderBytes(file, 352)
-  if (buf.length < 348) {
-    throw new Error(`${file.name}: too small to be a NIfTI volume.`)
+  const view = await readNiftiHeader(file)
+  if (!isValidNifti1(view)) throw new Error(`${file.name}: not a NIfTI-1 volume.`)
+  const { dims, bitpix } = parseNiftiHeader(view)
+  // dim[0] outside 1..7 means big-endian (unsupported by the tracker's reader) or garbage.
+  if (dims[0] < 1 || dims[0] > 7) {
+    throw new Error(`${file.name}: not a little-endian NIfTI-1 volume (dim[0]=${dims[0]}).`)
   }
-  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength)
-  if (dv.getInt32(0, true) === 540 || dv.getInt32(0, false) === 540) {
-    throw new Error(`${file.name}: NIfTI-2 is not supported yet.`)
-  }
-  // NIfTI-1 magic "n+1\0" at offset 344 — reject look-alikes before trusting dims.
-  if (
-    buf[344] !== 0x6e ||
-    buf[345] !== 0x2b ||
-    buf[346] !== 0x31 ||
-    buf[347] !== 0x00
-  ) {
-    throw new Error(`${file.name}: not a NIfTI-1 volume (bad magic).`)
-  }
-  const le = true
-  const ndim = dv.getInt16(40, le)
-  if (ndim < 1 || ndim > 7) {
-    // Big-endian headers land here too: the tracker's reader is little-endian only.
-    throw new Error(
-      `${file.name}: not a little-endian NIfTI-1 volume (dim[0]=${ndim}).`,
-    )
-  }
-  const volumes = ndim >= 4 ? dv.getInt16(48, le) : 1
-  if (volumes < 1) {
-    throw new Error(
-      `${file.name}: unreadable volume count (dim[4]=${volumes}).`,
-    )
-  }
+  const volumes = dims[0] >= 4 ? dims[4] : 1
+  if (volumes < 1) throw new Error(`${file.name}: unreadable volume count (dim[4]=${volumes}).`)
   // The size guard sees compressed bytes; the decoded image must fit too.
-  let voxels = 1
-  for (let a = 1; a <= ndim; a++) voxels *= Math.max(1, dv.getInt16(40 + 2 * a, le))
-  const decodedBytes = voxels * (dv.getInt16(72, le) / 8)
-  if (decodedBytes > MAX_INPUT_BYTES) throw new InputTooLargeError(decodedBytes)
+  const voxels = dims.slice(1, dims[0] + 1).reduce((n, d) => n * Math.max(1, d), 1)
+  if (voxels * (bitpix / 8) > MAX_INPUT_BYTES) throw new InputTooLargeError(voxels * (bitpix / 8))
   return volumes
 }
 

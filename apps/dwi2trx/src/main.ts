@@ -39,7 +39,7 @@ import {
   type DwiInput,
 } from './dwi2trx/state'
 import { baseName, flipBvecX } from './dwi2trx/validate'
-import { det3, readAffine } from './lib/nifti-geometry'
+import { downloadBlob, extractAffine } from '@neurodesk/webapp-components/file-io'
 import {
   buildGradientScheme,
   buildSchemeFromSamples,
@@ -288,16 +288,15 @@ genVecSavePhilipsBtn.addEventListener('click', () => {
     'dti_vectors_input.txt',
   )
 })
-function download(blob: Blob, name: string): void {
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = name
-  a.click()
-  // Revoke on the next macrotask, not synchronously — Safari/WebKit can drop
-  // the download if the blob URL is revoked before the fetch is queued (and a
-  // "Save maps" click fires this twice back-to-back).
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
+const download = downloadBlob
+
+/** Determinant of the 3×3 block of a voxel→world affine. */
+function det3(m: ArrayLike<number>[]): number {
+  return (
+    m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+    m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
+    m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0])
+  )
 }
 // dcm2niix names carry folder, protocol and acquisition time: keep them out of outputs.
 function outputBase(input: DwiInput): string {
@@ -998,7 +997,7 @@ async function runTrack(): Promise<void> {
     // neurologically (det > 0). The tracker works in voxel space, so give it
     // the same directions or its fibres mirror across x.
     const bvecText =
-      det3(readAffine(header)) > 0 ? flipBvecX(rawBvecText) : rawBvecText
+      det3(extractAffine(header)) > 0 ? flipBvecX(rawBvecText) : rawBvecText
     const {
       inputs: tInputs,
       voxelToRasmm,
