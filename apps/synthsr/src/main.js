@@ -7,7 +7,7 @@ import { readVolume } from './volume.js';
 import manifest from '../../../models/synthsr.manifest.json';
 import './styles.css';
 
-mountImagingWorkspace({controls:'#controls',viewer:'#viewer',status:'#status',title:'SynthSR',subtitle:'Brain image synthesis, in your browser',mark:'S',controlsContract:{about:'#aboutBtn'}});
+mountImagingWorkspace({controls:'#controls',viewer:'#viewer',status:'#status',title:'SynthSR',subtitle:'Brain image synthesis, in your browser',mark:'S',controlsContract:{about:'#aboutBtn',standalone:'#standaloneBtn'}});
 const $ = (id) => document.getElementById(id);
 let source, output, provenance, worker, viewer, viewerReady, busy=false, timer, started, exampleAbort;
 let importAbort, importedImages = [], loadedExample = '';
@@ -43,6 +43,7 @@ async function show(file,isOutput=false){
 }
 async function load(file,exampleId=''){
   if(busy||!file)return;
+  setBusy(true);
   try{
     if(!/\.nii(\.gz)?$/i.test(file.name))throw new Error('Choose a .nii or .nii.gz image.');
     status('Reading image…');const volume=readVolume(await file.arrayBuffer());
@@ -52,10 +53,10 @@ async function load(file,exampleId=''){
     $('inputTab').disabled=false;$('outputTab').hidden=true;$('outputTab').disabled=true;$('saveBtn').disabled=true;$('reportBtn').disabled=true;
     $('progress').value=0;$('elapsed').textContent='';$('fileInfo').hidden=false;
     $('fileInfo').textContent=`${file.name} · ${volume.dims.join(' × ')} voxels`;
-    $('processButton').disabled=false;
     await show(source);status('Image loaded · ready to synthesize');
     return true;
   }catch(error){status(error.message,true);return false;}
+  finally{setBusy(false);}
 }
 async function importImages(filesPromise) {
   if (busy) return;
@@ -128,6 +129,6 @@ $('saveBtn').onclick=()=>output&&download(output,output.name);
 $('reportBtn').onclick=()=>provenance&&download(new Blob([JSON.stringify(provenance,null,2)],{type:'application/json'}),output.name.replace('.nii','.json'));
 $('aboutBtn').onclick=()=>$('aboutDialog').showModal();
 $('standaloneBtn').onclick=()=>$('standaloneDialog').showModal();
-$('standalonePackage').href=`${import.meta.env.BASE_URL}downloads/neurodesk-synthsr-0.1.0.tgz`;
+$('standalonePackage').href=`${import.meta.env.BASE_URL}downloads/neurodesk-synthsr-0.2.20260909.tgz`;
 if(!navigator.gpu){$('backend').value='wasm';status('Ready · WebGPU unavailable; CPU processing selected');}
 window.addEventListener('pagehide',()=>{exampleAbort?.abort();importAbort?.abort();worker?.terminate();clearInterval(timer);});

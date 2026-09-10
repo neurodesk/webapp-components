@@ -34,6 +34,11 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Local audit and planning notes
+audit_*.md
+plan_*.md
+*_plan.md
+
 # Temporary model weights
 .tmp_weights/
 apps/musclemap/.tmp_model_env/

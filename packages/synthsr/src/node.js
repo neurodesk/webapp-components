@@ -38,7 +38,7 @@ export async function synthesize({input,output,modelPath,cacheDir,offline=false,
       executionProviders:[device],graphOptimizationLevel:'all',intraOpNumThreads:threads,interOpNumThreads:1,
       ...(device==='cuda'?{extra:{session:{disable_cpu_ep_fallback:'1'}}}:{}),
     }),
-    runtime:{app:'SynthSR CLI 0.1.0',onnxRuntime:ort.env.versions.node,threads},
+    runtime:{app:'SynthSR CLI 0.2.20260909',onnxRuntime:ort.env.versions.node,threads},
   });
   result.provenance.input=input;result.provenance.output=output;
   const image=output.toLowerCase().endsWith('.gz')?await promisify(gzip)(Buffer.from(result.buffer)):Buffer.from(result.buffer);

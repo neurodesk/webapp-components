@@ -24,7 +24,7 @@ test('load, invalid input, and cancellation preserve the original',async({page})
   await expect(page.locator('#standaloneDialog')).toContainText('curl -fLO');
   await expect(page.locator('#standaloneDialog')).not.toContainText('Slurm');
   const packageDownload=page.waitForEvent('download');await page.locator('#standalonePackage').click();
-  expect((await packageDownload).suggestedFilename()).toBe('neurodesk-synthsr-0.1.0.tgz');
+  expect((await packageDownload).suggestedFilename()).toBe('neurodesk-synthsr-0.2.20260909.tgz');
   await page.locator('#standaloneDialog').getByRole('button',{name:'Close',exact:true}).click();
 });
 
