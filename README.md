@@ -14,6 +14,8 @@ release eligibility, and scientific assets.
 - `apps/*` keeps app-specific scientific workers, workflows, and interfaces local.
 - `packages/components` is the framework-free shared browser-imaging library.
 - `packages/runtime-support` owns the cross-origin-isolation service worker.
+- `exes/*` holds native Rust CLIs (`synthsr`, `synthseg`) built with `make`, not pnpm;
+  `packages/synthseg` compiles the same Rust to WASM for the browser.
 - `packages/analytics` provides one DNT/GPC-respecting, page-view-only GA4 bootstrap;
   it deliberately exposes no custom-event API.
 - `scripts/lib/apps-registry.mjs` is the validated catalog interface used by builds,
@@ -25,7 +27,8 @@ release eligibility, and scientific assets.
   composite site stores one copy below `dist/_runtime/` while standalone app builds
   remain self-contained.
 - Large model weights are never committed or copied into `dist/`. They are fetched
-  from `sbollmann/neurodesk-webapps-assets` on Hugging Face and cached by each app.
+  from Hugging Face (`sbollmann/neurodesk-webapps-assets`; `neurodeskorg/webapps` for
+  synthsr and synthseg) and cached by each app.
 
 The shared library is adopted incrementally behind parity tests. Scientific workers,
 preprocessing contracts, app-specific metrics, and pipeline definitions are not

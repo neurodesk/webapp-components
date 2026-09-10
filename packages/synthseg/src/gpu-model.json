@@ -1,0 +1,1713 @@
+{
+"sha256": "94412cd4ece229cee1ec21ac05d9aa6f084ea7b600303d2e598707d86a9a9b13",
+"bytes": 52983030,
+"input": "input",
+"output": "output",
+"nodes": [
+{
+"name": "unet_conv_downarm_0_0_conv",
+"op": "Conv",
+"inputs": [
+"input",
+"unet_conv_downarm_0_0_W",
+"unet_conv_downarm_0_0_B"
+],
+"output": "unet_conv_downarm_0_0_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_downarm_0_0",
+"op": "Elu",
+"inputs": [
+"unet_conv_downarm_0_0_conv"
+],
+"output": "unet_conv_downarm_0_0",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_conv_downarm_0_1_conv",
+"op": "Conv",
+"inputs": [
+"unet_conv_downarm_0_0",
+"unet_conv_downarm_0_1_W",
+"unet_conv_downarm_0_1_B"
+],
+"output": "unet_conv_downarm_0_1_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_downarm_0_1",
+"op": "Elu",
+"inputs": [
+"unet_conv_downarm_0_1_conv"
+],
+"output": "unet_conv_downarm_0_1",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_bn_down_0",
+"op": "BatchNormalization",
+"inputs": [
+"unet_conv_downarm_0_1",
+"unet_bn_down_0_gamma",
+"unet_bn_down_0_beta",
+"unet_bn_down_0_moving_mean",
+"unet_bn_down_0_moving_variance"
+],
+"output": "unet_bn_down_0",
+"attrs": {
+"epsilon": 0.0010000000474974513
+}
+},
+{
+"name": "unet_maxpool_0",
+"op": "MaxPool",
+"inputs": [
+"unet_bn_down_0"
+],
+"output": "unet_maxpool_0",
+"attrs": {
+"auto_pad": "SAME_UPPER",
+"kernel_shape": [
+2,
+2,
+2
+],
+"strides": [
+2,
+2,
+2
+]
+}
+},
+{
+"name": "unet_conv_downarm_1_0_conv",
+"op": "Conv",
+"inputs": [
+"unet_maxpool_0",
+"unet_conv_downarm_1_0_W",
+"unet_conv_downarm_1_0_B"
+],
+"output": "unet_conv_downarm_1_0_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_downarm_1_0",
+"op": "Elu",
+"inputs": [
+"unet_conv_downarm_1_0_conv"
+],
+"output": "unet_conv_downarm_1_0",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_conv_downarm_1_1_conv",
+"op": "Conv",
+"inputs": [
+"unet_conv_downarm_1_0",
+"unet_conv_downarm_1_1_W",
+"unet_conv_downarm_1_1_B"
+],
+"output": "unet_conv_downarm_1_1_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_downarm_1_1",
+"op": "Elu",
+"inputs": [
+"unet_conv_downarm_1_1_conv"
+],
+"output": "unet_conv_downarm_1_1",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_bn_down_1",
+"op": "BatchNormalization",
+"inputs": [
+"unet_conv_downarm_1_1",
+"unet_bn_down_1_gamma",
+"unet_bn_down_1_beta",
+"unet_bn_down_1_moving_mean",
+"unet_bn_down_1_moving_variance"
+],
+"output": "unet_bn_down_1",
+"attrs": {
+"epsilon": 0.0010000000474974513
+}
+},
+{
+"name": "unet_maxpool_1",
+"op": "MaxPool",
+"inputs": [
+"unet_bn_down_1"
+],
+"output": "unet_maxpool_1",
+"attrs": {
+"auto_pad": "SAME_UPPER",
+"kernel_shape": [
+2,
+2,
+2
+],
+"strides": [
+2,
+2,
+2
+]
+}
+},
+{
+"name": "unet_conv_downarm_2_0_conv",
+"op": "Conv",
+"inputs": [
+"unet_maxpool_1",
+"unet_conv_downarm_2_0_W",
+"unet_conv_downarm_2_0_B"
+],
+"output": "unet_conv_downarm_2_0_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_downarm_2_0",
+"op": "Elu",
+"inputs": [
+"unet_conv_downarm_2_0_conv"
+],
+"output": "unet_conv_downarm_2_0",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_conv_downarm_2_1_conv",
+"op": "Conv",
+"inputs": [
+"unet_conv_downarm_2_0",
+"unet_conv_downarm_2_1_W",
+"unet_conv_downarm_2_1_B"
+],
+"output": "unet_conv_downarm_2_1_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_downarm_2_1",
+"op": "Elu",
+"inputs": [
+"unet_conv_downarm_2_1_conv"
+],
+"output": "unet_conv_downarm_2_1",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_bn_down_2",
+"op": "BatchNormalization",
+"inputs": [
+"unet_conv_downarm_2_1",
+"unet_bn_down_2_gamma",
+"unet_bn_down_2_beta",
+"unet_bn_down_2_moving_mean",
+"unet_bn_down_2_moving_variance"
+],
+"output": "unet_bn_down_2",
+"attrs": {
+"epsilon": 0.0010000000474974513
+}
+},
+{
+"name": "unet_maxpool_2",
+"op": "MaxPool",
+"inputs": [
+"unet_bn_down_2"
+],
+"output": "unet_maxpool_2",
+"attrs": {
+"auto_pad": "SAME_UPPER",
+"kernel_shape": [
+2,
+2,
+2
+],
+"strides": [
+2,
+2,
+2
+]
+}
+},
+{
+"name": "unet_conv_downarm_3_0_conv",
+"op": "Conv",
+"inputs": [
+"unet_maxpool_2",
+"unet_conv_downarm_3_0_W",
+"unet_conv_downarm_3_0_B"
+],
+"output": "unet_conv_downarm_3_0_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_downarm_3_0",
+"op": "Elu",
+"inputs": [
+"unet_conv_downarm_3_0_conv"
+],
+"output": "unet_conv_downarm_3_0",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_conv_downarm_3_1_conv",
+"op": "Conv",
+"inputs": [
+"unet_conv_downarm_3_0",
+"unet_conv_downarm_3_1_W",
+"unet_conv_downarm_3_1_B"
+],
+"output": "unet_conv_downarm_3_1_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_downarm_3_1",
+"op": "Elu",
+"inputs": [
+"unet_conv_downarm_3_1_conv"
+],
+"output": "unet_conv_downarm_3_1",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_bn_down_3",
+"op": "BatchNormalization",
+"inputs": [
+"unet_conv_downarm_3_1",
+"unet_bn_down_3_gamma",
+"unet_bn_down_3_beta",
+"unet_bn_down_3_moving_mean",
+"unet_bn_down_3_moving_variance"
+],
+"output": "unet_bn_down_3",
+"attrs": {
+"epsilon": 0.0010000000474974513
+}
+},
+{
+"name": "unet_maxpool_3",
+"op": "MaxPool",
+"inputs": [
+"unet_bn_down_3"
+],
+"output": "unet_maxpool_3",
+"attrs": {
+"auto_pad": "SAME_UPPER",
+"kernel_shape": [
+2,
+2,
+2
+],
+"strides": [
+2,
+2,
+2
+]
+}
+},
+{
+"name": "unet_conv_downarm_4_0_conv",
+"op": "Conv",
+"inputs": [
+"unet_maxpool_3",
+"unet_conv_downarm_4_0_W",
+"unet_conv_downarm_4_0_B"
+],
+"output": "unet_conv_downarm_4_0_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_downarm_4_0",
+"op": "Elu",
+"inputs": [
+"unet_conv_downarm_4_0_conv"
+],
+"output": "unet_conv_downarm_4_0",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_conv_downarm_4_1_conv",
+"op": "Conv",
+"inputs": [
+"unet_conv_downarm_4_0",
+"unet_conv_downarm_4_1_W",
+"unet_conv_downarm_4_1_B"
+],
+"output": "unet_conv_downarm_4_1_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_downarm_4_1",
+"op": "Elu",
+"inputs": [
+"unet_conv_downarm_4_1_conv"
+],
+"output": "unet_conv_downarm_4_1",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_bn_down_4",
+"op": "BatchNormalization",
+"inputs": [
+"unet_conv_downarm_4_1",
+"unet_bn_down_4_gamma",
+"unet_bn_down_4_beta",
+"unet_bn_down_4_moving_mean",
+"unet_bn_down_4_moving_variance"
+],
+"output": "unet_bn_down_4",
+"attrs": {
+"epsilon": 0.0010000000474974513
+}
+},
+{
+"name": "unet_up_5",
+"op": "Resize",
+"inputs": [
+"unet_bn_down_4",
+"scales"
+],
+"output": "unet_up_5",
+"attrs": {
+"coordinate_transformation_mode": "asymmetric",
+"mode": "nearest",
+"nearest_mode": "floor"
+}
+},
+{
+"name": "unet_merge_5",
+"op": "Concat",
+"inputs": [
+"unet_conv_downarm_3_1",
+"unet_up_5"
+],
+"output": "unet_merge_5",
+"attrs": {
+"axis": 1
+}
+},
+{
+"name": "unet_conv_uparm_5_0_conv",
+"op": "Conv",
+"inputs": [
+"unet_merge_5",
+"unet_conv_uparm_5_0_W",
+"unet_conv_uparm_5_0_B"
+],
+"output": "unet_conv_uparm_5_0_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_uparm_5_0",
+"op": "Elu",
+"inputs": [
+"unet_conv_uparm_5_0_conv"
+],
+"output": "unet_conv_uparm_5_0",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_conv_uparm_5_1_conv",
+"op": "Conv",
+"inputs": [
+"unet_conv_uparm_5_0",
+"unet_conv_uparm_5_1_W",
+"unet_conv_uparm_5_1_B"
+],
+"output": "unet_conv_uparm_5_1_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_uparm_5_1",
+"op": "Elu",
+"inputs": [
+"unet_conv_uparm_5_1_conv"
+],
+"output": "unet_conv_uparm_5_1",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_bn_up_0",
+"op": "BatchNormalization",
+"inputs": [
+"unet_conv_uparm_5_1",
+"unet_bn_up_0_gamma",
+"unet_bn_up_0_beta",
+"unet_bn_up_0_moving_mean",
+"unet_bn_up_0_moving_variance"
+],
+"output": "unet_bn_up_0",
+"attrs": {
+"epsilon": 0.0010000000474974513
+}
+},
+{
+"name": "unet_up_6",
+"op": "Resize",
+"inputs": [
+"unet_bn_up_0",
+"scales"
+],
+"output": "unet_up_6",
+"attrs": {
+"coordinate_transformation_mode": "asymmetric",
+"mode": "nearest",
+"nearest_mode": "floor"
+}
+},
+{
+"name": "unet_merge_6",
+"op": "Concat",
+"inputs": [
+"unet_conv_downarm_2_1",
+"unet_up_6"
+],
+"output": "unet_merge_6",
+"attrs": {
+"axis": 1
+}
+},
+{
+"name": "unet_conv_uparm_6_0_conv",
+"op": "Conv",
+"inputs": [
+"unet_merge_6",
+"unet_conv_uparm_6_0_W",
+"unet_conv_uparm_6_0_B"
+],
+"output": "unet_conv_uparm_6_0_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_uparm_6_0",
+"op": "Elu",
+"inputs": [
+"unet_conv_uparm_6_0_conv"
+],
+"output": "unet_conv_uparm_6_0",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_conv_uparm_6_1_conv",
+"op": "Conv",
+"inputs": [
+"unet_conv_uparm_6_0",
+"unet_conv_uparm_6_1_W",
+"unet_conv_uparm_6_1_B"
+],
+"output": "unet_conv_uparm_6_1_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_uparm_6_1",
+"op": "Elu",
+"inputs": [
+"unet_conv_uparm_6_1_conv"
+],
+"output": "unet_conv_uparm_6_1",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_bn_up_1",
+"op": "BatchNormalization",
+"inputs": [
+"unet_conv_uparm_6_1",
+"unet_bn_up_1_gamma",
+"unet_bn_up_1_beta",
+"unet_bn_up_1_moving_mean",
+"unet_bn_up_1_moving_variance"
+],
+"output": "unet_bn_up_1",
+"attrs": {
+"epsilon": 0.0010000000474974513
+}
+},
+{
+"name": "unet_up_7",
+"op": "Resize",
+"inputs": [
+"unet_bn_up_1",
+"scales"
+],
+"output": "unet_up_7",
+"attrs": {
+"coordinate_transformation_mode": "asymmetric",
+"mode": "nearest",
+"nearest_mode": "floor"
+}
+},
+{
+"name": "unet_merge_7",
+"op": "Concat",
+"inputs": [
+"unet_conv_downarm_1_1",
+"unet_up_7"
+],
+"output": "unet_merge_7",
+"attrs": {
+"axis": 1
+}
+},
+{
+"name": "unet_conv_uparm_7_0_conv",
+"op": "Conv",
+"inputs": [
+"unet_merge_7",
+"unet_conv_uparm_7_0_W",
+"unet_conv_uparm_7_0_B"
+],
+"output": "unet_conv_uparm_7_0_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_uparm_7_0",
+"op": "Elu",
+"inputs": [
+"unet_conv_uparm_7_0_conv"
+],
+"output": "unet_conv_uparm_7_0",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_conv_uparm_7_1_conv",
+"op": "Conv",
+"inputs": [
+"unet_conv_uparm_7_0",
+"unet_conv_uparm_7_1_W",
+"unet_conv_uparm_7_1_B"
+],
+"output": "unet_conv_uparm_7_1_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_uparm_7_1",
+"op": "Elu",
+"inputs": [
+"unet_conv_uparm_7_1_conv"
+],
+"output": "unet_conv_uparm_7_1",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_bn_up_2",
+"op": "BatchNormalization",
+"inputs": [
+"unet_conv_uparm_7_1",
+"unet_bn_up_2_gamma",
+"unet_bn_up_2_beta",
+"unet_bn_up_2_moving_mean",
+"unet_bn_up_2_moving_variance"
+],
+"output": "unet_bn_up_2",
+"attrs": {
+"epsilon": 0.0010000000474974513
+}
+},
+{
+"name": "unet_up_8",
+"op": "Resize",
+"inputs": [
+"unet_bn_up_2",
+"scales"
+],
+"output": "unet_up_8",
+"attrs": {
+"coordinate_transformation_mode": "asymmetric",
+"mode": "nearest",
+"nearest_mode": "floor"
+}
+},
+{
+"name": "unet_merge_8",
+"op": "Concat",
+"inputs": [
+"unet_conv_downarm_0_1",
+"unet_up_8"
+],
+"output": "unet_merge_8",
+"attrs": {
+"axis": 1
+}
+},
+{
+"name": "unet_conv_uparm_8_0_conv",
+"op": "Conv",
+"inputs": [
+"unet_merge_8",
+"unet_conv_uparm_8_0_W",
+"unet_conv_uparm_8_0_B"
+],
+"output": "unet_conv_uparm_8_0_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_uparm_8_0",
+"op": "Elu",
+"inputs": [
+"unet_conv_uparm_8_0_conv"
+],
+"output": "unet_conv_uparm_8_0",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_conv_uparm_8_1_conv",
+"op": "Conv",
+"inputs": [
+"unet_conv_uparm_8_0",
+"unet_conv_uparm_8_1_W",
+"unet_conv_uparm_8_1_B"
+],
+"output": "unet_conv_uparm_8_1_conv",
+"attrs": {
+"kernel_shape": [
+3,
+3,
+3
+],
+"pads": [
+1,
+1,
+1,
+1,
+1,
+1
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_conv_uparm_8_1",
+"op": "Elu",
+"inputs": [
+"unet_conv_uparm_8_1_conv"
+],
+"output": "unet_conv_uparm_8_1",
+"attrs": {
+"alpha": 1.0
+}
+},
+{
+"name": "unet_bn_up_3",
+"op": "BatchNormalization",
+"inputs": [
+"unet_conv_uparm_8_1",
+"unet_bn_up_3_gamma",
+"unet_bn_up_3_beta",
+"unet_bn_up_3_moving_mean",
+"unet_bn_up_3_moving_variance"
+],
+"output": "unet_bn_up_3",
+"attrs": {
+"epsilon": 0.0010000000474974513
+}
+},
+{
+"name": "unet_likelihood",
+"op": "Conv",
+"inputs": [
+"unet_bn_up_3",
+"unet_likelihood_W",
+"unet_likelihood_B"
+],
+"output": "unet_likelihood",
+"attrs": {
+"kernel_shape": [
+1,
+1,
+1
+],
+"pads": [
+0,
+0,
+0,
+0,
+0,
+0
+],
+"strides": [
+1,
+1,
+1
+]
+}
+},
+{
+"name": "unet_prediction",
+"op": "Softmax",
+"inputs": [
+"unet_likelihood"
+],
+"output": "output",
+"attrs": {
+"axis": 1
+}
+}
+],
+"tensors": {
+"unet_conv_downarm_0_0_W": {
+"dims": [
+24,
+1,
+3,
+3,
+3
+],
+"bytes": 2592,
+"offset": 8804
+},
+"unet_conv_downarm_0_0_B": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 11429
+},
+"unet_conv_downarm_0_1_W": {
+"dims": [
+24,
+24,
+3,
+3,
+3
+],
+"bytes": 62208,
+"offset": 11570
+},
+"unet_conv_downarm_0_1_B": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 73811
+},
+"unet_bn_down_0_gamma": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 73937
+},
+"unet_bn_down_0_beta": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 74062
+},
+"unet_bn_down_0_moving_mean": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 74195
+},
+"unet_bn_down_0_moving_variance": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 74332
+},
+"unet_conv_downarm_1_0_W": {
+"dims": [
+48,
+24,
+3,
+3,
+3
+],
+"bytes": 124416,
+"offset": 74473
+},
+"unet_conv_downarm_1_0_B": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 198924
+},
+"unet_conv_downarm_1_1_W": {
+"dims": [
+48,
+48,
+3,
+3,
+3
+],
+"bytes": 248832,
+"offset": 199161
+},
+"unet_conv_downarm_1_1_B": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 448028
+},
+"unet_bn_down_1_gamma": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 448252
+},
+"unet_bn_down_1_beta": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 448475
+},
+"unet_bn_down_1_moving_mean": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 448705
+},
+"unet_bn_down_1_moving_variance": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 448939
+},
+"unet_conv_downarm_2_0_W": {
+"dims": [
+96,
+48,
+3,
+3,
+3
+],
+"bytes": 497664,
+"offset": 449176
+},
+"unet_conv_downarm_2_0_B": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 946875
+},
+"unet_conv_downarm_2_1_W": {
+"dims": [
+96,
+96,
+3,
+3,
+3
+],
+"bytes": 995328,
+"offset": 947304
+},
+"unet_conv_downarm_2_1_B": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 1942667
+},
+"unet_bn_down_2_gamma": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 1943083
+},
+"unet_bn_down_2_beta": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 1943498
+},
+"unet_bn_down_2_moving_mean": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 1943920
+},
+"unet_bn_down_2_moving_variance": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 1944346
+},
+"unet_conv_downarm_3_0_W": {
+"dims": [
+192,
+96,
+3,
+3,
+3
+],
+"bytes": 1990656,
+"offset": 1944776
+},
+"unet_conv_downarm_3_0_B": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 3935468
+},
+"unet_conv_downarm_3_1_W": {
+"dims": [
+192,
+192,
+3,
+3,
+3
+],
+"bytes": 3981312,
+"offset": 3936285
+},
+"unet_conv_downarm_3_1_B": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 7917633
+},
+"unet_bn_down_3_gamma": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 7918434
+},
+"unet_bn_down_3_beta": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 7919234
+},
+"unet_bn_down_3_moving_mean": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 7920041
+},
+"unet_bn_down_3_moving_variance": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 7920852
+},
+"unet_conv_downarm_4_0_W": {
+"dims": [
+384,
+192,
+3,
+3,
+3
+],
+"bytes": 7962624,
+"offset": 7921669
+},
+"unet_conv_downarm_4_0_B": {
+"dims": [
+384
+],
+"bytes": 1536,
+"offset": 15884329
+},
+"unet_conv_downarm_4_1_W": {
+"dims": [
+384,
+384,
+3,
+3,
+3
+],
+"bytes": 15925248,
+"offset": 15885914
+},
+"unet_conv_downarm_4_1_B": {
+"dims": [
+384
+],
+"bytes": 1536,
+"offset": 31811198
+},
+"unet_bn_down_4_gamma": {
+"dims": [
+384
+],
+"bytes": 1536,
+"offset": 31812767
+},
+"unet_bn_down_4_beta": {
+"dims": [
+384
+],
+"bytes": 1536,
+"offset": 31814335
+},
+"unet_bn_down_4_moving_mean": {
+"dims": [
+384
+],
+"bytes": 1536,
+"offset": 31815910
+},
+"unet_bn_down_4_moving_variance": {
+"dims": [
+384
+],
+"bytes": 1536,
+"offset": 31817489
+},
+"scales": {
+"dims": [
+5
+],
+"bytes": 20,
+"offset": 31819041
+},
+"unet_conv_uparm_5_0_W": {
+"dims": [
+192,
+576,
+3,
+3,
+3
+],
+"bytes": 11943936,
+"offset": 31819108
+},
+"unet_conv_uparm_5_0_B": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 43763078
+},
+"unet_conv_uparm_5_1_W": {
+"dims": [
+192,
+192,
+3,
+3,
+3
+],
+"bytes": 3981312,
+"offset": 43763893
+},
+"unet_conv_uparm_5_1_B": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 47745239
+},
+"unet_bn_up_0_gamma": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 47746038
+},
+"unet_bn_up_0_beta": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 47746836
+},
+"unet_bn_up_0_moving_mean": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 47747641
+},
+"unet_bn_up_0_moving_variance": {
+"dims": [
+192
+],
+"bytes": 768,
+"offset": 47748450
+},
+"unet_conv_uparm_6_0_W": {
+"dims": [
+96,
+288,
+3,
+3,
+3
+],
+"bytes": 2985984,
+"offset": 47749264
+},
+"unet_conv_uparm_6_0_B": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 50735281
+},
+"unet_conv_uparm_6_1_W": {
+"dims": [
+96,
+96,
+3,
+3,
+3
+],
+"bytes": 995328,
+"offset": 50735708
+},
+"unet_conv_uparm_6_1_B": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 51731069
+},
+"unet_bn_up_1_gamma": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 51731483
+},
+"unet_bn_up_1_beta": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 51731896
+},
+"unet_bn_up_1_moving_mean": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 51732316
+},
+"unet_bn_up_1_moving_variance": {
+"dims": [
+96
+],
+"bytes": 384,
+"offset": 51732740
+},
+"unet_conv_uparm_7_0_W": {
+"dims": [
+48,
+144,
+3,
+3,
+3
+],
+"bytes": 746496,
+"offset": 51733168
+},
+"unet_conv_uparm_7_0_B": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 52479697
+},
+"unet_conv_uparm_7_1_W": {
+"dims": [
+48,
+48,
+3,
+3,
+3
+],
+"bytes": 248832,
+"offset": 52479932
+},
+"unet_conv_uparm_7_1_B": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 52728797
+},
+"unet_bn_up_2_gamma": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 52729019
+},
+"unet_bn_up_2_beta": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 52729240
+},
+"unet_bn_up_2_moving_mean": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 52729468
+},
+"unet_bn_up_2_moving_variance": {
+"dims": [
+48
+],
+"bytes": 192,
+"offset": 52729700
+},
+"unet_conv_uparm_8_0_W": {
+"dims": [
+24,
+72,
+3,
+3,
+3
+],
+"bytes": 186624,
+"offset": 52729935
+},
+"unet_conv_uparm_8_0_B": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 52916590
+},
+"unet_conv_uparm_8_1_W": {
+"dims": [
+24,
+24,
+3,
+3,
+3
+],
+"bytes": 62208,
+"offset": 52916729
+},
+"unet_conv_uparm_8_1_B": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 52978968
+},
+"unet_bn_up_3_gamma": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 52979092
+},
+"unet_bn_up_3_beta": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 52979215
+},
+"unet_bn_up_3_moving_mean": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 52979346
+},
+"unet_bn_up_3_moving_variance": {
+"dims": [
+24
+],
+"bytes": 96,
+"offset": 52979481
+},
+"unet_likelihood_W": {
+"dims": [
+33,
+24,
+1,
+1,
+1
+],
+"bytes": 3168,
+"offset": 52979614
+},
+"unet_likelihood_B": {
+"dims": [
+33
+],
+"bytes": 132,
+"offset": 52982811
+}
+}
+}

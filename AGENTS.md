@@ -70,8 +70,30 @@ builds with `make` inside that directory (`check-model`, `build`, `test`,
 Face dataset `neurodeskorg/webapps` via a pinned manifest and are never
 committed.
 
+`exes/synthseg` is the SynthSeg 2.0 CLI (ORT CPU + native Metal), imported
+from a standalone repo. Its `README.md` "Numerics" and "Traps" sections are the
+maintainer contract: preprocessing is f64, gates in `tests/parity.rs` only
+tighten. The Metal executor includes `packages/synthseg/src/gpu-model.json`
+(written by `make export`); `build.rs` verifies the model against
+`packages/synthseg/model.manifest.json`. `make test-real` fetches inputs and
+FreeSurfer goldens from Hugging Face into `SYNTHSEG_REFERENCE_DIR`.
+
+`packages/synthseg/wasm/src/lib.rs` includes `exes/synthseg/src/{nifti,volume,post}.rs`
+by `#[path]`, so browser pre/postprocessing is the CLI's code, not a port. The
+built `src/synthseg.wasm` is committed: after changing those Rust files run
+`make wasm` and `make test` in `packages/synthseg`. `apps/synthseg` is WebGPU-only
+(no WASM inference fallback); its e2e parity gate mirrors `tests/parity.rs`.
+
+Deferred SynthSeg cleanups (audit 2026-09-10):
+share the CLI shell/NIfTI decode/volume math with `exes/synthsr` in one crate; route both
+apps' worker model download through `packages/components` `fetchModel`; drop the
+`metal-f16` feature and unused `scripts/{compare_seg,check_onnx}.py`; the per-run
+`is_finite` scan in `main.rs` is on the hot path.
+
 `exes/synthsr/src/nifti.rs` and `src/volume.rs` are line-for-line ports of
 `packages/synthsr/src/volume.js` and must stay bit-identical (f64 math, f32
 storage): change the JS and the Rust together. `exes/synthsr/src/metal.rs`
-mirrors `packages/synthsr/src/gpu-conv3d.js` and `gpu-session.js` the same
-way.
+mirrors the shared WebGPU executor in
+`packages/runtime-support/src/gpu-unet/` the same way;
+`exes/synthseg/src/metal.rs` mirrors that same executor including its `Concat`
+and `Softmax` kernels and the padded classifier head.

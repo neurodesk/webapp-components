@@ -1,0 +1,76 @@
+{
+  "results": [
+    {
+      "device": "webgpu",
+      "input": "T1_head",
+      "mode": "fast",
+      "mismatched_voxels": 0,
+      "compared_voxels": 5577600,
+      "mismatch_fraction": 0,
+      "seconds": 7.673390000045299,
+      "timings": {
+        "preprocess": 0.1749200000166893,
+        "model": 0.09680000001192093,
+        "initialize": 2.105824999988079,
+        "inference": 3.7539800000190735,
+        "release": 0.00004500001668930054,
+        "postprocess": 1.5418049999475478
+      },
+      "pass": true
+    },
+    {
+      "device": "webgpu",
+      "input": "T1_head",
+      "mode": "default",
+      "mismatched_voxels": 1,
+      "compared_voxels": 5577600,
+      "mismatch_fraction": 1.7928858290304073e-7,
+      "seconds": 9.598349999964237,
+      "timings": {
+        "preprocess": 0.17800999999046327,
+        "model": 0.061274999976158144,
+        "initialize": 0.10347000002861023,
+        "inference": 6.277939999997616,
+        "release": 0.00009499996900558472,
+        "postprocess": 2.9775450000166894
+      },
+      "pass": true
+    },
+    {
+      "device": "webgpu",
+      "input": "T1_head_2mm",
+      "mode": "fast",
+      "mismatched_voxels": 1,
+      "compared_voxels": 5611200,
+      "mismatch_fraction": 1.7821499857428e-7,
+      "seconds": 5.596090000033379,
+      "timings": {
+        "preprocess": 0.15498500001430512,
+        "model": 0.06326999998092651,
+        "initialize": 0.10430500000715255,
+        "inference": 3.6948400000333788,
+        "release": 0.00003999996185302734,
+        "postprocess": 1.5786349999904632
+      },
+      "pass": true
+    },
+    {
+      "device": "webgpu",
+      "input": "T1_head_2mm",
+      "mode": "default",
+      "mismatched_voxels": 0,
+      "compared_voxels": 5611200,
+      "mismatch_fraction": 0,
+      "seconds": 9.326055000007152,
+      "timings": {
+        "preprocess": 0.15360500001907348,
+        "model": 0.06154000002145767,
+        "initialize": 0.10348500001430512,
+        "inference": 6.164234999954701,
+        "release": 0.00008500003814697266,
+        "postprocess": 2.8430949999690056
+      },
+      "pass": true
+    }
+  ]
+}

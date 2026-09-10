@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "app": "synthseg",
+  "license": "Apache-2.0",
+  "preprocessing_contract": {
+    "source": "exes/synthseg/src/volume.rs",
+    "spacing_mm": [
+      1,
+      1,
+      1
+    ],
+    "layout": "NCDHW; RAS spatial axes, z fastest",
+    "padding_multiple": 32,
+    "minimum_extent": 128
+  },
+  "assets": [
+    {
+      "filename": "synthseg-2.0.onnx",
+      "bytes": 52983030,
+      "sha256": "94412cd4ece229cee1ec21ac05d9aa6f084ea7b600303d2e598707d86a9a9b13",
+      "source_url": "https://huggingface.co/datasets/neurodeskorg/webapps/resolve/main/synthseg/models/synthseg_2.0.h5"
+    }
+  ],
+  "source_commit": "FreeSurfer 8.1.0 models/synthseg_2.0.h5",
+  "checkpoint_sha256": "f190bfd742f450ef3ca2c9df9ed4d2e0232b3a74471da5e51b7770bacdf80c3e",
+  "graph_optimization": "None; float32 ONNX rebuilt from the Keras checkpoint by exes/synthseg/scripts/export_model.py",
+  "classes": 33,
+  "validation": {
+    "base_url": "https://huggingface.co/datasets/neurodeskorg/webapps/resolve/main/synthseg/validation/",
+    "files": [
+      "T1_head.nii.gz",
+      "T1_head_2mm.nii.gz",
+      "T1_head_default.nii.gz",
+      "T1_head_fast.nii.gz",
+      "T1_head_2mm_default.nii.gz",
+      "T1_head_2mm_fast.nii.gz"
+    ]
+  },
+  "repository": "neurodeskorg/webapps",
+  "revision": "main",
+  "base_url": "https://huggingface.co/datasets/neurodeskorg/webapps/resolve/main/synthseg/models/"
+}

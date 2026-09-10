@@ -1,0 +1,12 @@
+SynthSeg browser processing library
+Copyright 2026 Neurodesk contributors
+
+Port of SynthSeg 2.0 (https://github.com/BBillot/SynthSeg, Apache-2.0) as shipped
+in FreeSurfer 8.1.0 `mri_synthseg`. Preprocessing and postprocessing are the
+native CLI's Rust modules (exes/synthseg/src) compiled to WebAssembly, so results
+are bit-identical. Model checkpoint: synthseg_2.0.h5, re-exported to ONNX without
+retraining.
+
+Billot B, Greve DN, Puonti O, et al. (2023). SynthSeg: Segmentation of brain
+MRI scans of any contrast and resolution without retraining. Medical Image
+Analysis 86:102789. https://doi.org/10.1016/j.media.2023.102789

@@ -1,0 +1,33 @@
+{
+  "name": "@neurodesk/synthseg",
+  "version": "0.1.20260910",
+  "description": "SynthSeg 2.0 brain segmentation for browsers",
+  "type": "module",
+  "private": true,
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./browser": "./src/browser.js",
+    "./manifest": "./model.manifest.json",
+    "./wasm": "./src/synthseg.wasm"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "lint": "node --check src/index.js && node --check src/pipeline.js && node --check src/wasm.js && node --check src/browser.js",
+    "build:wasm": "make wasm"
+  },
+  "dependencies": {
+    "@neurodesk/runtime-support": "workspace:*"
+  },
+  "devDependencies": {
+    "onnxruntime-node": "1.29.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neurodesk/webapps.git",
+    "directory": "packages/synthseg"
+  }
+}

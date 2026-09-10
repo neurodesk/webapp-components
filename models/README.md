@@ -15,6 +15,9 @@ Current folders:
   `neurodesk/vesselboost-webapp@6ba7d07`.
 - `seedseg/`: four consensus models migrated from the OSF objects recorded in
   `seedseg.manifest.json`.
+- `synthseg/`: SynthSeg 2.0 ONNX re-export of the FreeSurfer 8.1.0 checkpoint
+  plus validation inputs and goldens (`neurodeskorg/webapps`), see
+  `synthseg.manifest.json`.
 
 Application and model licences are independent. `NOASSERTION` in a manifest means
 the upstream project has not yet supplied machine-readable redistribution terms.
