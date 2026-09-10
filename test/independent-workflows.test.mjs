@@ -37,6 +37,8 @@ test('native packages share one gated publisher while signing stays isolated', a
     flow.jobs.portable.strategy.matrix.include.map(entry => entry.platform).sort(),
     ['linux-x64', 'windows-x64'],
   );
+  const linux = flow.jobs.portable.strategy.matrix.include.find(entry => entry.platform === 'linux-x64');
+  assert.equal(linux.os, 'ubuntu-24.04');
   assert.ok(!JSON.stringify(flow.jobs.portable).includes('secrets.'));
   assert.ok(!JSON.stringify(flow.jobs.macos).includes('secrets.'));
   assert.match(JSON.stringify(flow.jobs.portable), /portable_release\.py package/);

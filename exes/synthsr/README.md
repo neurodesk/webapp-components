@@ -64,7 +64,8 @@ cd synthsr-linux
 ```
 
 Keep `libwebgpu_dawn.so` beside `synthsr`. The executable uses CPU by default.
-The archive also includes the licenses and notices.
+The archive requires glibc 2.38 or later and a libstdc++ providing
+`GLIBCXX_3.4.32`. It also includes the licenses and notices.
 
 ## Install (Windows x64)
 
