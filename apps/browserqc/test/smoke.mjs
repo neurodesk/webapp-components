@@ -11,6 +11,7 @@
 // Usage:  npm run build && npm run test:e2e
 //         BROWSERQC_EXPECT_WEBGPU_FALLBACK=1 ...   (GPU-less box outside CI)
 import { chromium } from 'playwright'
+import { mkdir } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { runVitePreviewSmoke } from '../../../test-utils/vite-preview-smoke.mjs'
@@ -19,6 +20,7 @@ const here = dirname(fileURLToPath(import.meta.url))
 
 await runVitePreviewSmoke({
   chromium,
+  port: Number(process.env.SMOKE_PORT || 4173),
   root: join(here, '..'),
   basePath: '/browserqc/',
   fallbackEnvVar: 'BROWSERQC_EXPECT_WEBGPU_FALLBACK',
@@ -35,11 +37,27 @@ await runVitePreviewSmoke({
     if (!locationFits) await fail('Status text overflows a 320px viewport', page)
     await page.click('[data-neurodesk-shell-control="about"]')
     if (!(await page.isVisible('#aboutDialog'))) await fail('About dialog did not open', page)
-    await page.click('#closeAboutBtn')
+    await page.click('#aboutDialog .nd-dialog-close')
     await page.click('[data-neurodesk-shell-control="cite"]')
-    await page.click('#citeDialog .nd-app-dialog__close')
+    await page.click('dialog[open] button[aria-label="Close"]')
     await page.click('[data-neurodesk-shell-control="privacy"]')
-    await page.click('#privacyDialog .nd-app-dialog__close')
+    await page.click('#privacyDialog .nd-dialog-close')
+    await page.setViewportSize({ width: 1280, height: 960 })
+
+    const artifacts = join(process.env.TMPDIR || here, 'review-browserqc')
+    await mkdir(artifacts, { recursive: true })
+    const consoleToggle = page.locator('#technicalLog [data-disclosure-toggle]')
+    await consoleToggle.click()
+    if (await consoleToggle.getAttribute('aria-expanded') !== 'true') await fail('Technical log did not expand', page)
+    await page.click('#clearLogBtn')
+    await consoleToggle.click()
+    for (const [name, width, height] of [['desktop', 1280, 960], ['phone', 320, 568]]) {
+      await page.setViewportSize({ width, height })
+      await page.screenshot({ path: join(artifacts, `${name}.png`), fullPage: true })
+      await page.click('[data-neurodesk-theme-toggle]')
+      await page.screenshot({ path: join(artifacts, `${name}-light.png`), fullPage: true })
+      await page.click('[data-neurodesk-theme-toggle]')
+    }
     await page.setViewportSize({ width: 1280, height: 960 })
 
     // GitHub's Linux runners do not expose a usable WebGPU adapter. Verify that the

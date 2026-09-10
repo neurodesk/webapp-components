@@ -21,10 +21,23 @@ export const WM_LABELS = [1, 5]
 export type QcMetrics = Record<string, number>
 
 /** niimath's JSON report, with BrowserQC's optional BIDS sidecar. */
-export type QcReport = Record<string, unknown>
+export type QcReport = Record<string, unknown> & { provenance: Record<string, unknown> }
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+export async function readQcReport(blob: Blob): Promise<QcReport> {
+  const report: unknown = JSON.parse(await blob.text())
+  if (!isRecord(report) || !isRecord(report.provenance)) {
+    throw new Error('QC output must contain a report object and provenance.')
+  }
+  return { ...report, provenance: report.provenance }
+}
 
 /** Bind a sidecar only to its current image, never a previous one. */
-export function bindSidecar(dropMeta: unknown, staged: unknown, hasImage: boolean): { bind: unknown; staged: unknown } {
+export function bindSidecar(dropMeta: unknown, staged: unknown, files: readonly Pick<File, 'name'>[]): { bind: unknown; staged: unknown } {
+  const hasImage = files.some((file) => !file.name.toLowerCase().endsWith('.json'))
   return hasImage ? { bind: dropMeta ?? staged ?? null, staged: null } : { bind: null, staged: dropMeta }
 }
 

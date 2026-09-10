@@ -18,7 +18,7 @@
       "filename": "synthseg-2.0.onnx",
       "bytes": 52983030,
       "sha256": "94412cd4ece229cee1ec21ac05d9aa6f084ea7b600303d2e598707d86a9a9b13",
-      "source_url": "https://huggingface.co/datasets/neurodeskorg/webapps/resolve/main/synthseg/models/synthseg_2.0.h5"
+      "source_url": "https://huggingface.co/datasets/neurodeskorg/webapps/resolve/356a4adbce52cf9052d61ef90b14ba263e7c25e9/synthseg/models/synthseg_2.0.h5"
     }
   ],
   "source_commit": "FreeSurfer 8.1.0 models/synthseg_2.0.h5",
@@ -26,7 +26,7 @@
   "graph_optimization": "None; float32 ONNX rebuilt from the Keras checkpoint by exes/synthseg/scripts/export_model.py",
   "classes": 33,
   "validation": {
-    "base_url": "https://huggingface.co/datasets/neurodeskorg/webapps/resolve/main/synthseg/validation/",
+    "base_url": "https://huggingface.co/datasets/neurodeskorg/webapps/resolve/356a4adbce52cf9052d61ef90b14ba263e7c25e9/synthseg/validation/",
     "files": [
       "T1_head.nii.gz",
       "T1_head_2mm.nii.gz",
@@ -37,6 +37,6 @@
     ]
   },
   "repository": "neurodeskorg/webapps",
-  "revision": "main",
-  "base_url": "https://huggingface.co/datasets/neurodeskorg/webapps/resolve/main/synthseg/models/"
+  "revision": "356a4adbce52cf9052d61ef90b14ba263e7c25e9",
+  "base_url": "https://huggingface.co/datasets/neurodeskorg/webapps/resolve/356a4adbce52cf9052d61ef90b14ba263e7c25e9/synthseg/models/"
 }

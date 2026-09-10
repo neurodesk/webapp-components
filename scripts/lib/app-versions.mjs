@@ -9,7 +9,7 @@ import { getPackages } from '@manypkg/get-packages';
 import { repoRoot } from './apps-registry.mjs';
 
 export const DATE_VERSION = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(\d{8})$/;
-export const LINKED_PACKAGES = Object.freeze({ '@neurodesk/synthsr': 'synthsr', '@neurodesk/syncro': 'syncro' });
+export const LINKED_PACKAGES = Object.freeze({ '@neurodesk/synthseg': 'synthseg', '@neurodesk/synthsr': 'synthsr', '@neurodesk/syncro': 'syncro' });
 
 export function releaseDate(now = new Date()) {
   return now.toISOString().slice(0, 10).replaceAll('-', '');
@@ -128,6 +128,12 @@ export const EMBEDDED_VERSION_SITES = Object.freeze({
   ],
   zarro: [
     { file: 'apps/zarro/src/config.js', pattern: /(version: ')[^']+(')/, replace: '$1{version}$2' },
+  ],
+  synthseg: [
+    { file: 'exes/synthseg/Cargo.toml', pattern: /(^\[package\][\s\S]*?^version = ")[^"]+(")/m, replace: '$1{version}$2' },
+    { file: 'exes/synthseg/Cargo.lock', pattern: /(name = "synthseg"\nversion = ")[^"]+(")/, replace: '$1{version}$2' },
+    { file: 'packages/synthseg/src/pipeline.js', pattern: /(const VERSION = ')[^']+(')/, replace: '$1{version}$2' },
+    { file: 'apps/synthseg/src/inference-worker.js', pattern: /(app: 'SynthSeg web )[^']+(')/, replace: '$1{version}$2' },
   ],
   synthsr: [
     { file: 'exes/synthsr/Cargo.toml', pattern: /(^\[package\][\s\S]*?^version = ")[^"]+(")/m, replace: '$1{version}$2' },

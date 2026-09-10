@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
-    "test": "tsc --noEmit",
+    "test": "tsc --noEmit && node --experimental-strip-types --test test/*.test.mjs",
     "test:e2e": "npm run build && node test/smoke.mjs"
   },
   "dependencies": {

@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { findApp, loadAppsRegistry, repoRoot } from './apps-registry.mjs';
+import { loadAppInformation, appInformationPayload } from './app-information.mjs';
 import { injectCompositeTheme } from './composite-theme.mjs';
 
 // The one production header policy for every deployable. The composite root
@@ -32,7 +33,7 @@ function emitHeadersFile() {
 
 const fsUrl = (path) => `@fs/${path.replaceAll('\\', '/').replace(/^\/+/, '')}`;
 
-function injectDevShell({ app, version, measurementId }) {
+function injectDevShell({ app, version, measurementId, information }) {
   return {
     name: 'neurodesk-dev-shell',
     apply: 'serve',
@@ -43,6 +44,7 @@ function injectDevShell({ app, version, measurementId }) {
         title: app.title,
         description: app.description,
         version,
+        information,
         measurementId,
         href: fsUrl(join(repoRoot, 'site', 'app-theme.css')),
         themeHref: fsUrl(join(repoRoot, 'site', 'theme.js')),
@@ -87,6 +89,7 @@ export async function neurodeskViteConfig({ appId, base, ...overrides }) {
     preview: { headers: { ...isolationHeaders } },
     plugins: [emitHeadersFile(), injectDevShell({
       app,
+      information: appInformationPayload(await loadAppInformation(registry), app.id),
       version: appPackage.version,
       measurementId: registry.site.analytics.measurement_id,
     })],

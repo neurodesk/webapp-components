@@ -53,7 +53,12 @@ else
 	codesign --force --options runtime --timestamp --sign "$identity" "$staged"
 fi
 codesign --verify --strict --verbose=2 "$staged"
-"$staged" --self-check | sed "s/^/  /"
+self_check=$("$staged" --self-check) || {
+    status=$?
+    printf '%s\n' "$self_check" >&2
+    exit "$status"
+}
+printf '%s\n' "$self_check" | sed 's/^/  /'
 
 pkgbuild --root "$payload/root" --identifier "$identifier" --version "$version" --install-location / "$payload/component.pkg"
 if [ -n "$installer_identity" ]; then

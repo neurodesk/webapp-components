@@ -19,6 +19,7 @@ const information = await loadAppInformation(registry);
 // Methods each app implements, by DOI or URL. Add a line when an app gains a
 // method; the entry must then be cited in registry/app-information.yml.
 const REQUIRED_METHODS = {
+  dwi2trx: ['10.1016/S0006-3495(94)80775-1', 'github.com/dipy/GPUStreamlines', 'PMC5381389', 'brainder.org/2025/05/05/15656/'],
   musclemap: ['10.3390/jimaging10110262', 'arxiv.org/abs/2211.02701', '10.1016/j.jneumeth.2016.03.001'],
   vesselboost: ['10.52294/001c.123217', '10.1109/TMI.2010.2046908', '10.1109/TMI.2007.906087', '10.1109/ICCV.1998.710815', '10.1002/hbm.10062', '10.1016/j.neuroimage.2022.119474'],
   spinalcordtoolbox: ['10.1016/j.neuroimage.2016.10.009', '10.1016/j.media.2025.103473', '10.1038/s41592-020-01008-z', 'arxiv.org/abs/2407.17265', 'github.com/neuropoly/totalspineseg', '10.1155/2014/719520', '10.1016/j.neuroimage.2017.10.041'],
@@ -33,6 +34,7 @@ const REQUIRED_METHODS = {
   browserqc: ['10.1371/journal.pone.0184661', '10.21105/joss.05098', '10.52294/001c.94384', '10.1016/j.jneumeth.2016.03.001'],
   surfannotate: ['10.1016/j.neuroimage.2012.01.021', 'github.com/niivue/niivue'],
   zarro: ['10.1038/s41592-021-01326-w', 'zarr.dev', 'dandiarchive.org'],
+  synthseg: ['10.1016/j.media.2023.102789', '10.1016/j.jneumeth.2016.03.001', 'github.com/niivue/niivue'],
   synthsr: ['10.1016/j.neuroimage.2021.118206', 'github.com/neurolabusc/py_synthsr'],
   syncro: ['10.1016/j.neuroimage.2021.118206', 'arxiv.org/abs/2506.11860', '10.1016/j.neuroimage.2022.119474', '10.1016/j.media.2007.06.004', '10.1016/j.neuroimage.2010.07.033'],
 };

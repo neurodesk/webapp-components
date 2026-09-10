@@ -55,7 +55,7 @@ test('native packages share one gated publisher while signing stays isolated', a
 });
 
 test('native and independent test workflows pin actions and discard checkout credentials', async () => {
-  for (const name of ['synthsr-native', 'syncro-native', 'sct-full-tests']) {
+  for (const name of ['synthsr-native', 'synthseg-native', 'syncro-native', 'sct-full-tests']) {
     const flow = await workflow(name);
     for (const job of Object.values(flow.jobs)) {
       for (const step of job.steps) {
@@ -87,4 +87,21 @@ test('SYNcro portable builds use target runners and one gated publisher', async 
   assert.match(steps[target].run,/git rev-parse/);
   assert.match(steps[target].run,/GITHUB_SHA/);
   assert.equal(flow.jobs.release.permissions.contents,'write');
+});
+
+
+test('SynthSeg verifies native parity before its isolated signing job', async () => {
+  const flow = await workflow('synthseg-native');
+  assert.deepEqual(flow.permissions, { contents: 'read' });
+  assert.equal(flow.jobs.release.if, "github.event_name == 'workflow_dispatch' && inputs.sign_release");
+  assert.equal(flow.jobs.release.needs, 'verify');
+  assert.ok(!JSON.stringify(flow.jobs.verify).includes('secrets.'));
+  assert.match(JSON.stringify(flow.jobs.verify), /test-real macos-pkg-adhoc/);
+  const steps = flow.jobs.release.steps;
+  const target = steps.findIndex(step => step.name === 'Check release target');
+  const sign = steps.findIndex(step => step.name === 'Sign and notarize installer');
+  const publish = steps.findIndex(step => step.name === 'Attach verified release assets');
+  assert.ok(target >= 0 && target < sign && sign < publish);
+  assert.match(steps[target].run, /isDraft or .isPrerelease/);
+  assert.match(steps[target].run, /GITHUB_SHA/);
 });

@@ -203,7 +203,7 @@ fn quaternion(affine: &Affine, pixdim: &[f64; 3]) -> Option<(f64, [f64; 3])> {
     for row in r.iter_mut() {
         row[2] *= qfac;
     }
-    let a = (1.0 + r[0][0] + r[1][1] + r[2][2]).max(0.0).sqrt() / 2.0;
+    let mut a = (1.0 + r[0][0] + r[1][1] + r[2][2]).max(0.0).sqrt() / 2.0;
     let (b, c, d) = if a > 0.5 {
         (
             (r[2][1] - r[1][2]) / (4.0 * a),
@@ -217,6 +217,7 @@ fn quaternion(affine: &Affine, pixdim: &[f64; 3]) -> Option<(f64, [f64; 3])> {
         let zd = 1.0 + r[2][2] - (r[0][0] + r[1][1]);
         if xd > 1.0 {
             let b = 0.5 * xd.sqrt();
+            a = (r[2][1] - r[1][2]) / (4.0 * b);
             (
                 b,
                 0.25 * (r[0][1] + r[1][0]) / b,
@@ -224,6 +225,7 @@ fn quaternion(affine: &Affine, pixdim: &[f64; 3]) -> Option<(f64, [f64; 3])> {
             )
         } else if yd > 1.0 {
             let c = 0.5 * yd.sqrt();
+            a = (r[0][2] - r[2][0]) / (4.0 * c);
             (
                 0.25 * (r[0][1] + r[1][0]) / c,
                 c,
@@ -231,6 +233,7 @@ fn quaternion(affine: &Affine, pixdim: &[f64; 3]) -> Option<(f64, [f64; 3])> {
             )
         } else {
             let d = 0.5 * zd.sqrt();
+            a = (r[1][0] - r[0][1]) / (4.0 * d);
             (
                 0.25 * (r[0][2] + r[2][0]) / d,
                 0.25 * (r[1][2] + r[2][1]) / d,
@@ -238,11 +241,7 @@ fn quaternion(affine: &Affine, pixdim: &[f64; 3]) -> Option<(f64, [f64; 3])> {
             )
         }
     };
-    let sign = if a < 0.0 || (a == 0.0 && (r[2][1] - r[1][2]) < 0.0) {
-        -1.0
-    } else {
-        1.0
-    };
+    let sign = if a < 0.0 { -1.0 } else { 1.0 };
     Some((qfac, [b * sign, c * sign, d * sign]))
 }
 
@@ -299,4 +298,38 @@ pub fn write(v: &Volume<i32>) -> Vec<u8> {
         b[352 + 4 * i..356 + 4 * i].copy_from_slice(&x.to_le_bytes());
     }
     b
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn qform_roundtrips_rotations_with_a_negative_scalar_quaternion() {
+        for axis in 0..3 {
+            let angle = 220.0f64.to_radians();
+            let mut affine = [[0.0; 4]; 3];
+            affine[axis][axis] = 1.0;
+            let (first, second) = ((axis + 1) % 3, (axis + 2) % 3);
+            affine[first][first] = angle.cos();
+            affine[first][second] = -angle.sin();
+            affine[second][first] = angle.sin();
+            affine[second][second] = angle.cos();
+            let volume = Volume {
+                data: vec![0i32; 8],
+                dims: [2; 3],
+                pixdim: [1.0; 3],
+                affine,
+                codes: [1, 1],
+                units: 2,
+            };
+            let mut bytes = write(&volume);
+            // Force the reader to use qform so a correct sform cannot hide a bad quaternion.
+            bytes[254..256].copy_from_slice(&0i16.to_le_bytes());
+            let decoded = read(&bytes).unwrap();
+            for (actual, expected) in decoded.affine.iter().flatten().zip(affine.iter().flatten()) {
+                assert!((actual - expected).abs() < 1e-6, "{actual} != {expected}");
+            }
+        }
+    }
 }

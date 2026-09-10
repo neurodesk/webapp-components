@@ -85,7 +85,7 @@ clean:
 
 macos-pkg-adhoc: build
 	env MACOS_SIGN_IDENTITY=- MACOS_INSTALLER_IDENTITY= scripts/package_macos.sh "$(VERSION)"
-	scripts/verify_macos_pkg.sh dist/synthseg-$(VERSION)-macos-arm64-adhoc.pkg
+	scripts/verify_macos_pkg.sh dist/synthseg-$(VERSION)-macos-arm64-adhoc.pkg --allow-adhoc
 
 macos-pkg: build
 	@test -n "$(MACOS_SIGN_IDENTITY)" || { echo "Set MACOS_SIGN_IDENTITY to a Developer ID Application identity or SHA-1." >&2; exit 2; }
