@@ -388,3 +388,22 @@ apps:
       shared_runtime: false
       browser_test: true
       release: true
+  - id: edgereg
+    path: edgereg
+    title: EdgeReg
+    description: Affine MRI registration in the browser with niimath.
+    category: data-preparation
+    keywords: [registration, affine, NIfTI, niimath, NiiVue]
+    legacy_domain: null
+    runtime: vite-webgpu
+    model_manifest: null
+    asset_manifest_schema: null
+    source: neurodesk/webapps@local
+    license: BSD-2-Clause
+    maintainers: [neurodesk]
+    support_status: experimental
+    shell: imaging-workspace
+    ci:
+      toolchains: [node]
+      shared_runtime: false
+      release: false
